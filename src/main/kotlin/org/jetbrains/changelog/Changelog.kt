@@ -24,10 +24,12 @@ class Changelog(extension: ChangelogPluginExtension) {
         }.filterKeys(String::isNotEmpty).mapValues { Item(it.value) }
     }
 
+    @Suppress("unused")
     fun hasVersion(version: String) = getKey(version) != null
 
     fun get(version: String) = items[getKey(version)]
 
+    @Suppress("unused")
     fun getLatest() = items[items.keys.first()]
 
     private fun getKey(version: String) = items.keys.find { it.contains(version) }
