@@ -1,7 +1,7 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-//    id("java")
     id("java-gradle-plugin")
     id("maven-publish")
     id("org.jetbrains.kotlin.jvm") version "1.3.72"
@@ -16,6 +16,7 @@ version = "0.1.0"
 
 repositories {
     mavenCentral()
+    jcenter()
     maven("https://dl.bintray.com/jetbrains/markdown")
 }
 
@@ -23,6 +24,8 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(gradleApi())
     implementation("org.jetbrains:markdown:0.1.42")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:0.7.1")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.9.1")
 }
 
 gradlePlugin {
@@ -41,10 +44,26 @@ pluginBundle {
     tags = listOf("changelog", "jetbrains")
 }
 
+detekt {
+    config.from(file("detekt.yml"))
+    buildUponDefaultConfig = true
+    parallel = true
+
+    reports {
+        html.enabled = false
+        xml.enabled = false
+        txt.enabled = false
+    }
+}
+
 tasks {
     listOf("compileKotlin", "compileTestKotlin").forEach {
         getByName<KotlinCompile>(it) {
             kotlinOptions.jvmTarget = "1.8"
         }
+    }
+
+    withType<Detekt>().configureEach {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
