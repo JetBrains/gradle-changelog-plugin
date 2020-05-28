@@ -181,5 +181,23 @@ tasks {
 ```
 
 
+## Gradle closure in Kotlin DSL
+
+To produce Gradle-specific closure in Kotlin DSL, required by some third-party plugins, like
+[gradle-intellij-plugin][gradle-intellij-plugin] it is required to wrap the Kotlin Unit with `KotlinClosure0` class:
+
+```kotlin
+KotlinClosure0({ changelog.get() })
+```
+
+There is also a *neater* method available:
+
+```kotlin
+import org.jetbrains.changelog.closure
+
+closure { changelog.get() }
+```
+
 [build-phases]: https://docs.gradle.org/current/userguide/build_lifecycle.html#sec:build_phases
 [keep-a-changelog]: https://keepachangelog.com/en/1.0.0
+[gradle-intellij-plugin]: https://github.com/JetBrains/gradle-intellij-plugin
