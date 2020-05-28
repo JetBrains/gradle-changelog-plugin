@@ -1,6 +1,8 @@
+[![official JetBrains project](https://jb.gg/badges/official.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+
 # Gradle Changelog Plugin
 
-[![official JetBrains project](https://jb.gg/badges/official.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+**This project requires Gradle 5.0 or newer**
 
 A Gradle plugin that provides tasks and helper methods to let the working with the changelog managed
 in a [keep a changelog][keep-a-changelog] style easier.

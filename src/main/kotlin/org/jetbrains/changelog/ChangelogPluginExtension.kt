@@ -13,8 +13,8 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    val formatProperty: Property<String> = project.objects.property(String::class.java).run {
-        convention("[{0}]")
+    val formatProperty: Property<String> = project.objects.property(String::class.java).apply {
+        set("[{0}]")
     }
     var format: String
         get() = formatProperty.get()
@@ -25,17 +25,17 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    val keepUnreleasedSectionProperty: Property<Boolean> = project.objects.property(Boolean::class.java).run {
-        convention(true)
+    val keepUnreleasedSectionProperty: Property<Boolean> = project.objects.property(Boolean::class.java).apply {
+        set(true)
     }
     var keepUnreleasedSection: Boolean
         get() = keepUnreleasedSectionProperty.get()
         set(value) = keepUnreleasedSectionProperty.set(value)
-    
+
     @Optional
     @Internal
-    val pathProperty: Property<String> = project.objects.property(String::class.java).run {
-        convention("${project.projectDir}/CHANGELOG.md")
+    val pathProperty: Property<String> = project.objects.property(String::class.java).apply {
+        set("${project.projectDir}/CHANGELOG.md")
     }
     var path: String
         get() = pathProperty.get()
@@ -45,13 +45,13 @@ open class ChangelogPluginExtension(private val project: Project) {
     @Internal
     val versionProperty: Property<String> = project.objects.property(String::class.java)
     var version: String
-        get() = versionProperty.convention(project.version.toString()).get()
+        get() = versionProperty.getOrElse(project.version.toString())
         set(value) = versionProperty.set(value)
 
     @Optional
     @Internal
-    val unreleasedTermProperty: Property<String> = project.objects.property(String::class.java).run {
-        convention("Unreleased")
+    val unreleasedTermProperty: Property<String> = project.objects.property(String::class.java).apply {
+        set("Unreleased")
     }
     var unreleasedTerm: String
         get() = unreleasedTermProperty.get()
