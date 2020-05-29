@@ -5,7 +5,7 @@ on:
 
 jobs:
   release:
-    name: Release to Maven Plugins
+    name: Release to Gradle Plugins
     runs-on: ubuntu-latest
     steps:
       - name: Fetch Sources
