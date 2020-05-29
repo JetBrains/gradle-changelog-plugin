@@ -1,0 +1,114 @@
+name: Build
+on: [push, pull_request]
+
+jobs:
+  gradleValidation:
+    name: Gradle Wrapper
+    runs-on: ubuntu-latest
+    steps:
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v2
+      # Validate wrapper
+      - name: Gradle Wrapper Validation
+        uses: gradle/wrapper-validation-action@v1
+
+  test:
+    name: Test
+    needs: gradleValidation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Setup Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle-
+      - name: Run Linter
+        run: ./gradlew detekt
+      - name: Run Tests
+        run: ./gradlew test --no-daemon
+
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.properties.outputs.name }}
+      version: ${{ steps.properties.outputs.version }}
+      artifact: ${{ steps.properties.outputs.name }}-${{ steps.properties.outputs.version }}.jar
+      changelog: ${{ steps.properties.outputs.changelog }}
+    steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Setup Cache
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle-
+      - name: Export Properties
+        id: properties
+        run: |
+          echo "::set-output name=version::$(./gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')"
+          echo "::set-output name=name::$(./gradlew properties --no-daemon --console=plain -q | grep "^name:" | awk '{printf $2}')"
+          echo "::set-output name=changelog::$(./gradlew getChangelog --no-daemon --console=plain -q)"
+      - name: Build Plugin
+        run: ./gradlew build --no-daemon
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: plugin-artifact
+          path: ./build/libs/${{ needs.build.outputs.artifact }}
+
+  releaseDraft:
+    name: Release Draft
+    if: github.ref == 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Sources
+        uses: actions/checkout@v2
+      - name: Remove Old Release Drafts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases \
+            | tr '\r\n' ' ' \
+            | jq '.[] | select(.draft == true) | .id' \
+            | xargs -I '{}' \
+          curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/{}
+      - name: Create Release Draft
+        id: createDraft
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.build.outputs.version }}
+          release_name: v${{ needs.build.outputs.version }}
+          body: ${{ needs.build.outputs.changelog }}
+          draft: true
+      - name: Download Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: plugin-artifact
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.createDraft.outputs.upload_url }}
+          asset_path: ./plugin-artifact/${{ needs.build.outputs.artifact }}
+          asset_name: ${{ needs.build.outputs.artifact }}
+          asset_content_type: application/zip
