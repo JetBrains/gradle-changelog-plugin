@@ -38,8 +38,8 @@ gradlePlugin {
 }
 
 pluginBundle {
-    website = "https://github.com/JetBrains/gradle-changelog-plugin"
-    vcsUrl = "https://github.com/JetBrains/gradle-changelog-plugin.git"
+    website = "https://github.com/JetBrains/${project.name}"
+    vcsUrl = "https://github.com/JetBrains/${project.name}.git"
     description = "Gradle Changelog Plugin"
     tags = listOf("changelog", "jetbrains")
 }
