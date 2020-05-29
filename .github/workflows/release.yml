@@ -6,7 +6,6 @@ on:
 jobs:
   release:
     name: Release to Maven Plugins
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Fetch Sources
