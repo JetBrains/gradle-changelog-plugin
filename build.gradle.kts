@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -13,7 +14,7 @@ plugins {
 
 description = "Gradle Changelog Plugin"
 group = "org.jetbrains.intellij.plugins"
-version = "0.1.1"
+version = "0.1.2"
 
 repositories {
     mavenCentral()
@@ -24,7 +25,7 @@ repositories {
 dependencies {
     shadow(localGroovy())
     shadow(gradleApi())
-    shadow("org.jetbrains:markdown:0.1.41")
+    implementation("org.jetbrains:markdown:0.1.41")
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:0.7.1")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.9.1")
@@ -67,5 +68,15 @@ tasks {
 
     withType<Detekt>().configureEach {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    withType<ShadowJar> {
+        dependencies {
+            include { it.moduleName == "markdown" }
+        }
+    }
+
+    build {
+        dependsOn(shadowJar)
     }
 }
