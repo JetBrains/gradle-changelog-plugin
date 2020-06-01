@@ -1,5 +1,9 @@
 # Gradle Changelog Plugin
 
+## [0.1.1]
+### Fixed
+- Bundle `org.jetbrains:markdown` dependency with `shadowJar`
+
 ## [0.1.0]
 ### Added
 - Initial release

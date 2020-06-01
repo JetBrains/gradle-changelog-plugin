@@ -8,11 +8,12 @@ plugins {
     id("com.gradle.plugin-publish") version "0.12.0"
     id("io.gitlab.arturbosch.detekt") version "1.9.1"
     id("com.github.breadmoirai.github-release") version "2.2.12"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 description = "Gradle Changelog Plugin"
 group = "org.jetbrains.intellij.plugins"
-version = "0.1.0"
+version = "0.1.1"
 
 repositories {
     mavenCentral()
@@ -21,9 +22,10 @@ repositories {
 }
 
 dependencies {
+    shadow(localGroovy())
+    shadow(gradleApi())
+    shadow("org.jetbrains:markdown:0.1.41")
     implementation(kotlin("stdlib-jdk8"))
-    implementation(gradleApi())
-    implementation("org.jetbrains:markdown:0.1.42")
     implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:0.7.1")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.9.1")
 }
