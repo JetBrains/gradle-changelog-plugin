@@ -69,6 +69,15 @@ tasks {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
+    shadowJar {
+        classifier = ""
+        dependencies {
+            include {
+                println(it.moduleName)
+                it.moduleName == "markdown" }
+        }
+    }
+
     jar {
         enabled = false
         dependsOn(shadowJar)
