@@ -1,3 +1,4 @@
+import groovy.util.Node
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -13,7 +14,7 @@ plugins {
 
 description = "Gradle Changelog Plugin"
 group = "org.jetbrains.intellij.plugins"
-version = "0.1.3"
+version = "0.1.4"
 
 repositories {
     mavenCentral()
@@ -71,11 +72,7 @@ tasks {
 
     shadowJar {
         classifier = ""
-        dependencies {
-            include {
-                println(it.moduleName)
-                it.moduleName == "markdown" }
-        }
+        dependencies { include { it.moduleName == "markdown" } }
     }
 
     jar {
@@ -85,7 +82,13 @@ tasks {
 }
 
 publishing {
-    publications.create<MavenPublication>("shadow") {
-        shadow.component(this)
+    publications.create<MavenPublication>("pluginMaven") {
+        pom.withXml {
+            ((asNode().depthFirst()).find {
+                (it as Node).text() == "markdown"
+            } as Node).parent().apply {
+                parent().remove(this)
+            }
+        }
     }
 }
