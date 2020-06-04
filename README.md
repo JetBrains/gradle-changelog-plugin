@@ -21,7 +21,7 @@ tasks {
     // ...
 
     patchPluginXml {
-        changeNotes(closure { changelog.getUnreleased(true).noHeader().toHTML() })
+        changeNotes(closure { changelog.getUnreleased().noHeader().toHTML() })
     }
 }
 
@@ -46,7 +46,7 @@ intellij {
     // ...
 
     patchPluginXml {
-        changeNotes({ changelog.getUnreleased(true).noHeader().toHTML() })
+        changeNotes({ changelog.getUnreleased().noHeader().toHTML() })
     }
 }
 
@@ -63,7 +63,7 @@ changelog {
 > ```kotlin
 > import org.gradle.kotlin.dsl.KotlinClosure0
 > 
-> changeNotes(KotlinClosure0({ changelog.getUnreleased(true) }))
+> changeNotes(KotlinClosure0({ changelog.getUnreleased() }))
 > ```
 
 
@@ -139,7 +139,7 @@ Kotlin:
 ```kotlin
 tasks {
     patchPluginXml {
-        changeNotes(closure { changelog.get("1.0.0", true).noHeader().toHTML() })
+        changeNotes(closure { changelog.get("1.0.0").noHeader().toHTML() })
     }
 }
 ```
@@ -148,7 +148,7 @@ Groovy:
 ```groovy
 tasks {
     patchPluginXml {
-        changeNotes({ changelog.get("1.0.0", true).noHeader().toHTML() })
+        changeNotes({ changelog.get("1.0.0").noHeader().toHTML() })
     }
 }
 ```
@@ -180,7 +180,7 @@ tasks {
 ## `Changelog.Item`
 
 Methods described in the above section return `Changelog.Item` object, which is a representation of the single
-changelog section for the specific version. It provides a couple of properties and methods that allow to alter
+changelog section for the specific version. It provides a couple of properties and methods that allow altering
 the output form of the change notes:
 
 ### Properties 
