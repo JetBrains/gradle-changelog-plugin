@@ -14,14 +14,14 @@ Kotlin:
 import org.jetbrains.changelog.closure
 
 plugins {
-    id("org.jetbrains.changelog") version "0.1.4"
+    id("org.jetbrains.changelog") version "0.1.5"
 }
 
 tasks {
     // ...
 
     patchPluginXml {
-        changeNotes(closure { changelog.getUnreleased(true) })
+        changeNotes(closure { changelog.getUnreleased(true).noHeader().toHTML() })
     }
 }
 
@@ -37,7 +37,7 @@ changelog {
 Groovy:
 ```groovy
 plugins {
-    id 'org.jetbrains.changelog' version '0.1.4'
+    id 'org.jetbrains.changelog' version '0.1.5'
 }
 
 apply plugin: 'org.jetbrains.changelog'
@@ -46,7 +46,7 @@ intellij {
     // ...
 
     patchPluginXml {
-        changeNotes({ changelog.getUnreleased(true) })
+        changeNotes({ changelog.getUnreleased(true).noHeader().toHTML() })
     }
 }
 
@@ -121,16 +121,17 @@ the Gradle tasks to provide the latest (or specific) change notes.
 
 ### `get`
 
-The method returns a change note for the specified version. Throws `MissingVersionException` if the version is not available.
+The method returns a `Changelog.Item` object with for the specified version.
+Throws `MissingVersionException` if the version is not available.
 
 It is possible to specify the *unreleased* section with setting the `${changelog.unreleasedTerm}` value.
+
 
 #### Parameters
 
 | Parameter   | Type      | Description             | Default value          |
 | ----------- | --------- | ----------------------- | ---------------------- |
 | `version`   | `String`  | Change note version.    | `${changelog.version}` |
-| `asHTML`    | `Boolean` | Returns output as HTML. | `false`                |
 
 #### Examples
 
@@ -138,7 +139,7 @@ Kotlin:
 ```kotlin
 tasks {
     patchPluginXml {
-        changeNotes(closure { changelog.get("1.0.0", true) })
+        changeNotes(closure { changelog.get("1.0.0", true).noHeader().toHTML() })
     }
 }
 ```
@@ -147,20 +148,14 @@ Groovy:
 ```groovy
 tasks {
     patchPluginXml {
-        changeNotes({ changelog.get("1.0.0", true) })
+        changeNotes({ changelog.get("1.0.0", true).noHeader().toHTML() })
     }
 }
 ```
 
 ### `getUnreleased`
 
-Returns the *unreleased* change note.
-
-#### Parameters
-
-| Parameter   | Type      | Description             | Default value  |
-| ----------- | --------- | ----------------------- | -------------- |
-| `asHTML`    | `Boolean` | Returns output as HTML. | `false`        |
+The method returns a `Changelog.Item` object with for the *unreleased* version.
 
 #### Examples
 
@@ -168,7 +163,7 @@ Kotlin:
 ```kotlin
 tasks {
     patchPluginXml {
-        changeNotes(closure { changelog.getLatest(true) })
+        changeNotes(closure { changelog.getLatest().toHTML() })
     }
 }
 ```
@@ -177,11 +172,33 @@ Groovy:
 ```groovy
 tasks {
     patchPluginXml {
-        changeNotes({ changelog.getLatest(true) })
+        changeNotes({ changelog.getLatest().toHTML() })
     }
 }
 ```
 
+## `Changelog.Item`
+
+Methods described in the above section return `Changelog.Item` object, which is a representation of the single
+changelog section for the specific version. It provides a couple of properties and methods that allow to alter
+the output form of the change notes:
+
+### Properties 
+
+| Name      | Type      | Description             |
+| --------- | --------- | ----------------------- |
+| `version` | `String`  | Change note version.    |
+
+### Methods
+
+| Name                | Description                    | Returned type |
+| ------------------- | ------------------------------ | ------------- |
+| `noHeader()`        | Excludes header part.          | `this`        |
+| `noHeader(Boolean)` | Includes/excludes header part. | `this`        |
+| `getHeaderNode()`   | Returns header node.           | `ASTNode`     |
+| `toText()`          | Generates Markdown output.     | `string`      |
+| `toString()`        | Generates Markdown output.     | `string`      |
+| `toHTML()`          | Generates HTML output.         | `string`      |
 
 ## Gradle closure in Kotlin DSL
 

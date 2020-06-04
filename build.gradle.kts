@@ -14,7 +14,7 @@ plugins {
 
 description = "Gradle Changelog Plugin"
 group = "org.jetbrains.intellij.plugins"
-version = "0.1.4"
+version = "0.1.5"
 
 repositories {
     mavenCentral()
@@ -81,6 +81,8 @@ tasks {
     }
 }
 
+// Hack for removing the org.jetbrains:markdown:0.1.41 dependecy from the generated POM file.
+// Somehow shadowJar does not alter the dependencies list.
 publishing {
     publications.create<MavenPublication>("pluginMaven") {
         pom.withXml {

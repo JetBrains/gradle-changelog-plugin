@@ -57,16 +57,9 @@ open class ChangelogPluginExtension(private val project: Project) {
         get() = unreleasedTermProperty.get()
         set(value) = unreleasedTermProperty.set(value)
 
-    fun getUnreleased(asHTML: Boolean = false) = get(unreleasedTerm, asHTML)
+    fun getUnreleased(asHTML: Boolean = false) = get(unreleasedTerm)
 
-    fun get(version: String = this.version, asHTML: Boolean = false): String {
-        val item = Changelog(this).get(version) ?: throw MissingVersionException(version)
-
-        return when {
-            asHTML -> item.asHTML()
-            else -> item.asText()
-        }
-    }
+    fun get(version: String = this.version) = Changelog(this).get(version) ?: throw MissingVersionException(version)
 }
 
 fun closure(function: () -> Any) = object : Closure<Any>(null) {

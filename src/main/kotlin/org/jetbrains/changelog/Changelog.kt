@@ -21,7 +21,7 @@ class Changelog(extension: ChangelogPluginExtension) {
                 key = extension.headerFormat().parse(it.getTextInNode(content).toString()).first() as String
             }
             key
-        }.filterKeys(String::isNotEmpty).mapValues { Item(it.value) }
+        }.filterKeys(String::isNotEmpty).mapValues { Item(it.key, it.value) }
     }
 
     @Suppress("unused")
@@ -34,18 +34,26 @@ class Changelog(extension: ChangelogPluginExtension) {
 
     private fun getKey(version: String) = items.keys.find { it.contains(version) }
 
-    inner class Item(private val children: List<ASTNode>) {
+    inner class Item(val version: String, private val children: List<ASTNode>) {
+        private var noHeader = false
+
+        fun noHeader() = noHeader(true)
+
+        fun noHeader(noHeader: Boolean) = apply { this.noHeader = noHeader }
+
         fun getHeaderNode() = children.first()
 
-        fun asText(noHeader: Boolean = false) = children.run {
+        fun toText() = children.run {
             when {
                 noHeader -> drop(1)
                 else -> this
             }
         }.joinToString("") { it.getTextInNode(content) }.trim()
 
-        fun asHTML() = asText().run {
+        fun toHTML() = toText().run {
             HtmlGenerator(this, parser.buildMarkdownTreeFromString(this), flavour, false).generateHtml()
         }
+
+        override fun toString() = toText()
     }
 }
