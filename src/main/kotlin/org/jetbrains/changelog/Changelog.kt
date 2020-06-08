@@ -47,8 +47,6 @@ class Changelog(extension: ChangelogPluginExtension) {
 
         fun withHeader(header: Boolean) = apply { this.header = header }
 
-        fun noHeader(noHeader: Boolean) = apply { this.noHeader = noHeader }
-
         fun getHeaderNode() = nodes.first()
 
         fun toText() = nodes.run {
