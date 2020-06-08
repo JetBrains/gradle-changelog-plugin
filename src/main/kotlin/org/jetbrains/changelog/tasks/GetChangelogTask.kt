@@ -20,6 +20,7 @@ open class GetChangelogTask : DefaultTask() {
 
     private var noHeader = false
 
+    @Suppress("UnstableApiUsage")
     @Option(option = "no-header", description = "Omits header version line")
     fun setNoHeader(noHeader: Boolean) {
         this.noHeader = noHeader
@@ -36,9 +37,9 @@ open class GetChangelogTask : DefaultTask() {
 
     @TaskAction
     fun run() = logger.quiet(Changelog(extension).run {
-        (get(extension.version) ?: get(extension.unreleasedTerm))?.run {
-            noHeader(noHeader)
+        get(extension.version).run {
+            withHeader(noHeader)
             toText()
-        } ?: ""
+        }
     })
 }

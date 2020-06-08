@@ -14,7 +14,7 @@ plugins {
 
 description = "Gradle Changelog Plugin"
 group = "org.jetbrains.intellij.plugins"
-version = "0.1.5"
+version = "0.2.0"
 
 repositories {
     mavenCentral()
@@ -29,6 +29,8 @@ dependencies {
     implementation("org.jetbrains:markdown:0.1.41")
     implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:0.7.1")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.9.1")
+    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit"))
 }
 
 gradlePlugin {

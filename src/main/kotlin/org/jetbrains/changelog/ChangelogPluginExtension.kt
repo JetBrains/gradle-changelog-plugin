@@ -1,11 +1,9 @@
 package org.jetbrains.changelog
 
-import groovy.lang.Closure
 import org.gradle.api.Project
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
-import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.text.MessageFormat
 
 @Suppress("UnstableApiUsage")
@@ -13,7 +11,7 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    val formatProperty: Property<String> = project.objects.property(String::class.java).apply {
+    private val formatProperty: Property<String> = project.objects.property(String::class.java).apply {
         set("[{0}]")
     }
     var format: String
@@ -25,7 +23,7 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    val keepUnreleasedSectionProperty: Property<Boolean> = project.objects.property(Boolean::class.java).apply {
+    private val keepUnreleasedSectionProperty: Property<Boolean> = project.objects.property(Boolean::class.java).apply {
         set(true)
     }
     var keepUnreleasedSection: Boolean
@@ -34,7 +32,7 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    val pathProperty: Property<String> = project.objects.property(String::class.java).apply {
+    private val pathProperty: Property<String> = project.objects.property(String::class.java).apply {
         set("${project.projectDir}/CHANGELOG.md")
     }
     var path: String
@@ -43,26 +41,21 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    val versionProperty: Property<String> = project.objects.property(String::class.java)
+    private val versionProperty: Property<String> = project.objects.property(String::class.java)
     var version: String
         get() = versionProperty.getOrElse(project.version.toString())
         set(value) = versionProperty.set(value)
 
     @Optional
     @Internal
-    val unreleasedTermProperty: Property<String> = project.objects.property(String::class.java).apply {
+    private val unreleasedTermProperty: Property<String> = project.objects.property(String::class.java).apply {
         set("Unreleased")
     }
     var unreleasedTerm: String
         get() = unreleasedTermProperty.get()
         set(value) = unreleasedTermProperty.set(value)
 
-    fun getUnreleased(asHTML: Boolean = false) = get(unreleasedTerm)
+    fun getUnreleased() = get(unreleasedTerm)
 
-    fun get(version: String = this.version) = Changelog(this).get(version) ?: throw MissingVersionException(version)
-}
-
-fun closure(function: () -> Any) = object : Closure<Any>(null) {
-    @Suppress("unused")
-    fun doCall() = function()
+    fun get(version: String = this.version) = Changelog(this).get(version)
 }

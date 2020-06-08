@@ -25,7 +25,7 @@ open class PatchChangelogTask : DefaultTask() {
     @TaskAction
     fun run() {
         Changelog(extension).apply {
-            get(extension.unreleasedTerm)?.let {
+            get(extension.unreleasedTerm).let {
                 val header = it.getHeaderNode()
                 val versionHeader = extension.headerFormat().format(arrayOf(extension.version))
 

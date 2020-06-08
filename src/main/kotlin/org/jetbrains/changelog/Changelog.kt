@@ -6,10 +6,17 @@ import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
+import org.jetbrains.changelog.exceptions.MissingFileException
+import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.io.File
 
 class Changelog(extension: ChangelogPluginExtension) {
-    val content = File(extension.path).readText()
+    val content = File(extension.path).run {
+        if (extension.path.isEmpty() || !exists()) {
+            throw MissingFileException(extension.path)
+        }
+        readText()
+    }
     private val flavour = GFMFlavourDescriptor()
     private val parser = MarkdownParser(flavour)
     private val tree = parser.buildMarkdownTreeFromString(content)
@@ -27,28 +34,33 @@ class Changelog(extension: ChangelogPluginExtension) {
     @Suppress("unused")
     fun hasVersion(version: String) = getKey(version) != null
 
-    fun get(version: String) = items[getKey(version)]
+    fun get(version: String) = items[getKey(version)] ?: throw MissingVersionException(version)
 
     @Suppress("unused")
     fun getLatest() = items[items.keys.first()]
 
     private fun getKey(version: String) = items.keys.find { it.contains(version) }
 
-    inner class Item(val version: String, private val children: List<ASTNode>) {
-        private var noHeader = false
+    inner class Item(val version: String, private val nodes: List<ASTNode>) {
+        private var header = false
+        private var filterCallback: ((String) -> Boolean)? = null
 
-        fun noHeader() = noHeader(true)
+        fun withHeader(header: Boolean) = apply { this.header = header }
 
         fun noHeader(noHeader: Boolean) = apply { this.noHeader = noHeader }
 
-        fun getHeaderNode() = children.first()
+        fun getHeaderNode() = nodes.first()
 
-        fun toText() = children.run {
+        fun toText() = nodes.run {
             when {
-                noHeader -> drop(1)
+                header -> drop(1)
                 else -> this
             }
-        }.joinToString("") { it.getTextInNode(content) }.trim()
+        }.filter {
+            filterCallback?.invoke(it.getTextInNode(content).toString()) ?: true
+        }.joinToString("") {
+            it.getTextInNode(content)
+        }.trim()
 
         fun toHTML() = toText().run {
             HtmlGenerator(this, parser.buildMarkdownTreeFromString(this), flavour, false).generateHtml()

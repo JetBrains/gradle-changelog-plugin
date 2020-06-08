@@ -1,5 +1,13 @@
 # Gradle Changelog Plugin
 
+## [0.2.0]
+### Added
+- Tests for Plugin, Extension and Tasks
+
+### Changed
+- Extract `closure` to `extensions.kt` separated file
+- Code enhancements
+
 ## [0.1.5]
 ### Changed
 - `changelog.get` and `changelog.getLatest` return `Changelog.Item`

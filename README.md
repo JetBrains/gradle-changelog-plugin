@@ -15,7 +15,7 @@ Kotlin:
 import org.jetbrains.changelog.closure
 
 plugins {
-    id("org.jetbrains.changelog") version "0.1.5"
+    id("org.jetbrains.changelog") version "0.2.0"
 }
 
 tasks {
@@ -38,7 +38,7 @@ changelog {
 Groovy:
 ```groovy
 plugins {
-    id 'org.jetbrains.changelog' version '0.1.5'
+    id 'org.jetbrains.changelog' version '0.2.0'
 }
 
 apply plugin: 'org.jetbrains.changelog'
