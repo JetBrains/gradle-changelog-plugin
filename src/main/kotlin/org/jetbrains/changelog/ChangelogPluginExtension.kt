@@ -58,4 +58,6 @@ open class ChangelogPluginExtension(private val project: Project) {
     fun getUnreleased() = get(unreleasedTerm)
 
     fun get(version: String = this.version) = Changelog(this).get(version)
+
+    fun getLatest() = Changelog(this).getLatest()
 }

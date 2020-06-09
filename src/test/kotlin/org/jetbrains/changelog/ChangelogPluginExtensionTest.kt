@@ -246,4 +246,12 @@ class ChangelogPluginExtensionTest : BaseTest() {
             }
         }
     }
+
+    @Test
+    fun `returns latest change note`() {
+        extension.getLatest().apply {
+            assertEquals("Unreleased", version)
+            assertEquals("## [Unreleased]", getHeader())
+        }
+    }
 }

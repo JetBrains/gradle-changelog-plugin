@@ -5,6 +5,7 @@
 - Tests for Plugin, Extension and Tasks
 - `getHeader() : String` in `Changelog.Item`
 - `withFilter(filter: ((String) -> Boolean)?)` in `Changelog.Item`
+- `getLatest()` helper method
 
 ### Changed
 - Extract `closure` to `extensions.kt` separated file

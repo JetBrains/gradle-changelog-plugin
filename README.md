@@ -123,7 +123,7 @@ the Gradle tasks to provide the latest (or specific) change notes.
 
 ### `get`
 
-The method returns a `Changelog.Item` object with for the specified version.
+The method returns a `Changelog.Item` object for the specified version.
 Throws `MissingVersionException` if the version is not available.
 
 It is possible to specify the *unreleased* section with setting the `${changelog.unreleasedTerm}` value.
@@ -157,7 +157,31 @@ tasks {
 
 ### `getUnreleased`
 
-The method returns a `Changelog.Item` object with for the *unreleased* version.
+The method returns a `Changelog.Item` object for the *unreleased* version.
+
+#### Examples
+
+Kotlin:
+```kotlin
+tasks {
+    patchPluginXml {
+        changeNotes(closure { changelog.getUnreleased().toHTML() })
+    }
+}
+```
+
+Groovy:
+```groovy
+tasks {
+    patchPluginXml {
+        changeNotes({ changelog.getUnreleased().toHTML() })
+    }
+}
+```
+
+### `getLatest`
+
+The method returns the latest `Changelog.Item` object (first on the list).
 
 #### Examples
 
