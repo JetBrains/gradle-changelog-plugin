@@ -56,14 +56,14 @@ class Changelog(extension: ChangelogPluginExtension) {
         }.filter { it.value.isNotEmpty() }
 
         fun toText() = getSections().entries
-                .joinToString("\n\n") {
-                    (listOf("### ${it.key}") + it.value).joinToString("\n")
-                }.let {
-                    when {
-                        withHeader -> "${getHeader()}\n$it"
-                        else -> it
-                    }
+            .joinToString("\n\n") {
+                (listOf("### ${it.key}") + it.value).joinToString("\n")
+            }.let {
+                when {
+                    withHeader -> "${getHeader()}\n$it"
+                    else -> it
                 }
+            }
 
         fun toHTML() = toText().run {
             HtmlGenerator(this, parser.buildMarkdownTreeFromString(this), flavour, false).generateHtml()
@@ -74,7 +74,10 @@ class Changelog(extension: ChangelogPluginExtension) {
 
     private fun ASTNode.text() = getTextInNode(content).toString()
 
-    private fun List<ASTNode>.groupByType(type: IElementType, getKey: ((item: ASTNode) -> String)? = null): Map<String, List<ASTNode>> {
+    private fun List<ASTNode>.groupByType(
+        type: IElementType,
+        getKey: ((item: ASTNode) -> String)? = null
+    ): Map<String, List<ASTNode>> {
         var key = ""
         return groupBy {
             if (it.type == type) {
