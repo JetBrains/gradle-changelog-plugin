@@ -141,7 +141,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
             ### Added
             - Foo
             - Bar
-            - Buz
             - Bravo
             - Alpha
             
@@ -159,18 +158,17 @@ class ChangelogPluginExtensionTest : BaseTest() {
             withHeader(true).getSections().apply {
                 assertEquals(3, size)
                 assertTrue(containsKey("Added"))
-                assertEquals(5, get("Added")!!.size)
+                assertEquals(4, get("Added")?.size)
                 assertTrue(containsKey("Fixed"))
-                assertEquals(2, get("Fixed")!!.size)
+                assertEquals(2, get("Fixed")?.size)
                 assertTrue(containsKey("Removed"))
-                assertEquals(1, get("Removed")!!.size)
+                assertEquals(1, get("Removed")?.size)
             }
             assertEquals("""
                 ## [1.0.0]
                 ### Added
                 - Foo
                 - Bar
-                - Buz
                 - Bravo
                 - Alpha
 
@@ -184,7 +182,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertEquals("""
                 <h2>[1.0.0]</h2>
                 <h3>Added</h3>
-                <ul><li>Foo</li><li>Bar</li><li>Buz</li><li>Bravo</li><li>Alpha</li></ul>
+                <ul><li>Foo</li><li>Bar</li><li>Bravo</li><li>Alpha</li></ul>
                 
                 <h3>Fixed</h3>
                 <ul><li>Hello</li><li>World</li></ul>
@@ -224,9 +222,9 @@ class ChangelogPluginExtensionTest : BaseTest() {
             }.getSections().apply {
                 assertEquals(2, size)
                 assertTrue(containsKey("Added"))
-                assertEquals(3, get("Added")!!.size)
+                assertEquals(3, get("Added")?.size)
                 assertTrue(containsKey("Fixed"))
-                assertEquals(1, get("Fixed")!!.size)
+                assertEquals(1, get("Fixed")?.size)
                 assertFalse(containsKey("Removed"))
 
                 assertEquals("""
