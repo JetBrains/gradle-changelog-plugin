@@ -203,6 +203,30 @@ tasks {
 }
 ```
 
+### `hasVersion`
+
+The method checks if the giver version exists in the changelog
+
+#### Examples
+
+Kotlin:
+```kotlin
+tasks {
+    patchPluginXml {
+        closure { changelog.hasVersion() }
+    }
+}
+```
+
+Groovy:
+```groovy
+tasks {
+    patchPluginXml {
+        { changelog.hasVersion() }
+    }
+}
+```
+
 ## `Changelog.Item`
 
 Methods described in the above section return `Changelog.Item` object, which is a representation of the single

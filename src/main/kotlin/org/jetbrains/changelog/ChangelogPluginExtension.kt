@@ -60,4 +60,6 @@ open class ChangelogPluginExtension(private val project: Project) {
     fun get(version: String = this.version) = Changelog(this).get(version)
 
     fun getLatest() = Changelog(this).getLatest()
+
+    fun hasVersion(version: String) = Changelog(this).hasVersion(version)
 }

@@ -254,4 +254,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertEquals("## [Unreleased]", getHeader())
         }
     }
+
+    @Test
+    fun `checks if the given version exists in the changelog`() {
+        assertTrue(extension.hasVersion("Unreleased"))
+        assertTrue(extension.hasVersion("1.0.0"))
+        assertFalse(extension.hasVersion("2.0.0"))
+    }
 }

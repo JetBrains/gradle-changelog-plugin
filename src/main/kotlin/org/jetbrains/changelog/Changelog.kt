@@ -33,7 +33,6 @@ class Changelog(extension: ChangelogPluginExtension) {
         Item(it.key, header, items)
     }
 
-    @Suppress("unused")
     fun hasVersion(version: String) = items.containsKey(version)
 
     fun get(version: String) = items[version] ?: throw MissingVersionException(version)

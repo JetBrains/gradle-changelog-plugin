@@ -6,6 +6,7 @@
 - `getHeader() : String` in `Changelog.Item`
 - `withFilter(filter: ((String) -> Boolean)?)` in `Changelog.Item`
 - `getLatest()` helper method
+- `hasVersion(version: String)` helper method
 
 ### Changed
 - Extract `closure` to `extensions.kt` separated file
