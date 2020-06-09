@@ -8,12 +8,13 @@ import kotlin.test.assertEquals
 class GetChangelogTaskTest : BaseTest() {
 
     @BeforeTest
-    fun taskSetUp() {
+    fun localSetUp() {
         version = "1.0.0"
         changelog = """
             # Changelog
             ## [1.0.0]
-            foo
+            ### Added
+            - foo
         """.trimIndent()
 
         buildFile = """
@@ -34,7 +35,8 @@ class GetChangelogTaskTest : BaseTest() {
 
         assertEquals("""
             ## [1.0.0]
-            foo
+            ### Added
+            - foo
         """.trimIndent(), result.output.trim())
     }
 
@@ -43,7 +45,8 @@ class GetChangelogTaskTest : BaseTest() {
         val result = runTask("getChangelog", "--no-header")
 
         assertEquals("""
-            foo
+            ### Added
+            - foo
         """.trimIndent(), result.output.trim())
     }
 }

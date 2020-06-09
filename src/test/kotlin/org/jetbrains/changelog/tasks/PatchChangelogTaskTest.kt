@@ -10,12 +10,13 @@ import kotlin.test.assertFailsWith
 class PatchChangelogTaskTest : BaseTest() {
 
     @BeforeTest
-    fun taskSetUp() {
+    fun localSetUp() {
         version = "1.0.0"
         changelog = """
             # Changelog
             ## [Unreleased]
-            foo
+            ### Added
+            - foo
         """.trimIndent()
 
         buildFile = """
@@ -34,13 +35,14 @@ class PatchChangelogTaskTest : BaseTest() {
         runTask("patchChangelog")
 
         assertEquals("""
-            ## [1.0.0]
-            foo
+            ### Added
+            - foo
         """.trimIndent(), extension.get().toText())
 
         assertEquals("""
             ## [Unreleased]
-        """.trimIndent(), extension.getUnreleased().toText())
+            
+        """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
     }
 
     @Test
@@ -59,8 +61,8 @@ class PatchChangelogTaskTest : BaseTest() {
         runTask("patchChangelog")
 
         assertEquals("""
-            ## [1.0.0]
-            foo
+            ### Added
+            - foo
         """.trimIndent(), extension.get().toText())
 
         assertFailsWith<MissingVersionException> {

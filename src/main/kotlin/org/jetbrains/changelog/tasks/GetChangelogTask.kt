@@ -38,7 +38,7 @@ open class GetChangelogTask : DefaultTask() {
     @TaskAction
     fun run() = logger.quiet(Changelog(extension).run {
         get(extension.version).run {
-            withHeader(noHeader)
+            withHeader(!noHeader)
             toText()
         }
     })

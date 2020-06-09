@@ -3,6 +3,8 @@
 ## [0.2.0]
 ### Added
 - Tests for Plugin, Extension and Tasks
+- `getHeader() : String` in `Changelog.Item`
+- `withFilter(filter: ((String) -> Boolean)?)` in `Changelog.Item`
 
 ### Changed
 - Extract `closure` to `extensions.kt` separated file

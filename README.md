@@ -196,12 +196,12 @@ the output form of the change notes:
 | ------------------- | ------------------------------ | ------------- |
 | `noHeader()`        | Excludes header part.          | `this`        |
 | `noHeader(Boolean)` | Includes/excludes header part. | `this`        |
-| `getHeaderNode()`   | Returns header node.           | `ASTNode`     |
+| `getHeader()`       | Returns header text.           | `string`      |
 | `toText()`          | Generates Markdown output.     | `string`      |
 | `toString()`        | Generates Markdown output.     | `string`      |
 | `toHTML()`          | Generates HTML output.         | `string`      |
 
-## Gradle closure in Kotlin DSL
+## Gradle Closure in Kotlin DSL
 
 To produce Gradle-specific closure in Kotlin DSL, required by some third-party plugins, like
 [gradle-intellij-plugin][gradle-intellij-plugin] it is required to wrap the Kotlin Unit with `KotlinClosure0` class:
@@ -217,6 +217,12 @@ import org.jetbrains.changelog.closure
 
 closure { changelog.get() }
 ```
+
+## Usage Examples
+
+- [Unity Support for ReSharper and Rider](https://github.com/JetBrains/resharper-unity)
+- [IntelliJ Plugin Template](https://github.com/hsz/intellij-plugin-template)
+- [Package Search](https://plugins.jetbrains.com/plugin/12507-package-search)
 
 [build-phases]: https://docs.gradle.org/current/userguide/build_lifecycle.html#sec:build_phases
 [keep-a-changelog]: https://keepachangelog.com/en/1.0.0

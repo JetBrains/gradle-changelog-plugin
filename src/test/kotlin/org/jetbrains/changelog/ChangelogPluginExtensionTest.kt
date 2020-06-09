@@ -2,26 +2,44 @@ package org.jetbrains.changelog
 
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
+import java.io.File
 import java.text.ParseException
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-class ChangelogPluginExtensionTest: BaseTest() {
+class ChangelogPluginExtensionTest : BaseTest() {
+
+    @BeforeTest
+    fun localSetUp() {
+        version = "1.0.0"
+        changelog = """
+            # Changelog
+            
+            ## [Unreleased]
+            ### Added
+            - Foo
+            
+            ## [1.0.0]
+            ### Removed
+            - Bar
+        """
+    }
 
     @Test
-    fun `Throws MissingFileException when changelog file does not exist`() {
+    fun `throws MissingFileException when changelog file does not exist`() {
+        File(extension.path).delete()
         assertFailsWith<MissingFileException> {
             extension.get()
         }
     }
 
     @Test
-    fun `Throws MissingVersionException when project has no version specified`() {
+    fun `throws MissingVersionException when project has no version specified`() {
         version = ""
-        changelog = """
-            # Changelog
-        """
 
         assertFailsWith<MissingVersionException> {
             extension.get()
@@ -29,56 +47,38 @@ class ChangelogPluginExtensionTest: BaseTest() {
     }
 
     @Test
-    fun `Throws MissingVersionException if requested unavailable version`() {
-        version = "1.0.0"
-        changelog = """
-            # Changelog
-        """
-
+    fun `throws MissingVersionException if requested version is not available`() {
         assertFailsWith<MissingVersionException> {
             extension.get("2.0.0")
         }
     }
 
     @Test
-    fun `Returns a change notes for the v1_0_0`() {
-        version = "1.0.0"
-        changelog = """
-            # Changelog
-            
-            ## [1.0.0]
-            ...
-        """
-
+    fun `returns change notes for the v1_0_0 version`() {
         extension.get().apply {
             assertEquals(project.version, version)
 
             assertEquals("""
-            ## [1.0.0]
-            ...
+                ### Removed
+                - Bar
             """.trimIndent(), toText())
 
             assertEquals("""
-                ## [1.0.0]
-                ...
+                ### Removed
+                - Bar
             """.trimIndent(), toString())
 
             // TODO return HTML without <body>
             assertEquals("""
-                <body><h2>[1.0.0]</h2><p>...</p></body>
+                <h3>Removed</h3>
+                <ul><li>Bar</li></ul>
             """.trimIndent(), toHTML())
         }
     }
 
     @Test
-    fun `Parse Changelog with custom format`() {
-        version = "1.0.0"
-        changelog = """
-            # Changelog
-            
-            ## [[1.0.0]]
-        """.trimIndent()
-
+    fun `parses changelog with custom format`() {
+        changelog = changelog.replace("""\[([^]]+)\]""".toRegex(), "[[$1]]")
         extension.format = "[[{0}]]"
         extension.get().apply {
             assertEquals("1.0.0", version)
@@ -86,13 +86,13 @@ class ChangelogPluginExtensionTest: BaseTest() {
     }
 
     @Test
-    fun `Throws ParseException when Changelog items have unrecognizable header format`() {
-        version = "1.0.0"
+    fun `throws ParseException when changelog item has unrecognizable header format`() {
         changelog = """
             # Changelog
             
             ## ~1.0.0~
-            ...
+            ### Added
+            - Foo
         """
 
         assertFailsWith<ParseException> {
@@ -101,53 +101,151 @@ class ChangelogPluginExtensionTest: BaseTest() {
     }
 
     @Test
-    fun `headerFormat returns MessageFormat prefixed with Markdown second level header`() {
+    fun `headerFormat() returns MessageFormat prefixed with Markdown second level header`() {
         assertEquals("## [{0}]", extension.headerFormat().toPattern())
         assertEquals("## ${extension.format}", extension.headerFormat().toPattern())
     }
 
     @Test
-    fun `getUnreleased returns Unreleased section`() {
-        version = "1.0.0"
-        changelog = """
-            # Changelog
-            
-            ## [Unreleased]
-            foo
-            
-            ## [1.0.0]
-            bar
-        """
-
-        extension.getUnreleased().apply {
+    fun `getUnreleased() returns Unreleased section`() {
+        extension.getUnreleased().withHeader(true).apply {
             assertEquals("Unreleased", version)
             assertEquals("""
                 ## [Unreleased]
-                foo
+                ### Added
+                - Foo
             """.trimIndent(), toText())
         }
     }
 
     @Test
-    fun `getUnreleased returns Upcoming section if unreleasedTerm is customised`() {
-        version = "1.0.0"
-        changelog = """
-            # Changelog
-            
-            ## [Upcoming]
-            foo
-            
-            ## [1.0.0]
-            bar
-        """
-
+    fun `getUnreleased() returns Upcoming section if unreleasedTerm is customised`() {
+        changelog = changelog.replace("Unreleased", "Upcoming")
         extension.unreleasedTerm = "Upcoming"
-        extension.getUnreleased().apply {
+        extension.getUnreleased().withHeader(true).apply {
             assertEquals("Upcoming", version)
             assertEquals("""
                 ## [Upcoming]
-                foo
+                ### Added
+                - Foo
             """.trimIndent(), toText())
+        }
+    }
+
+    @Test
+    fun `parses changelog into structured sections`() {
+        changelog = """
+            # Changelog
+            
+            ## [1.0.0]
+            ### Added
+            - Foo
+            - Bar
+            - Buz
+            - Bravo
+            - Alpha
+            
+            ### Fixed
+            - Hello
+            - World
+            
+            ### Removed
+            - Hola
+        """
+
+        extension.get().apply {
+            assertEquals(this@ChangelogPluginExtensionTest.version, version)
+            assertEquals("## [1.0.0]", getHeader())
+            withHeader(true).getSections().apply {
+                assertEquals(3, size)
+                assertTrue(containsKey("Added"))
+                assertEquals(5, get("Added")!!.size)
+                assertTrue(containsKey("Fixed"))
+                assertEquals(2, get("Fixed")!!.size)
+                assertTrue(containsKey("Removed"))
+                assertEquals(1, get("Removed")!!.size)
+            }
+            assertEquals("""
+                ## [1.0.0]
+                ### Added
+                - Foo
+                - Bar
+                - Buz
+                - Bravo
+                - Alpha
+
+                ### Fixed
+                - Hello
+                - World
+
+                ### Removed
+                - Hola
+            """.trimIndent(), toText())
+            assertEquals("""
+                <h2>[1.0.0]</h2>
+                <h3>Added</h3>
+                <ul><li>Foo</li><li>Bar</li><li>Buz</li><li>Bravo</li><li>Alpha</li></ul>
+                
+                <h3>Fixed</h3>
+                <ul><li>Hello</li><li>World</li></ul>
+                
+                <h3>Removed</h3>
+                <ul><li>Hola</li></ul>
+            """.trimIndent(), toHTML())
+        }
+    }
+
+    @Test
+    fun `filters out entries from the change notes for the given version`() {
+        changelog = """
+            # Changelog
+            
+            ## [1.0.0]
+            ### Added
+            - Foo
+            - Bar x
+            - Buz
+            - Bravo x
+            - Alpha
+            
+            ### Fixed
+            - Hello x
+            - World
+            
+            ### Removed
+            - Hola x
+        """
+
+        extension.get().apply {
+            assertEquals(this@ChangelogPluginExtensionTest.version, version)
+            assertEquals("## [1.0.0]", getHeader())
+            withFilter {
+                !it.endsWith('x')
+            }.getSections().apply {
+                assertEquals(2, size)
+                assertTrue(containsKey("Added"))
+                assertEquals(3, get("Added")!!.size)
+                assertTrue(containsKey("Fixed"))
+                assertEquals(1, get("Fixed")!!.size)
+                assertFalse(containsKey("Removed"))
+
+                assertEquals("""
+                    ### Added
+                    - Foo
+                    - Buz
+                    - Alpha
+
+                    ### Fixed
+                    - World
+                """.trimIndent(), toText())
+                assertEquals("""
+                    <h3>Added</h3>
+                    <ul><li>Foo</li><li>Buz</li><li>Alpha</li></ul>
+
+                    <h3>Fixed</h3>
+                    <ul><li>World</li></ul>
+                """.trimIndent(), toHTML())
+            }
         }
     }
 }
