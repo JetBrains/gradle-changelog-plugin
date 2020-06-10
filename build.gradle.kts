@@ -83,7 +83,7 @@ tasks {
     }
 }
 
-// Hack for removing the org.jetbrains:markdown:0.1.41 dependecy from the generated POM file.
+// Hack for removing the org.jetbrains:markdown:0.1.41 dependency from the generated POM file.
 // Somehow shadowJar does not alter the dependencies list.
 publishing {
     publications.create<MavenPublication>("pluginMaven") {
