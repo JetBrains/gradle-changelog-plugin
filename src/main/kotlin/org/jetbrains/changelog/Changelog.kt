@@ -21,17 +21,28 @@ class Changelog(extension: ChangelogPluginExtension) {
     private val parser = MarkdownParser(flavour)
     private val tree = parser.buildMarkdownTreeFromString(content)
 
-    private val items = tree.children.groupByType(MarkdownElementTypes.ATX_2) {
-        extension.headerFormat().parse(it.text()).first().toString()
-    }.filterKeys(String::isNotEmpty).mapValues {
-        val header = it.value.first()
-        val items = it.value.drop(1).groupByType(MarkdownElementTypes.ATX_3) { key ->
-            key.text().trimStart('#').trim()
-        }.filterKeys(String::isNotEmpty).mapValues {
-            it.value.joinToString("") { it.text() }.lines().drop(1).filterNot(String::isEmpty)
+    private val items = tree.children
+        .groupByType(MarkdownElementTypes.ATX_2) {
+            extension.headerFormat().parse(it.text()).first().toString()
         }
-        Item(it.key, header, items)
-    }
+        .filterKeys(String::isNotEmpty)
+        .mapValues { (key, value) ->
+            value
+                .drop(1)
+                .groupByType(MarkdownElementTypes.ATX_3) {
+                    it.text().trimStart('#').trim()
+                }
+                .filterKeys(String::isNotEmpty)
+                .mapValues {
+                    it.value
+                        .joinToString("") { node -> node.text() }
+                        .lines()
+                        .drop(1)
+                        .filterNot(String::isEmpty)
+                }.run {
+                    Item(key, value.first(), this)
+                }
+        }
 
     fun hasVersion(version: String) = items.containsKey(version)
 
@@ -40,20 +51,29 @@ class Changelog(extension: ChangelogPluginExtension) {
     fun getLatest() = items[items.keys.first()] ?: throw MissingVersionException("any")
 
     inner class Item(val version: String, private val header: ASTNode, private val items: Map<String, List<String>>) {
+
         private var withHeader = false
         private var filterCallback: ((String) -> Boolean)? = null
 
-        fun withHeader(header: Boolean) = apply { this.withHeader = header }
+        fun withHeader(header: Boolean) = apply {
+            this.withHeader = header
+        }
 
-        fun withFilter(filter: ((String) -> Boolean)?) = apply { this.filterCallback = filter; }
+        fun withFilter(filter: ((String) -> Boolean)?) = apply {
+            this.filterCallback = filter
+        }
 
         fun getHeaderNode() = header
 
         fun getHeader() = header.text()
 
-        fun getSections() = items.mapValues {
-            it.value.filter { item -> filterCallback?.invoke(item) ?: true }
-        }.filter { it.value.isNotEmpty() }
+        fun getSections() = items
+            .mapValues {
+                it.value.filter { item -> filterCallback?.invoke(item) ?: true }
+            }
+            .filter {
+                it.value.isNotEmpty()
+            }
 
         fun toText() = getSections().entries
             .joinToString("\n\n") {
