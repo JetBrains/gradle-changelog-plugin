@@ -16,7 +16,7 @@ Kotlin:
 import org.jetbrains.changelog.closure
 
 plugins {
-    id("org.jetbrains.changelog") version "0.3.0"
+    id("org.jetbrains.changelog") version "0.3.1"
 }
 
 tasks {
@@ -41,7 +41,7 @@ changelog {
 Groovy:
 ```groovy
 plugins {
-    id 'org.jetbrains.changelog' version '0.3.0'
+    id 'org.jetbrains.changelog' version '0.3.1'
 }
 
 apply plugin: 'org.jetbrains.changelog'
@@ -101,9 +101,10 @@ The plugin introduces the following tasks:
 
 #### Options
 
-| Option          | Description                                       |
-| --------------- | ------------------------------------------------- |
+| Option          | Description                                        |
+| --------------- | -------------------------------------------------- |
 | `--no-header`   | Skips the first version header line in the output. |
+| `--unreleased`  | Returns Unreleased change notes.                   |
 
 #### Examples
 

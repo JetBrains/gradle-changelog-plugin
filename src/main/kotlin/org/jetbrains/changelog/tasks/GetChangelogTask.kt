@@ -29,6 +29,17 @@ open class GetChangelogTask : DefaultTask() {
     @Input
     fun getNoHeader() = noHeader
 
+    private var unreleased = false
+
+    @Suppress("UnstableApiUsage")
+    @Option(option = "unreleased", description = "Returns Unreleased change notes")
+    fun setUnreleased(unreleased: Boolean) {
+        this.unreleased = unreleased
+    }
+
+    @Input
+    fun getUnreleased() = unreleased
+
     @InputFile
     fun getInputFile() = File(extension.path)
 
@@ -37,7 +48,11 @@ open class GetChangelogTask : DefaultTask() {
 
     @TaskAction
     fun run() = logger.quiet(Changelog(extension).run {
-        get(extension.version).run {
+        val version = when (unreleased) {
+            true -> extension.unreleasedTerm
+            false -> extension.version
+        }
+        get(version).run {
             withHeader(!noHeader)
             toText()
         }
