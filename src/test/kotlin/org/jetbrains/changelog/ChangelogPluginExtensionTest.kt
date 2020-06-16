@@ -69,7 +69,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `parses changelog with custom format`() {
-        changelog = changelog.replace("""\[([^]]+)\]""".toRegex(), "[[$1]]")
+        changelog = changelog.replace("""\[([^]]+)]""".toRegex(), "[[$1]]")
         extension.headerFormat = "[[{0}]]"
         extension.get().apply {
             assertEquals("1.0.0", version)
