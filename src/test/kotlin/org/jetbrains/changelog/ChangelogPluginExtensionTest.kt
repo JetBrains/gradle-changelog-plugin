@@ -130,8 +130,10 @@ class ChangelogPluginExtensionTest : BaseTest() {
             
             ## [1.0.0]
             ### Added
-            - Foo
-            - Bar
+            - Foo *FOO* foo
+            - Bar **BAR** bar
+            - Test [link](https://www.example.org) test
+            - Code `block` code
             - Bravo
             - Alpha
             
@@ -149,7 +151,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             withHeader(true).getSections().apply {
                 assertEquals(3, size)
                 assertTrue(containsKey("Added"))
-                assertEquals(4, get("Added")?.size)
+                assertEquals(6, get("Added")?.size)
                 assertTrue(containsKey("Fixed"))
                 assertEquals(2, get("Fixed")?.size)
                 assertTrue(containsKey("Removed"))
@@ -158,8 +160,10 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertEquals("""
                 ## [1.0.0]
                 ### Added
-                - Foo
-                - Bar
+                - Foo *FOO* foo
+                - Bar **BAR** bar
+                - Test [link](https://www.example.org) test
+                - Code `block` code
                 - Bravo
                 - Alpha
 
@@ -173,7 +177,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertEquals("""
                 <h2>[1.0.0]</h2>
                 <h3>Added</h3>
-                <ul><li>Foo</li><li>Bar</li><li>Bravo</li><li>Alpha</li></ul>
+                <ul><li>Foo <em>FOO</em> foo</li><li>Bar <strong>BAR</strong> bar</li><li>Test <a href="https://www.example.org">link</a> test</li><li>Code <code>block</code> code</li><li>Bravo</li><li>Alpha</li></ul>
                 
                 <h3>Fixed</h3>
                 <ul><li>Hello</li><li>World</li></ul>
@@ -181,6 +185,23 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 <h3>Removed</h3>
                 <ul><li>Hola</li></ul>
             """.trimIndent(), toHTML())
+            assertEquals("""
+                [1.0.0]
+                Added
+                - Foo FOO foo
+                - Bar BAR bar
+                - Test link test
+                - Code block code
+                - Bravo
+                - Alpha
+                
+                Fixed
+                - Hello
+                - World
+                
+                Removed
+                - Hola
+            """.trimIndent(), toPlainText())
         }
     }
 
