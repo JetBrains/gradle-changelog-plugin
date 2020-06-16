@@ -1,6 +1,7 @@
 package org.jetbrains.changelog
 
 import org.gradle.api.Project
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
@@ -11,15 +12,31 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val formatProperty: Property<String> = project.objects.property(String::class.java).apply {
+    private val headerArgumentsProperty: ListProperty<String> = project.objects.listProperty(String::class.java)
+    var headerArguments: List<String>
+        get() = headerArgumentsProperty.get().ifEmpty { listOf(project.version.toString()) }
+        set(value) = headerArgumentsProperty.set(value)
+
+    @Optional
+    @Internal
+    private val headerFormatProperty: Property<String> = project.objects.property(String::class.java).apply {
         set("[{0}]")
     }
-    var format: String
-        get() = formatProperty.get()
-        set(value) = formatProperty.set(value)
+    var headerFormat: String
+        get() = headerFormatProperty.get()
+        set(value) = headerFormatProperty.set(value)
 
     @Internal
-    fun headerFormat() = MessageFormat("## $format")
+    fun headerMessageFormat() = MessageFormat(headerFormat)
+
+    @Optional
+    @Internal
+    private val itemPrefixProperty: Property<String> = project.objects.property(String::class.java).apply {
+        set("-")
+    }
+    var itemPrefix: String
+        get() = itemPrefixProperty.get()
+        set(value) = itemPrefixProperty.set(value)
 
     @Optional
     @Internal

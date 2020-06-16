@@ -38,15 +38,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
     }
 
     @Test
-    fun `throws MissingVersionException when project has no version specified`() {
-        version = ""
-
-        assertFailsWith<MissingVersionException> {
-            extension.get()
-        }
-    }
-
-    @Test
     fun `throws MissingVersionException if requested version is not available`() {
         assertFailsWith<MissingVersionException> {
             extension.get("2.0.0")
@@ -79,7 +70,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `parses changelog with custom format`() {
         changelog = changelog.replace("""\[([^]]+)\]""".toRegex(), "[[$1]]")
-        extension.format = "[[{0}]]"
+        extension.headerFormat = "[[{0}]]"
         extension.get().apply {
             assertEquals("1.0.0", version)
         }
@@ -102,8 +93,8 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `headerFormat() returns MessageFormat prefixed with Markdown second level header`() {
-        assertEquals("## [{0}]", extension.headerFormat().toPattern())
-        assertEquals("## ${extension.format}", extension.headerFormat().toPattern())
+        assertEquals("[{0}]", extension.headerMessageFormat().toPattern())
+        assertEquals(extension.headerFormat, extension.headerMessageFormat().toPattern())
     }
 
     @Test
@@ -260,5 +251,79 @@ class ChangelogPluginExtensionTest : BaseTest() {
         assertTrue(extension.hasVersion("Unreleased"))
         assertTrue(extension.hasVersion("1.0.0"))
         assertFalse(extension.hasVersion("2.0.0"))
+    }
+
+    @Test
+    fun `parses header with custom format containing version and date`() {
+        changelog = """
+            # Changelog
+            ## NEW VERSION
+            - Compatible with IDEA 2020.2 EAPs
+            
+            ## Version 1.0.1119-eap (29 May 2020)
+            - Compatible with IDEA 2020.2 EAPs
+        """
+
+        extension.headerFormat = "Version {0} ({1})"
+        extension.unreleasedTerm = "NEW VERSION"
+        extension.get("1.0.1119-eap").apply {
+            assertEquals("1.0.1119-eap", version)
+
+            val headerVariables = extension.headerMessageFormat().parse(getHeader().removePrefix("## "))
+            assertEquals(2, headerVariables.size)
+            assertEquals("1.0.1119-eap", headerVariables[0])
+            assertEquals("29 May 2020", headerVariables[1])
+        }
+    }
+
+    @Test
+    fun `returns change notes without group sections if not present`() {
+        changelog = """
+            # Changelog
+            ## [1.0.0]
+            - Foo
+        """
+
+        extension.get("1.0.0").apply {
+            assertEquals("1.0.0", version)
+
+            withHeader(true).getSections().apply {
+                assertEquals(1, size)
+                assertTrue(containsKey(""))
+                assertEquals(1, get("")?.size)
+            }
+            assertEquals("""
+                ## [1.0.0]
+                - Foo
+            """.trimIndent(), toText())
+            assertEquals("""
+                <h2>[1.0.0]</h2>
+                <ul><li>Foo</li></ul>
+            """.trimIndent(), toHTML())
+        }
+    }
+
+    @Test
+    fun `splits change notes into a list by the given itemPrefix`() {
+        changelog = """
+            # Changelog
+            ## [1.0.0]
+            - Foo - bar
+            * Foo2
+            - Bar
+        """
+
+        extension.get("1.0.0").apply {
+            assertEquals("1.0.0", version)
+            assertEquals(1, getSections().keys.size)
+            getSections().values.first().apply {
+                assertEquals(2, size)
+                assertEquals("""
+                    - Foo - bar
+                    * Foo2
+                """.trimIndent(), first())
+                assertEquals("- Bar", last())
+            }
+        }
     }
 }

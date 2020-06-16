@@ -14,7 +14,7 @@ class PatchChangelogTaskTest : BaseTest() {
         version = "1.0.0"
         changelog = """
             # Changelog
-            ## [Unreleased]
+            ## Unreleased
             ### Added
             - foo
         """.trimIndent()
@@ -30,7 +30,7 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `Patches Unreleased version to the current one and creates empty Unreleased above`() {
+    fun `patches Unreleased version to the current one and creates empty Unreleased above`() {
         project.evaluate()
         runTask("patchChangelog")
 
@@ -46,7 +46,7 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `Patches Unreleased version to the current one`() {
+    fun `patches Unreleased version to the current one`() {
         buildFile = """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -68,5 +68,26 @@ class PatchChangelogTaskTest : BaseTest() {
         assertFailsWith<MissingVersionException> {
             extension.getUnreleased()
         }
+    }
+
+    @Test
+    fun `applies custom header patcher`() {
+        buildFile = """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                
+                headerFormat = "Foo {0} bar {1}"
+                headerArguments = ["${project.version}", "buz"]
+            }
+        """.trimIndent()
+        extension.headerFormat = "Foo {0} bar {1}"
+
+        project.evaluate()
+        runTask("patchChangelog")
+
+        assertEquals("## Foo 1.0.0 bar buz", extension.get().getHeader())
     }
 }

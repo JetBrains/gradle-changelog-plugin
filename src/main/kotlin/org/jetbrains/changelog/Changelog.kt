@@ -23,7 +23,12 @@ class Changelog(extension: ChangelogPluginExtension) {
 
     private val items = tree.children
         .groupByType(MarkdownElementTypes.ATX_2) {
-            extension.headerFormat().parse(it.text()).first().toString()
+            it.children.last().text().trim().run {
+                when (this) {
+                    extension.unreleasedTerm -> this
+                    else -> extension.headerMessageFormat().parse(this).first().toString()
+                }
+            }
         }
         .filterKeys(String::isNotEmpty)
         .mapValues { (key, value) ->
@@ -32,11 +37,11 @@ class Changelog(extension: ChangelogPluginExtension) {
                 .groupByType(MarkdownElementTypes.ATX_3) {
                     it.text().trimStart('#').trim()
                 }
-                .filterKeys(String::isNotEmpty)
                 .mapValues {
                     it.value
                         .joinToString("") { node -> node.text() }
-                        .lines()
+                        .split("""\n${Regex.escape(extension.itemPrefix)}""".toRegex())
+                        .map { line -> extension.itemPrefix + line.trim('\n') }
                         .drop(1)
                         .filterNot(String::isEmpty)
                 }.run {
@@ -76,8 +81,8 @@ class Changelog(extension: ChangelogPluginExtension) {
             }
 
         fun toText() = getSections().entries
-            .joinToString("\n\n") {
-                (listOf("### ${it.key}") + it.value).joinToString("\n")
+            .joinToString("\n\n") { (key, value) ->
+                (listOfNotNull("### $key".takeIf { key.isNotEmpty() }) + value).joinToString("\n")
             }.let {
                 when {
                     withHeader -> "${getHeader()}\n$it"

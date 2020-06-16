@@ -1,5 +1,19 @@
 # Gradle Changelog Plugin
 
+## [0.3.0]
+### Added
+- Allow maintaining changelog without change note types (Added, Fixed)
+- Customising the header by the `patchChangelog` task with `headerArguments` extension's property
+- Customising the change notes splitting with the `itemPrefix` extension's property
+- More tests
+
+### Changed
+- `format` extension property renamed to `headerFormat`
+
+### Fixed
+- Avoid parsing the unreleased header
+- Invalid change notes splitting
+
 ## [0.2.0]
 ### Added
 - Tests for Plugin, Extension and Tasks
