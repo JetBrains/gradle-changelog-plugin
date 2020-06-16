@@ -14,7 +14,7 @@ open class ChangelogPluginExtension(private val project: Project) {
     @Internal
     private val headerArgumentsProperty: ListProperty<String> = project.objects.listProperty(String::class.java)
     var headerArguments: List<String>
-        get() = headerArgumentsProperty.get().ifEmpty { listOf(project.version.toString()) }
+        get() = headerArgumentsProperty.getOrElse(emptyList()).ifEmpty { listOf(version) }
         set(value) = headerArgumentsProperty.set(value)
 
     @Optional
