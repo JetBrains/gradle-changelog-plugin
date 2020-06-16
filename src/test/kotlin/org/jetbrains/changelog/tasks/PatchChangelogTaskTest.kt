@@ -40,7 +40,7 @@ class PatchChangelogTaskTest : BaseTest() {
         """.trimIndent(), extension.get().toText())
 
         assertEquals("""
-            ## [Unreleased]
+            ## Unreleased
             
         """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
     }
