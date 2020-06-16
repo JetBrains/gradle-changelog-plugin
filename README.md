@@ -16,7 +16,7 @@ Kotlin:
 import org.jetbrains.changelog.closure
 
 plugins {
-    id("org.jetbrains.changelog") version "0.2.0"
+    id("org.jetbrains.changelog") version "0.3.0"
 }
 
 tasks {
@@ -30,7 +30,9 @@ tasks {
 changelog {
     version = "${project.version}"
     path = "${project.projectDir}/CHANGELOG.md"
-    format = "[{0}]"
+    headerFormat = "[{0}]"
+    headerArguments = listOf("${project.version}")
+    itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "Unreleased"
 }
@@ -39,7 +41,7 @@ changelog {
 Groovy:
 ```groovy
 plugins {
-    id 'org.jetbrains.changelog' version '0.2.0'
+    id 'org.jetbrains.changelog' version '0.3.0'
 }
 
 apply plugin: 'org.jetbrains.changelog'
@@ -55,7 +57,9 @@ intellij {
 changelog {
     version = "${project.version}"
     path = "${project.projectDir}/CHANGELOG.md"
-    format = "[{0}]"
+    headerFormat = "[{0}]"
+    headerArguments = ["${project.version}"]
+    itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "Unreleased"
 }
@@ -73,13 +77,15 @@ changelog {
 
 Plugin can be configured with the following properties set in the `changelog {}` closure:
 
-| Property                | Description                                  | Default value                          |
-| ----------------------- | -------------------------------------------- | -------------------------------------- |
-| `version`               | Current project's version.                   | `"${project.version}"`                 |
-| `path`                  | Path to the changelog file.                  | `"${project.projectDir}/CHANGELOG.md"` |
-| `format`                | Format of the version section header.        | `"[{0}]"`                              |
-| `keepUnreleasedSection` | Add Unreleased empty section after patching. | `true`                                 |
-| `unreleasedTerm`        | Unreleased section text.                     | `"Unreleased"`                         |
+| Property                | Description                                                | Default value                          |
+| ----------------------- | ---------------------------------------------------------- | -------------------------------------- |
+| `version`               | Current project's version.                                 | `"${project.version}"`                 |
+| `path`                  | Path to the changelog file.                                | `"${project.projectDir}/CHANGELOG.md"` |
+| `headerFormat`          | Format of the version section header.                      | `"[{0}]"`                              |
+| `headerArguments`       | Arguments passed to the header by the patchChangelog task. | `["${project.version}"]`               |
+| `itemPrefix`            | Single item's prefix, allows to customise the bullet sign. | `"-"`                                  |
+| `keepUnreleasedSection` | Add Unreleased empty section after patching.               | `true`                                 |
+| `unreleasedTerm`        | Unreleased section text.                                   | `"Unreleased"`                         |
 
 
 ## Tasks

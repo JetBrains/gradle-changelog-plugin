@@ -14,7 +14,7 @@ plugins {
 
 description = "Gradle Changelog Plugin"
 group = "org.jetbrains.intellij.plugins"
-version = "0.2.0"
+version = "0.3.0"
 
 repositories {
     mavenCentral()
