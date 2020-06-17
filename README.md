@@ -109,7 +109,7 @@ The plugin introduces the following tasks:
 #### Examples
 
 ```bash
-$ ./gradlw getChangelog --no-daemon --console=plain -q --no-header
+$ ./gradlew getChangelog --no-daemon --console=plain -q --no-header
 
 ### Added
 - Initial project scaffold
