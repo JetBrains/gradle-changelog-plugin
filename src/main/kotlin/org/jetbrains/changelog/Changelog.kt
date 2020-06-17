@@ -109,15 +109,19 @@ class Changelog(extension: ChangelogPluginExtension) {
     }
 
     private class PlainTextTagRenderer : HtmlGenerator.TagRenderer {
-        override fun openTag(node: ASTNode, tagName: CharSequence, vararg attributes: CharSequence?, autoClose: Boolean)
-                = ""
+        override fun openTag(
+            node: ASTNode,
+            tagName: CharSequence,
+            vararg attributes: CharSequence?,
+            autoClose: Boolean
+        ) = ""
         override fun closeTag(tagName: CharSequence) = ""
         override fun printHtml(html: CharSequence) = html
     }
 
     private class PlainTextFlavourDescriptor : GFMFlavourDescriptor() {
-        override fun createHtmlGeneratingProviders(linkMap: LinkMap, baseURI: URI?)
-                : Map<IElementType, GeneratingProvider> {
+        override fun createHtmlGeneratingProviders(linkMap: LinkMap, baseURI: URI?):
+                Map<IElementType, GeneratingProvider> {
 
             return super.createHtmlGeneratingProviders(linkMap, baseURI) + hashMapOf(
                     MarkdownElementTypes.LIST_ITEM to CustomProvider("- "),
@@ -125,8 +129,8 @@ class Changelog(extension: ChangelogPluginExtension) {
             )
         }
 
-        private class CustomProvider(private val openTagName: String = "", private val closeTagName: String = "")
-            : OpenCloseGeneratingProvider() {
+        private class CustomProvider(private val openTagName: String = "", private val closeTagName: String = "") :
+                OpenCloseGeneratingProvider() {
 
             override fun openTag(visitor: HtmlGenerator.HtmlGeneratingVisitor, text: String, node: ASTNode) {
                 visitor.consumeHtml(openTagName)
