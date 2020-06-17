@@ -96,9 +96,7 @@ class Changelog(extension: ChangelogPluginExtension) {
                 }
             }
 
-        fun toHTML() = toText().run {
-            HtmlGenerator(this, parser.buildMarkdownTreeFromString(this), flavour, false).generateHtml()
-        }
+        fun toHTML() = markdownToHTML(toText())
 
         fun toPlainText() = toText().run {
             HtmlGenerator(this, parser.buildMarkdownTreeFromString(this), PlainTextFlavourDescriptor(), false)

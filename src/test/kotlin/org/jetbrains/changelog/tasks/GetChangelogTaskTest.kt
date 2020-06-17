@@ -12,6 +12,8 @@ class GetChangelogTaskTest : BaseTest() {
         version = "1.0.0"
         changelog = """
             # Changelog
+            ## Unreleased
+            - bar
             ## [1.0.0]
             ### Added
             - foo
@@ -30,7 +32,7 @@ class GetChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `Returns change notes for the version specified with extension`() {
+    fun `returns change notes for the version specified with extension`() {
         val result = runTask("getChangelog")
 
         assertEquals("""
@@ -41,7 +43,17 @@ class GetChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `Returns change notes without header for the version specified with extension`() {
+    fun `returns the Unreleased change notes`() {
+        val result = runTask("getChangelog", "--unreleased")
+
+        assertEquals("""
+            ## Unreleased
+            - bar
+        """.trimIndent(), result.output.trim())
+    }
+
+    @Test
+    fun `returns change notes without header for the version specified with extension`() {
         val result = runTask("getChangelog", "--no-header")
 
         assertEquals("""

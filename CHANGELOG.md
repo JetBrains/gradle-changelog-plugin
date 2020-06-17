@@ -1,5 +1,13 @@
 # Gradle Changelog Plugin
 
+## [0.3.2]
+### Added
+- `markdownToHTML` method in `extensions.kt` file
+
+## [0.3.1]
+### Added
+- `--unreleased` flag for the `getChangelog` task
+
 ## [0.3.0]
 ### Added
 - Allow maintaining changelog without change note types (Added, Fixed)
