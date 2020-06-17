@@ -8,6 +8,22 @@ class ExtensionsTest {
     fun closureTest() {
         val c = closure { "response" }
 
-        assertEquals(c.call(), "response")
+        assertEquals("response", c.call())
+    }
+
+    @Test
+    fun markdownToHTMLTest() {
+        val content = """
+            # Foo
+            ## Bar
+            - buz
+            - [biz](https://jetbrains.com)
+        """.trimIndent()
+
+        assertEquals("""
+            <h1>Foo</h1>
+            <h2>Bar</h2>
+            <ul><li>buz</li><li><a href="https://jetbrains.com">biz</a></li></ul>
+        """.trimIndent(), markdownToHTML(content))
     }
 }
