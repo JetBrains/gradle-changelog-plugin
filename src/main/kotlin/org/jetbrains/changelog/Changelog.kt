@@ -2,19 +2,13 @@ package org.jetbrains.changelog
 
 import org.intellij.markdown.IElementType
 import org.intellij.markdown.MarkdownElementTypes
-import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.getTextInNode
-import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
-import org.intellij.markdown.html.GeneratingProvider
-import org.intellij.markdown.html.HtmlGenerator
-import org.intellij.markdown.html.OpenCloseGeneratingProvider
-import org.intellij.markdown.parser.LinkMap
 import org.intellij.markdown.parser.MarkdownParser
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
+import org.jetbrains.changelog.flavours.ChangelogFlavourDescriptor
 import java.io.File
-import java.net.URI
 
 class Changelog(extension: ChangelogPluginExtension) {
     val content = File(extension.path).run {
@@ -98,46 +92,9 @@ class Changelog(extension: ChangelogPluginExtension) {
 
         fun toHTML() = markdownToHTML(toText())
 
-        fun toPlainText() = toText().run {
-            HtmlGenerator(this, parser.buildMarkdownTreeFromString(this), PlainTextFlavourDescriptor(), false)
-                    .generateHtml(PlainTextTagRenderer())
-        }
+        fun toPlainText() = markdownToPlainText(toText())
 
         override fun toString() = toText()
-    }
-
-    private class PlainTextTagRenderer : HtmlGenerator.TagRenderer {
-        override fun openTag(
-            node: ASTNode,
-            tagName: CharSequence,
-            vararg attributes: CharSequence?,
-            autoClose: Boolean
-        ) = ""
-        override fun closeTag(tagName: CharSequence) = ""
-        override fun printHtml(html: CharSequence) = html
-    }
-
-    private class PlainTextFlavourDescriptor : GFMFlavourDescriptor() {
-        override fun createHtmlGeneratingProviders(linkMap: LinkMap, baseURI: URI?):
-                Map<IElementType, GeneratingProvider> {
-
-            return super.createHtmlGeneratingProviders(linkMap, baseURI) + hashMapOf(
-                    MarkdownElementTypes.LIST_ITEM to CustomProvider("- "),
-                    MarkdownTokenTypes.EOL to CustomProvider("", "\n")
-            )
-        }
-
-        private class CustomProvider(private val openTagName: String = "", private val closeTagName: String = "") :
-                OpenCloseGeneratingProvider() {
-
-            override fun openTag(visitor: HtmlGenerator.HtmlGeneratingVisitor, text: String, node: ASTNode) {
-                visitor.consumeHtml(openTagName)
-            }
-
-            override fun closeTag(visitor: HtmlGenerator.HtmlGeneratingVisitor, text: String, node: ASTNode) {
-                visitor.consumeHtml(closeTagName)
-            }
-        }
     }
 
     private fun ASTNode.text() = getTextInNode(content).toString()

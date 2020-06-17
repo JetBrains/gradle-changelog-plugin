@@ -1,4 +1,4 @@
-package org.jetbrains.changelog
+package org.jetbrains.changelog.flavours
 
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
