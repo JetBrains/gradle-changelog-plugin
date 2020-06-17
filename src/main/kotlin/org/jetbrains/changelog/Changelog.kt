@@ -4,7 +4,6 @@ import org.intellij.markdown.IElementType
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.getTextInNode
-import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
@@ -90,9 +89,7 @@ class Changelog(extension: ChangelogPluginExtension) {
                 }
             }
 
-        fun toHTML() = toText().run {
-            HtmlGenerator(this, parser.buildMarkdownTreeFromString(this), flavour, false).generateHtml()
-        }
+        fun toHTML() = markdownToHTML(toText())
 
         override fun toString() = toText()
     }
