@@ -254,6 +254,7 @@ the output form of the change notes:
 | `noHeader(Boolean)` | Includes/excludes header part. | `this`        |
 | `getHeader()`       | Returns header text.           | `string`      |
 | `toText()`          | Generates Markdown output.     | `string`      |
+| `toPlainText()`     | Generates Plain Text output.   | `string`      |
 | `toString()`        | Generates Markdown output.     | `string`      |
 | `toHTML()`          | Generates HTML output.         | `string`      |
 
