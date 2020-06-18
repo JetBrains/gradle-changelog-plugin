@@ -252,11 +252,11 @@ the output form of the change notes:
 | ------------------- | ------------------------------ | ------------- |
 | `noHeader()`        | Excludes header part.          | `this`        |
 | `noHeader(Boolean)` | Includes/excludes header part. | `this`        |
-| `getHeader()`       | Returns header text.           | `string`      |
-| `toText()`          | Generates Markdown output.     | `string`      |
-| `toPlainText()`     | Generates Plain Text output.   | `string`      |
-| `toString()`        | Generates Markdown output.     | `string`      |
-| `toHTML()`          | Generates HTML output.         | `string`      |
+| `getHeader()`       | Returns header text.           | `String`      |
+| `toText()`          | Generates Markdown output.     | `String`      |
+| `toPlainText()`     | Generates Plain Text output.   | `String`      |
+| `toString()`        | Generates Markdown output.     | `String`      |
+| `toHTML()`          | Generates HTML output.         | `String`      |
 
 ## Gradle Closure in Kotlin DSL
 
