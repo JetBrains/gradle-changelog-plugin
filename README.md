@@ -278,7 +278,7 @@ closure { changelog.get() }
 ## Usage Examples
 
 - [Unity Support for ReSharper and Rider](https://github.com/JetBrains/resharper-unity)
-- [IntelliJ Plugin Template](https://github.com/hsz/intellij-plugin-template)
+- [IntelliJ Plugin Template](https://github.com/JetBrains/intellij-plugin-template)
 - [Package Search](https://plugins.jetbrains.com/plugin/12507-package-search)
 
 [build-phases]: https://docs.gradle.org/current/userguide/build_lifecycle.html#sec:build_phases
