@@ -23,7 +23,7 @@ tasks {
     // ...
 
     patchPluginXml {
-        changeNotes(closure { changelog.getUnreleased().noHeader().toHTML() })
+        changeNotes(closure { changelog.getUnreleased().toHTML() })
     }
 }
 
@@ -50,7 +50,7 @@ intellij {
     // ...
 
     patchPluginXml {
-        changeNotes({ changelog.getUnreleased().noHeader().toHTML() })
+        changeNotes({ changelog.getUnreleased().toHTML() })
     }
 }
 
@@ -148,7 +148,7 @@ Kotlin:
 ```kotlin
 tasks {
     patchPluginXml {
-        changeNotes(closure { changelog.get("1.0.0").noHeader().toHTML() })
+        changeNotes(closure { changelog.get("1.0.0").toHTML() })
     }
 }
 ```
@@ -157,7 +157,7 @@ Groovy:
 ```groovy
 tasks {
     patchPluginXml {
-        changeNotes({ changelog.get("1.0.0").noHeader().toHTML() })
+        changeNotes({ changelog.get("1.0.0").toHTML() })
     }
 }
 ```
