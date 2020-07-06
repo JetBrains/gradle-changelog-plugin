@@ -30,6 +30,10 @@ open class PatchChangelogTask : DefaultTask() {
                 val arguments = extension.headerArguments.toTypedArray()
                 val versionHeader = "## " + extension.headerMessageFormat().format(arguments)
 
+                if (extension.getUnreleased().getSections().isEmpty() && !extension.patchEmpty) {
+                    return
+                }
+
                 File(extension.path).writeText(content.run {
                     if (extension.keepUnreleasedSection) {
                         StringBuilder(this).insert(header.endOffset, "\n\n$versionHeader").toString()

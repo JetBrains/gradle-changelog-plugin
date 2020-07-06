@@ -90,4 +90,29 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertEquals("## Foo 1.0.0 bar buz", extension.get().getHeader())
     }
+
+    @Test
+    fun `doesn't patch changelog if no change notes provided in Unreleased section`() {
+        changelog = """
+            # Changelog
+            ## Unreleased
+        """.trimIndent()
+        buildFile = """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                patchEmpty = false
+            }
+        """.trimIndent()
+
+        project.evaluate()
+
+        runTask("patchChangelog")
+
+        assertFailsWith<MissingVersionException> {
+            extension.get()
+        }
+    }
 }

@@ -49,6 +49,15 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
+    private val patchEmptyProperty: Property<Boolean> = project.objects.property(Boolean::class.java).apply {
+        set(true)
+    }
+    var patchEmpty: Boolean
+        get() = patchEmptyProperty.get()
+        set(value) = patchEmptyProperty.set(value)
+
+    @Optional
+    @Internal
     private val pathProperty: Property<String> = project.objects.property(String::class.java).apply {
         set("${project.projectDir}/CHANGELOG.md")
     }

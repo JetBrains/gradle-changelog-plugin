@@ -39,8 +39,8 @@ open class BaseTest {
     @BeforeTest
     fun setUp() {
         project = ProjectBuilder.builder()
-                .withName("project")
-                .withProjectDir(createTempDir()).build() as DefaultProject
+            .withName("project")
+            .withProjectDir(createTempDir()).build() as DefaultProject
 
         project.plugins.apply(ChangelogPlugin::class.java)
 

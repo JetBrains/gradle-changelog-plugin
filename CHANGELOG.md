@@ -1,5 +1,9 @@
 # Gradle Changelog Plugin
 
+## [Unreleased]
+### Added
+- `patchEmpty` extension property
+
 ## [0.3.2]
 ### Added
 - `markdownToHTML` method in `extensions.kt` file
