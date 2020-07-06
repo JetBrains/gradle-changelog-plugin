@@ -7,7 +7,7 @@ plugins {
     id("maven-publish")
     id("org.jetbrains.kotlin.jvm") version "1.3.72"
     id("com.gradle.plugin-publish") version "0.12.0"
-    id("io.gitlab.arturbosch.detekt") version "1.9.1"
+    id("io.gitlab.arturbosch.detekt") version "1.10.0"
     id("com.github.breadmoirai.github-release") version "2.2.12"
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
