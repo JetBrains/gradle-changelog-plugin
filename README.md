@@ -80,13 +80,13 @@ Plugin can be configured with the following properties set in the `changelog {}`
 
 | Property                | Description                                                | Default value                          |
 | ----------------------- | ---------------------------------------------------------- | -------------------------------------- |
-| `version`               | Current project's version.                                 | `"${project.version}"`                 |
-| `path`                  | Path to the changelog file.                                | `"${project.projectDir}/CHANGELOG.md"` |
-| `headerFormat`          | Format of the version section header.                      | `"[{0}]"`                              |
 | `headerArguments`       | Arguments passed to the header by the patchChangelog task. | `["${project.version}"]`               |
+| `headerFormat`          | Format of the version section header.                      | `"[{0}]"`                              |
 | `itemPrefix`            | Single item's prefix, allows to customise the bullet sign. | `"-"`                                  |
 | `keepUnreleasedSection` | Add Unreleased empty section after patching.               | `true`                                 |
+| `path`                  | Path to the changelog file.                                | `"${project.projectDir}/CHANGELOG.md"` |
 | `unreleasedTerm`        | Unreleased section text.                                   | `"Unreleased"`                         |
+| `version`               | Current project's version.                                 | `"${project.version}"`                 |
 
 
 ## Tasks
