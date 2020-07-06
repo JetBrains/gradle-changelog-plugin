@@ -5,6 +5,12 @@
 - `patchEmpty` extension property
 - Better error handling for the header parser
 
+### Fixed
+- Possibility to write date besides versions #5
+
+### Changed
+- `unreleasedTerm` default value set from `Unreleased` to `[Unreleased]`
+
 ## [0.3.2]
 ### Added
 - `markdownToHTML` method in `extensions.kt` file

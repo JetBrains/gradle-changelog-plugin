@@ -1,9 +1,9 @@
 package org.jetbrains.changelog
 
+import org.jetbrains.changelog.exceptions.HeaderParseException
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.io.File
-import java.text.ParseException
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -79,14 +79,14 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `throws ParseException when changelog item has unrecognizable header format`() {
         changelog = """
-            # Changelog
+            # [Changelog]
             
             ## ~1.0.0~
             ### Added
             - Foo
         """
 
-        assertFailsWith<ParseException> {
+        assertFailsWith<HeaderParseException> {
             extension.get()
         }
     }
@@ -100,7 +100,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `getUnreleased() returns Unreleased section`() {
         extension.getUnreleased().withHeader(true).apply {
-            assertEquals("Unreleased", version)
+            assertEquals("[Unreleased]", version)
             assertEquals("""
                 ## [Unreleased]
                 ### Added
@@ -262,14 +262,14 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `returns latest change note`() {
         extension.getLatest().apply {
-            assertEquals("Unreleased", version)
+            assertEquals("[Unreleased]", version)
             assertEquals("## [Unreleased]", getHeader())
         }
     }
 
     @Test
     fun `checks if the given version exists in the changelog`() {
-        assertTrue(extension.hasVersion("Unreleased"))
+        assertTrue(extension.hasVersion("[Unreleased]"))
         assertTrue(extension.hasVersion("1.0.0"))
         assertFalse(extension.hasVersion("2.0.0"))
     }

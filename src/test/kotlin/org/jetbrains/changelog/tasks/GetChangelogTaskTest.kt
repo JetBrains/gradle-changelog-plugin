@@ -12,7 +12,7 @@ class GetChangelogTaskTest : BaseTest() {
         version = "1.0.0"
         changelog = """
             # Changelog
-            ## Unreleased
+            ## [Unreleased]
             - bar
             ## [1.0.0]
             ### Added
@@ -47,7 +47,7 @@ class GetChangelogTaskTest : BaseTest() {
         val result = runTask("getChangelog", "--unreleased")
 
         assertEquals("""
-            ## Unreleased
+            ## [Unreleased]
             - bar
         """.trimIndent(), result.output.trim())
     }

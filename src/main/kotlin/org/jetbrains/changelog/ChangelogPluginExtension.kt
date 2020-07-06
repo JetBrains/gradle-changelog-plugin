@@ -75,7 +75,7 @@ open class ChangelogPluginExtension(private val project: Project) {
     @Optional
     @Internal
     private val unreleasedTermProperty: Property<String> = project.objects.property(String::class.java).apply {
-        set("Unreleased")
+        set("[Unreleased]")
     }
     var unreleasedTerm: String
         get() = unreleasedTermProperty.get()

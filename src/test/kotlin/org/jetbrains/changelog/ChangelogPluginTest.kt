@@ -17,7 +17,7 @@ class ChangelogPluginTest : BaseTest() {
         assertTrue(extension.keepUnreleasedSection)
         assertEquals("${project.projectDir}/CHANGELOG.md", extension.path)
         assertEquals(project.version, extension.version)
-        assertEquals("Unreleased", extension.unreleasedTerm)
+        assertEquals("[Unreleased]", extension.unreleasedTerm)
     }
 
     @Test

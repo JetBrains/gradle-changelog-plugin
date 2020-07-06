@@ -35,7 +35,7 @@ changelog {
     headerArguments = listOf("${project.version}")
     itemPrefix = "-"
     keepUnreleasedSection = true
-    unreleasedTerm = "Unreleased"
+    unreleasedTerm = "[Unreleased]"
 }
 ```
 
@@ -62,7 +62,7 @@ changelog {
     headerArguments = ["${project.version}"]
     itemPrefix = "-"
     keepUnreleasedSection = true
-    unreleasedTerm = "Unreleased"
+    unreleasedTerm = "[Unreleased]"
 }
 ```
 
@@ -86,7 +86,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | `keepUnreleasedSection` | Add Unreleased empty section after patching.               | `true`                                 |
 | `patchEmpty`            | Patches changelog even if no release note is provided.     | `true`                                 |
 | `path`                  | Path to the changelog file.                                | `"${project.projectDir}/CHANGELOG.md"` |
-| `unreleasedTerm`        | Unreleased section text.                                   | `"Unreleased"`                         |
+| `unreleasedTerm`        | Unreleased section text.                                   | `"[Unreleased]"`                       |
 | `version`               | Current project's version.                                 | `"${project.version}"`                 |
 
 

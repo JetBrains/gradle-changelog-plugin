@@ -3,7 +3,7 @@ package org.jetbrains.changelog.tasks
 import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,7 +16,7 @@ class PatchChangelogTaskTest : BaseTest() {
         version = "1.0.0"
         changelog = """
             # Changelog
-            ## Unreleased
+            ## [Unreleased]
             ### Added
             - foo
         """.trimIndent()
@@ -42,7 +42,7 @@ class PatchChangelogTaskTest : BaseTest() {
         """.trimIndent(), extension.get().toText())
 
         assertEquals("""
-            ## Unreleased
+            ## [Unreleased]
             
         """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
     }
@@ -137,7 +137,7 @@ class PatchChangelogTaskTest : BaseTest() {
     fun `doesn't patch changelog if no change notes provided in Unreleased section`() {
         changelog = """
             # Changelog
-            ## Unreleased
+            ## [Unreleased]
         """.trimIndent()
         buildFile = """
             plugins {
