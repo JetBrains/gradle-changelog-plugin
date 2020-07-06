@@ -1,6 +1,8 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+
+## [0.3.3]
 ### Added
 - `patchEmpty` extension property
 - Better error handling for the header parser

@@ -27,14 +27,12 @@ jobs:
         run: ./gradlew patchChangelog
 
       - name: Commit files
-        if: github.event.action == 'released'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Update changelog" -a
 
       - name: Push changes
-        if: github.event.action == 'released'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
