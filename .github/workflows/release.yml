@@ -8,14 +8,33 @@ jobs:
     name: Release to Gradle Plugins
     runs-on: ubuntu-latest
     steps:
+
       - name: Fetch Sources
         uses: actions/checkout@v2
+
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
       - name: Deploy Plugin
         env:
           GRADLE_PUBLISH_KEY: ${{ secrets.gradle_publish_key }}
           GRADLE_PUBLISH_SECRET: ${{ secrets.gradle_publish_secret }}
-        run: ./gradlew publishPlugins -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET --no-daemon
+        run: ./gradlew publishPlugins -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET
+
+      - name: Patch Changelog
+        run: ./gradlew patchChangelog
+
+      - name: Commit files
+        if: github.event.action == 'released'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Update changelog" -a
+
+      - name: Push changes
+        if: github.event.action == 'released'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

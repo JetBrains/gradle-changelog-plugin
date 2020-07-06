@@ -4,6 +4,7 @@
 ### Added
 - `patchEmpty` extension property
 - Better error handling for the header parser
+- GitHub Actions integration with itself
 
 ### Fixed
 - Possibility to write date besides versions #5
