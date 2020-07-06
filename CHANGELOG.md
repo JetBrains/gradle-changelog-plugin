@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - `patchEmpty` extension property
+- Better error handling for the header parser
 
 ## [0.3.2]
 ### Added

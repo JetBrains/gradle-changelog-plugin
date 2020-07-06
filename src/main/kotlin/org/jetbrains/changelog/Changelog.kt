@@ -5,10 +5,12 @@ import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.parser.MarkdownParser
+import org.jetbrains.changelog.exceptions.HeaderParseException
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.changelog.flavours.ChangelogFlavourDescriptor
 import java.io.File
+import java.text.ParseException
 
 class Changelog(extension: ChangelogPluginExtension) {
     val content = File(extension.path).run {
@@ -26,7 +28,13 @@ class Changelog(extension: ChangelogPluginExtension) {
             it.children.last().text().trim().run {
                 when (this) {
                     extension.unreleasedTerm -> this
-                    else -> extension.headerMessageFormat().parse(this).first().toString()
+                    else -> {
+                        try {
+                            extension.headerMessageFormat().parse(this).first().toString()
+                        } catch (e: ParseException) {
+                            throw HeaderParseException(this, extension)
+                        }
+                    }
                 }
             }
         }
