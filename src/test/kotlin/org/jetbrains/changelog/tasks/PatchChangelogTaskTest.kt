@@ -1,13 +1,13 @@
 package org.jetbrains.changelog.tasks
 
-import org.jetbrains.changelog.BaseTest
-import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.jetbrains.changelog.BaseTest
+import org.jetbrains.changelog.exceptions.MissingVersionException
 
 class PatchChangelogTaskTest : BaseTest() {
 
@@ -187,7 +187,6 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Security
         """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
     }
-
 
     @Test
     fun `Remove empty groups for the new released section`() {

@@ -1,11 +1,11 @@
 package org.jetbrains.changelog
 
+import java.text.MessageFormat
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
-import java.text.MessageFormat
 
 @Suppress("UnstableApiUsage")
 open class ChangelogPluginExtension(private val project: Project) {

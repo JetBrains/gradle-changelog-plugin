@@ -1,5 +1,7 @@
 package org.jetbrains.changelog
 
+import java.io.File
+import java.text.ParseException
 import org.intellij.markdown.IElementType
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.ast.ASTNode
@@ -9,8 +11,6 @@ import org.jetbrains.changelog.exceptions.HeaderParseException
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.changelog.flavours.ChangelogFlavourDescriptor
-import java.io.File
-import java.text.ParseException
 
 class Changelog(extension: ChangelogPluginExtension) {
     val content = File(extension.path).run {

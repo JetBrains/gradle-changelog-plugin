@@ -1,12 +1,12 @@
 package org.jetbrains.changelog.tasks
 
+import java.io.File
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogPluginExtension
-import java.io.File
 
 open class PatchChangelogTask : DefaultTask() {
 

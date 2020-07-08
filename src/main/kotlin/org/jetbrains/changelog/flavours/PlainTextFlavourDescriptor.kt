@@ -1,5 +1,6 @@
 package org.jetbrains.changelog.flavours
 
+import java.net.URI
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode
@@ -7,7 +8,6 @@ import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.html.OpenCloseGeneratingProvider
 import org.intellij.markdown.parser.LinkMap
-import java.net.URI
 
 class PlainTextFlavourDescriptor : GFMFlavourDescriptor() {
 

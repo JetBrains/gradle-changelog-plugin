@@ -1,10 +1,10 @@
 package org.jetbrains.changelog.flavours
 
+import java.net.URI
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.TrimmingInlineHolderProvider
 import org.intellij.markdown.parser.LinkMap
-import java.net.URI
 
 class ChangelogFlavourDescriptor : GFMFlavourDescriptor() {
 

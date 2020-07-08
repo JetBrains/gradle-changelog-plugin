@@ -1,11 +1,11 @@
 package org.jetbrains.changelog
 
+import java.io.File
+import kotlin.test.BeforeTest
 import org.gradle.api.internal.project.DefaultProject
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import java.io.File
-import kotlin.test.BeforeTest
 
 open class BaseTest {
 
@@ -48,8 +48,8 @@ open class BaseTest {
     }
 
     protected fun runTask(taskName: String, vararg arguments: String): BuildResult = GradleRunner.create()
-            .withProjectDir(project.projectDir)
-            .withArguments(taskName, "--console=plain", "-q", "--stacktrace", *arguments)
-            .withPluginClasspath()
-            .build()
+        .withProjectDir(project.projectDir)
+        .withArguments(taskName, "--console=plain", "-q", "--stacktrace", *arguments)
+        .withPluginClasspath()
+        .build()
 }

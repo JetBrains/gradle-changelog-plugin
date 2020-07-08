@@ -1,8 +1,5 @@
 package org.jetbrains.changelog
 
-import org.jetbrains.changelog.exceptions.HeaderParseException
-import org.jetbrains.changelog.exceptions.MissingFileException
-import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -11,6 +8,9 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import org.jetbrains.changelog.exceptions.HeaderParseException
+import org.jetbrains.changelog.exceptions.MissingFileException
+import org.jetbrains.changelog.exceptions.MissingVersionException
 
 class ChangelogPluginExtensionTest : BaseTest() {
 

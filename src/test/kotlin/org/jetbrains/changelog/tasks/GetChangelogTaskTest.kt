@@ -1,9 +1,9 @@
 package org.jetbrains.changelog.tasks
 
-import org.jetbrains.changelog.BaseTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import org.jetbrains.changelog.BaseTest
 
 class GetChangelogTaskTest : BaseTest() {
 
