@@ -9,6 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class ChangelogPluginExtensionTest : BaseTest() {
@@ -345,6 +346,36 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(), first())
                 assertEquals("- Bar", last())
             }
+        }
+    }
+
+    @Test
+    fun `returns all Changelog items`() {
+        extension.getAll().apply {
+            assertNotNull(this)
+            assertEquals(2, keys.size)
+            assertEquals("[Unreleased]", keys.first())
+            assertEquals("1.0.0", keys.last())
+            assertEquals("## [Unreleased]", values.first().getHeader())
+            assertEquals("## [1.0.0]", values.last().getHeader())
+            assertEquals("""
+                ### Added
+                - Foo
+            """.trimIndent(), values.first().toText())
+            assertEquals("""
+                ## [Unreleased]
+                ### Added
+                - Foo
+            """.trimIndent(), values.first().withHeader(true).toText())
+            assertEquals("""
+                ### Removed
+                - Bar
+            """.trimIndent(), values.last().toText())
+            assertEquals("""
+                ## [1.0.0]
+                ### Removed
+                - Bar
+            """.trimIndent(), values.last().withHeader(true).toText())
         }
     }
 }

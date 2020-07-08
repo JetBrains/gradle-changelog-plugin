@@ -63,6 +63,8 @@ class Changelog(extension: ChangelogPluginExtension) {
 
     fun getLatest() = items[items.keys.first()] ?: throw MissingVersionException("any")
 
+    fun getAll() = items
+
     inner class Item(val version: String, private val header: ASTNode, private val items: Map<String, List<String>>) {
 
         private var withHeader = false

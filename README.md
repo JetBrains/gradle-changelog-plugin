@@ -212,6 +212,22 @@ tasks {
 }
 ```
 
+### `getAll`
+
+The method returns all available `Changelog.Item` objects.
+
+#### Examples
+
+Kotlin:
+```kotlin
+extension.getAll().values.map { it.toText() }
+```
+
+Groovy:
+```groovy
+extension.getAll().values().each { it.toText() }
+```
+
 ### `hasVersion`
 
 The method checks if the giver version exists in the changelog

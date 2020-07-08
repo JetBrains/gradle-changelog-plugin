@@ -87,5 +87,7 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     fun getLatest() = Changelog(this).getLatest()
 
+    fun getAll() = Changelog(this).getAll()
+
     fun hasVersion(version: String) = Changelog(this).hasVersion(version)
 }

@@ -1,6 +1,8 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Added
+- `getAll` extensions method for fetching all changelog items 
 
 ## [0.3.3]
 ### Added
