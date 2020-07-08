@@ -36,6 +36,7 @@ changelog {
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
+    groups = listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security")
 }
 ```
 
@@ -63,6 +64,7 @@ changelog {
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
+    groups = ["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]
 }
 ```
 
@@ -78,16 +80,17 @@ changelog {
 
 Plugin can be configured with the following properties set in the `changelog {}` closure:
 
-| Property                | Description                                                | Default value                          |
-| ----------------------- | ---------------------------------------------------------- | -------------------------------------- |
-| `headerArguments`       | Arguments passed to the header by the patchChangelog task. | `["${project.version}"]`               |
-| `headerFormat`          | Format of the version section header.                      | `"[{0}]"`                              |
-| `itemPrefix`            | Single item's prefix, allows to customise the bullet sign. | `"-"`                                  |
-| `keepUnreleasedSection` | Add Unreleased empty section after patching.               | `true`                                 |
-| `patchEmpty`            | Patches changelog even if no release note is provided.     | `true`                                 |
-| `path`                  | Path to the changelog file.                                | `"${project.projectDir}/CHANGELOG.md"` |
-| `unreleasedTerm`        | Unreleased section text.                                   | `"[Unreleased]"`                       |
-| `version`               | Current project's version.                                 | `"${project.version}"`                 |
+| Property                | Description                                                | Default value                                                        |
+| ----------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------- |
+| `groups`                | List of groups created with a new Unreleased section.      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]` |
+| `headerArguments`       | Arguments passed to the header by the patchChangelog task. | `["${project.version}"]`                                             |
+| `headerFormat`          | Format of the version section header.                      | `"[{0}]"`                                                            |
+| `itemPrefix`            | Single item's prefix, allows to customise the bullet sign. | `"-"`                                                                |
+| `keepUnreleasedSection` | Add Unreleased empty section after patching.               | `true`                                                               |
+| `patchEmpty`            | Patches changelog even if no release note is provided.     | `true`                                                               |
+| `path`                  | Path to the changelog file.                                | `"${project.projectDir}/CHANGELOG.md"`                               |
+| `unreleasedTerm`        | Unreleased section text.                                   | `"[Unreleased]"`                                                     |
+| `version`               | Current project's version.                                 | `"${project.version}"`                                               |
 
 
 ## Tasks

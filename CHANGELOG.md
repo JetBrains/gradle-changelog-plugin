@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - `getAll` extensions method for fetching all changelog items 
+- `groups` extensions property for defining the groups created with the Unreleased section
 
 ## [0.3.3]
 ### Added

@@ -12,6 +12,15 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
+    private val groupsProperty: ListProperty<String> = project.objects.listProperty(String::class.java)
+    var groups: List<String>
+        get() = groupsProperty.getOrElse(emptyList()).ifEmpty {
+            listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security")
+        }
+        set(value) = groupsProperty.set(value)
+
+    @Optional
+    @Internal
     private val headerArgumentsProperty: ListProperty<String> = project.objects.listProperty(String::class.java)
     var headerArguments: List<String>
         get() = headerArgumentsProperty.getOrElse(emptyList()).ifEmpty { listOf(version) }

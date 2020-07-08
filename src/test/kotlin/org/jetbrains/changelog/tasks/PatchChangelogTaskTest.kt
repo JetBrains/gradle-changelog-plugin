@@ -100,7 +100,6 @@ class PatchChangelogTaskTest : BaseTest() {
             All notable changes to this project will be documented in this file.
 
             ## [Unreleased]
-
             ### Added
             - Some other thing added.
 
@@ -156,5 +155,83 @@ class PatchChangelogTaskTest : BaseTest() {
         assertFailsWith<MissingVersionException> {
             extension.get()
         }
+    }
+
+    @Test
+    fun `Create empty groups for the new Unreleased section`() {
+        project.evaluate()
+        runTask("patchChangelog")
+
+        assertEquals("""
+            ## [Unreleased]
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+        """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
+    }
+
+
+    @Test
+    fun `Remove empty groups for the new released section`() {
+        changelog = """
+            # Changelog
+            ## [Unreleased]
+            ### Added
+            - foo
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            - bar
+            
+            ### Fixed
+            
+            ### Security
+        """.trimIndent()
+
+        project.evaluate()
+        runTask("patchChangelog")
+
+        assertEquals("""
+            ## [1.0.0]
+            ### Added
+            - foo
+            
+            ### Removed
+            - bar
+        """.trimIndent(), extension.get().withHeader(true).toText())
+    }
+
+    @Test
+    fun `Create empty custom groups for the new Unreleased section`() {
+        buildFile = """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                groups = ["Aaaa", "Bbb"]
+            }
+        """.trimIndent()
+
+        project.evaluate()
+        runTask("patchChangelog")
+
+        assertEquals("""
+            ## [Unreleased]
+            ### Aaaa
+
+            ### Bbb
+        """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
     }
 }

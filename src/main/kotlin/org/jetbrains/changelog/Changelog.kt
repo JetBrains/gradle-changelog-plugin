@@ -53,7 +53,8 @@ class Changelog(extension: ChangelogPluginExtension) {
                         .drop(1)
                         .filterNot(String::isEmpty)
                 }.run {
-                    Item(key, value.first(), this)
+                    val isUnreleased = key == extension.unreleasedTerm
+                    Item(key, value.first(), this, isUnreleased)
                 }
         }
 
@@ -65,7 +66,12 @@ class Changelog(extension: ChangelogPluginExtension) {
 
     fun getAll() = items
 
-    inner class Item(val version: String, private val header: ASTNode, private val items: Map<String, List<String>>) {
+    inner class Item(
+        val version: String,
+        private val header: ASTNode,
+        private val items: Map<String, List<String>>,
+        private val isUnreleased: Boolean = false
+    ) {
 
         private var withHeader = false
         private var filterCallback: ((String) -> Boolean)? = null
@@ -86,8 +92,8 @@ class Changelog(extension: ChangelogPluginExtension) {
             .mapValues {
                 it.value.filter { item -> filterCallback?.invoke(item) ?: true }
             }
-            .filter {
-                it.value.isNotEmpty()
+            .filterNot {
+                it.value.isEmpty() && !isUnreleased
             }
 
         fun toText() = getSections().entries

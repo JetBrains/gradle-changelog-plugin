@@ -25,8 +25,8 @@ open class PatchChangelogTask : DefaultTask() {
     @TaskAction
     fun run() {
         Changelog(extension).apply {
-            get(extension.unreleasedTerm).let {
-                val header = it.getHeaderNode()
+            get(extension.unreleasedTerm).let { item ->
+                val header = item.getHeaderNode()
                 val arguments = extension.headerArguments.toTypedArray()
                 val versionHeader = "## " + extension.headerMessageFormat().format(arguments)
 
@@ -36,7 +36,11 @@ open class PatchChangelogTask : DefaultTask() {
 
                 File(extension.path).writeText(content.run {
                     if (extension.keepUnreleasedSection) {
-                        StringBuilder(this).insert(header.endOffset, "\n\n$versionHeader").toString()
+                        val unreleasedGroups = extension.groups.joinToString("\n") { "### $it\n" }
+                        println("---")
+                        println("\n$unreleasedGroups$versionHeader")
+                        println("---")
+                        StringBuilder(this).insert(header.endOffset, "\n$unreleasedGroups$versionHeader").toString()
                     } else {
                         replaceRange(header.startOffset, header.endOffset, versionHeader)
                     }
