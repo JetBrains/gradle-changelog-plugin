@@ -37,9 +37,6 @@ open class PatchChangelogTask : DefaultTask() {
                 File(extension.path).writeText(content.run {
                     if (extension.keepUnreleasedSection) {
                         val unreleasedGroups = extension.groups.joinToString("\n") { "### $it\n" }
-                        println("---")
-                        println("\n$unreleasedGroups$versionHeader")
-                        println("---")
                         StringBuilder(this).insert(header.endOffset, "\n$unreleasedGroups$versionHeader").toString()
                     } else {
                         replaceRange(header.startOffset, header.endOffset, versionHeader)
