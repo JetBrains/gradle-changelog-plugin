@@ -99,10 +99,34 @@ Plugin can be configured with the following properties set in the `changelog {}`
 
 The plugin introduces the following tasks:
 
-| Task             | Description                                          |
-| ---------------- | ---------------------------------------------------- |
-| `getChangelog`   | Retrieves changelog for the specified version.       |
-| `patchChangelog` | Updates the unreleased section to the given version. |
+| Task                  | Description                                                          |
+| --------------------- | -------------------------------------------------------------------- |
+| `getChangelog`        | Retrieves changelog for the specified version.                       |
+| `initializeChangelog` | Creates new changelog file with Unreleased section and empty groups. |
+| `patchChangelog`      | Updates the unreleased section to the given version.                 |
+
+### `initializeChangelog`
+
+#### Examples
+
+```bash
+$ ./gradlew initializeChangelog
+$ cat CHANGELOG.md
+
+## [Unreleased]
+### Added
+- Example item
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+```
 
 ### `getChangelog`
 
@@ -116,7 +140,7 @@ The plugin introduces the following tasks:
 #### Examples
 
 ```bash
-$ ./gradlew getChangelog --no-daemon --console=plain -q --no-header
+$ ./gradlew getChangelog --console=plain -q --no-header
 
 ### Added
 - Initial project scaffold

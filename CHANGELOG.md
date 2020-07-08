@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- `initializeChangelog` task for creating new changelog file
 - `getAll` extensions method for fetching all changelog items 
 - `groups` extensions property for defining the groups created with the Unreleased section
 - `ktlint` integration

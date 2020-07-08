@@ -14,10 +14,6 @@ open class GetChangelogTask : DefaultTask() {
 
     private val extension = project.extensions.getByType(ChangelogPluginExtension::class.java)
 
-    init {
-        group = "build"
-    }
-
     private var noHeader = false
 
     @Suppress("UnstableApiUsage")

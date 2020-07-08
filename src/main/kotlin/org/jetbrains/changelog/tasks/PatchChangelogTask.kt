@@ -12,10 +12,6 @@ open class PatchChangelogTask : DefaultTask() {
 
     private val extension = project.extensions.getByType(ChangelogPluginExtension::class.java)
 
-    init {
-        group = "build"
-    }
-
     @InputFile
     fun getInputFile() = File(extension.path)
 

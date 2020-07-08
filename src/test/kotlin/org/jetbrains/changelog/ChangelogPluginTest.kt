@@ -5,6 +5,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import org.jetbrains.changelog.tasks.GetChangelogTask
+import org.jetbrains.changelog.tasks.InitializeChangelogTask
 import org.jetbrains.changelog.tasks.PatchChangelogTask
 
 class ChangelogPluginTest : BaseTest() {
@@ -22,11 +23,17 @@ class ChangelogPluginTest : BaseTest() {
 
     @Test
     fun `tasks availability`() {
-        val getChangelogTask = project.tasks.findByName("getChangelog") as GetChangelogTask
-        assertNotNull(getChangelogTask)
-        assertEquals("${project.projectDir}/CHANGELOG.md", getChangelogTask.getInputFile().path)
+        (project.tasks.findByName("initializeChangelog") as InitializeChangelogTask).apply {
+            assertNotNull(this)
+        }
 
-        val patchChangelogTask = project.tasks.findByName("patchChangelog") as PatchChangelogTask
-        assertNotNull(patchChangelogTask)
+        (project.tasks.findByName("getChangelog") as GetChangelogTask).apply {
+            assertNotNull(this)
+            assertEquals("${project.projectDir}/CHANGELOG.md", getInputFile().path)
+        }
+
+        (project.tasks.findByName("patchChangelog") as PatchChangelogTask).apply {
+            assertNotNull(this)
+        }
     }
 }
