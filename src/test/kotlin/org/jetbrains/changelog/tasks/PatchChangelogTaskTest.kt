@@ -43,7 +43,17 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertEquals("""
             ## [Unreleased]
+            ### Added
             
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
         """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
     }
 
