@@ -17,7 +17,7 @@ class GetChangelogTaskTest : BaseTest() {
             ## [1.0.0]
             ### Added
             - foo
-        """.trimIndent()
+        """
 
         buildFile = """
             plugins {
@@ -26,7 +26,7 @@ class GetChangelogTaskTest : BaseTest() {
             changelog {
                 version = "1.0.0"
             }
-        """.trimIndent()
+        """
 
         project.evaluate()
     }

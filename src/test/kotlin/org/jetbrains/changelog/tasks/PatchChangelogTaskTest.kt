@@ -19,7 +19,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [Unreleased]
             ### Added
             - foo
-        """.trimIndent()
+        """
 
         buildFile = """
             plugins {
@@ -28,7 +28,7 @@ class PatchChangelogTaskTest : BaseTest() {
             changelog {
                 version = "1.0.0"
             }
-        """.trimIndent()
+        """
     }
 
     @Test
@@ -57,7 +57,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 keepUnreleasedSection = false
             }
-        """.trimIndent()
+        """
 
         project.evaluate()
         runTask("patchChangelog")
@@ -84,7 +84,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 headerFormat = "Foo {0} bar {1}"
                 headerArguments = ["${project.version}", "buz"]
             }
-        """.trimIndent()
+        """
         extension.headerFormat = "Foo {0} bar {1}"
 
         project.evaluate()
@@ -107,7 +107,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
             ### Added
             - Something added.
-        """.trimIndent()
+        """
         buildFile = """
             import java.text.SimpleDateFormat
             import java.util.Arrays
@@ -122,7 +122,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 headerFormat = "[{0}] - {1}"
                 headerArguments = Arrays.asList(version, new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
             }
-        """.trimIndent()
+        """
         extension.headerFormat = "[{0}] - {1}"
 
         project.evaluate()
@@ -137,7 +137,7 @@ class PatchChangelogTaskTest : BaseTest() {
         changelog = """
             # Changelog
             ## [Unreleased]
-        """.trimIndent()
+        """
         buildFile = """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -146,7 +146,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 patchEmpty = false
             }
-        """.trimIndent()
+        """
 
         project.evaluate()
 
@@ -197,7 +197,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Fixed
             
             ### Security
-        """.trimIndent()
+        """
 
         project.evaluate()
         runTask("patchChangelog")
@@ -222,7 +222,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 groups = ["Aaaa", "Bbb"]
             }
-        """.trimIndent()
+        """
 
         project.evaluate()
         runTask("patchChangelog")
