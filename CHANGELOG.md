@@ -6,6 +6,9 @@
 - `groups` extensions property for defining the groups created with the Unreleased section
 - `ktlint` integration
 
+### Changed
+- Move tasks to the `changelog` Gradle group
+
 ## [0.3.3]
 ### Added
 - `patchEmpty` extension property

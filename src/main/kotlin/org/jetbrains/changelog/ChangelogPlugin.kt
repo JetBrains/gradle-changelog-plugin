@@ -15,10 +15,10 @@ class ChangelogPlugin : Plugin<Project> {
         project.run {
             extensions.create("changelog", ChangelogPluginExtension::class.java, project)
             tasks.create("patchChangelog", PatchChangelogTask::class.java) {
-                it.group = "build"
+                it.group = "changelog"
             }
             tasks.create("getChangelog", GetChangelogTask::class.java) {
-                it.group = "build"
+                it.group = "changelog"
                 it.outputs.upToDateWhen { false }
             }
         }
