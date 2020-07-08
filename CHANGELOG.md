@@ -1,6 +1,8 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+
+## [0.4.0]
 ### Added
 - `initializeChangelog` task for creating new changelog file
 - `getAll` extensions method for fetching all changelog items 
