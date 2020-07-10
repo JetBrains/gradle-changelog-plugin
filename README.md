@@ -1,9 +1,10 @@
-[![official JetBrains project](https://jb.gg/badges/official.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
-[![Twitter Follow](https://img.shields.io/twitter/follow/JBPlatform?style=flat)](https://twitter.com/JBPlatform/)
-[![Gradle Plugin](https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugin&color=blue&metadataUrl=https://plugins.gradle.org/m2/org/jetbrains/intellij/plugins/gradle-changelog-plugin/maven-metadata.xml)](https://plugins.gradle.org/plugin/org.jetbrains.changelog)
-[![Build](https://github.com/JetBrains/gradle-changelog-plugin/workflows/Build/badge.svg)](https://github.com/JetBrains/gradle-changelog-plugin/actions?query=workflow%3ABuild)
-
 # Gradle Changelog Plugin
+
+[![official JetBrains project](https://jb.gg/badges/official.svg)][jb:confluence-on-gh]
+[![Twitter Follow](https://img.shields.io/twitter/follow/JBPlatform?style=flat)][jb:twitter]
+[![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
+[![Build](https://github.com/JetBrains/gradle-changelog-plugin/workflows/Build/badge.svg)][gh:build]
+[![Slack](https://img.shields.io/badge/Slack-%23gradle--changelog--plugin-blue)][jb:slack]
 
 **This project requires Gradle 5.4.1 or newer**
 
@@ -308,7 +309,7 @@ the output form of the change notes:
 ## Gradle Closure in Kotlin DSL
 
 To produce Gradle-specific closure in Kotlin DSL, required by some third-party plugins, like
-[gradle-intellij-plugin][gradle-intellij-plugin] it is required to wrap the Kotlin Unit with `KotlinClosure0` class:
+[gradle-intellij-plugin][gh:gradle-intellij-plugin] it is required to wrap the Kotlin Unit with `KotlinClosure0` class:
 
 ```kotlin
 KotlinClosure0({ changelog.get() })
@@ -328,6 +329,14 @@ closure { changelog.get() }
 - [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 - [Package Search](https://plugins.jetbrains.com/plugin/12507-package-search)
 
+[gh:build]: https://github.com/JetBrains/gradle-changelog-plugin/actions?query=workflow%3ABuild
+[gh:gradle-intellij-plugin]: https://github.com/JetBrains/gradle-intellij-plugin
+
+[jb:confluence-on-gh]: https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub
+[jb:slack]: https://plugins.jetbrains.com/slack
+[jb:twitter]: https://twitter.com/JBPlatform
+
 [build-phases]: https://docs.gradle.org/current/userguide/build_lifecycle.html#sec:build_phases
 [keep-a-changelog]: https://keepachangelog.com/en/1.0.0
-[gradle-intellij-plugin]: https://github.com/JetBrains/gradle-intellij-plugin
+[gradle-plugin-shield]: https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugin&color=blue&metadataUrl=https://plugins.gradle.org/m2/org/jetbrains/intellij/plugins/gradle-changelog-plugin/maven-metadata.xml
+[gradle-plugin]: https://plugins.gradle.org/plugin/org.jetbrains.changelog
