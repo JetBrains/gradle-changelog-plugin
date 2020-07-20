@@ -378,4 +378,23 @@ class ChangelogPluginExtensionTest : BaseTest() {
             """.trimIndent(), values.last().withHeader(true).toText())
         }
     }
+
+    @Test
+    fun `returns Changelog items for change note without category`() {
+        extension.headerFormat = "{0}"
+        extension.itemPrefix = "*"
+        changelog = """
+            # My Changelog
+
+            ## Unreleased
+            
+            * Foo
+        """
+
+        assertNotNull(extension.getLatest())
+        assertEquals("""
+            <h2>Unreleased</h2>
+            <ul><li>Foo</li></ul>
+        """.trimIndent(), extension.getLatest().withHeader(true).toHTML())
+    }
 }
