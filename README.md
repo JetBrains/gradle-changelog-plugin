@@ -10,8 +10,8 @@
 
 > **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 6.5.1`
 
-A Gradle plugin that provides tasks and helper methods to let the working with the changelog managed
-in a [keep a changelog][keep-a-changelog] style easier.
+A Gradle plugin that provides tasks and helper methods to simplify working with a changelog that is managed
+in the [keep a changelog][keep-a-changelog] style.
 
 ## Usage
 
