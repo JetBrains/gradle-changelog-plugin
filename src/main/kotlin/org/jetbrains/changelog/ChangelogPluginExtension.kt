@@ -1,6 +1,6 @@
 package org.jetbrains.changelog
 
-import java.text.MessageFormat
+import groovy.lang.Closure
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -21,22 +21,12 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val headerArgumentsProperty: ListProperty<String> = project.objects.listProperty(String::class.java)
-    var headerArguments: List<String>
-        get() = headerArgumentsProperty.getOrElse(emptyList()).ifEmpty { listOf(version) }
-        set(value) = headerArgumentsProperty.set(value)
-
-    @Optional
-    @Internal
-    private val headerFormatProperty: Property<String> = project.objects.property(String::class.java).apply {
-        set("[{0}]")
+    private val headerProperty: Property<Closure<*>> = project.objects.property(Closure::class.java).apply {
+        set(closure { "[$version]" })
     }
-    var headerFormat: String
-        get() = headerFormatProperty.get()
-        set(value) = headerFormatProperty.set(value)
-
-    @Internal
-    fun headerMessageFormat() = MessageFormat(headerFormat)
+    var header: Closure<*>
+        get() = headerProperty.get()
+        set(value) = headerProperty.set(value)
 
     @Optional
     @Internal

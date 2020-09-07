@@ -13,8 +13,6 @@ class ChangelogPluginTest : BaseTest() {
     @Test
     fun `default properties values`() {
         assertNotNull(extension)
-        assertEquals("[{0}]", extension.headerFormat)
-        assertEquals("[{0}]", extension.headerMessageFormat().toPattern())
         assertTrue(extension.keepUnreleasedSection)
         assertEquals("${project.projectDir}/CHANGELOG.md", extension.path)
         assertEquals(project.version, extension.version)

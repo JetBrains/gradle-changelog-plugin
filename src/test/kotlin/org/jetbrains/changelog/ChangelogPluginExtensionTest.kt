@@ -8,7 +8,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import org.jetbrains.changelog.exceptions.HeaderParseException
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
 
@@ -71,31 +70,10 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `parses changelog with custom format`() {
         changelog = changelog.replace("""\[([^]]+)]""".toRegex(), "[[$1]]")
-        extension.headerFormat = "[[{0}]]"
+        extension.unreleasedTerm = "[[Unreleased]]"
         extension.get().apply {
             assertEquals("1.0.0", version)
         }
-    }
-
-    @Test
-    fun `throws ParseException when changelog item has unrecognizable header format`() {
-        changelog = """
-            # [Changelog]
-            
-            ## ~1.0.0~
-            ### Added
-            - Foo
-        """
-
-        assertFailsWith<HeaderParseException> {
-            extension.get()
-        }
-    }
-
-    @Test
-    fun `headerFormat() returns MessageFormat prefixed with Markdown second level header`() {
-        assertEquals("[{0}]", extension.headerMessageFormat().toPattern())
-        assertEquals(extension.headerFormat, extension.headerMessageFormat().toPattern())
     }
 
     @Test
@@ -113,9 +91,9 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `getUnreleased() returns Upcoming section if unreleasedTerm is customised`() {
         changelog = changelog.replace("Unreleased", "Upcoming")
-        extension.unreleasedTerm = "Upcoming"
+        extension.unreleasedTerm = "[Upcoming]"
         extension.getUnreleased().withHeader(true).apply {
-            assertEquals("Upcoming", version)
+            assertEquals("[Upcoming]", version)
             assertEquals("""
                 ## [Upcoming]
                 ### Added
@@ -286,15 +264,9 @@ class ChangelogPluginExtensionTest : BaseTest() {
             - Compatible with IDEA 2020.2 EAPs
         """
 
-        extension.headerFormat = "Version {0} ({1})"
         extension.unreleasedTerm = "NEW VERSION"
         extension.get("1.0.1119-eap").apply {
             assertEquals("1.0.1119-eap", version)
-
-            val headerVariables = extension.headerMessageFormat().parse(getHeader().removePrefix("## "))
-            assertEquals(2, headerVariables.size)
-            assertEquals("1.0.1119-eap", headerVariables[0])
-            assertEquals("29 May 2020", headerVariables[1])
         }
     }
 
@@ -381,8 +353,8 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `returns Changelog items for change note without category`() {
-        extension.headerFormat = "{0}"
         extension.itemPrefix = "*"
+        extension.unreleasedTerm = "Unreleased"
         changelog = """
             # My Changelog
 

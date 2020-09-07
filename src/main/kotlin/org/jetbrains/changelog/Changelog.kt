@@ -1,7 +1,6 @@
 package org.jetbrains.changelog
 
 import java.io.File
-import java.text.ParseException
 import org.intellij.markdown.IElementType
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.ast.ASTNode
@@ -21,6 +20,7 @@ class Changelog(extension: ChangelogPluginExtension) {
     }
     private val flavour = ChangelogFlavourDescriptor()
     private val parser = MarkdownParser(flavour)
+    private val semVerRegex = """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?${'$'}""".toRegex()
     private val tree = parser.buildMarkdownTreeFromString(content)
 
     private val items = tree.children
@@ -28,13 +28,8 @@ class Changelog(extension: ChangelogPluginExtension) {
             it.children.last().text().trim().run {
                 when (this) {
                     extension.unreleasedTerm -> this
-                    else -> {
-                        try {
-                            extension.headerMessageFormat().parse(this).first().toString()
-                        } catch (e: ParseException) {
-                            throw HeaderParseException(this, extension)
-                        }
-                    }
+                    else -> split("""[^-+.0-9a-zA-Z]+""".toRegex()).firstOrNull(semVerRegex::matches)
+                        ?: throw HeaderParseException(this, extension)
                 }
             }
         }

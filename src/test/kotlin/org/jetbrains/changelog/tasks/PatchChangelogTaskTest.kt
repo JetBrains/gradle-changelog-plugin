@@ -90,17 +90,14 @@ class PatchChangelogTaskTest : BaseTest() {
             }
             changelog {
                 version = "1.0.0"
-                
-                headerFormat = "Foo {0} bar {1}"
-                headerArguments = ["${project.version}", "buz"]
+                header = { "Foo ${project.version} bar" }
             }
         """
-        extension.headerFormat = "Foo {0} bar {1}"
 
         project.evaluate()
         runTask("patchChangelog")
 
-        assertEquals("## Foo 1.0.0 bar buz", extension.get().getHeader())
+        assertEquals("## Foo 1.0.0 bar", extension.get().getHeader())
     }
 
     @Test
@@ -129,11 +126,9 @@ class PatchChangelogTaskTest : BaseTest() {
             changelog {
                 version = "1.0.0"
                 
-                headerFormat = "[{0}] - {1}"
-                headerArguments = Arrays.asList(version, new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
+                header = { "[${'$'}version] - ${'$'}{new SimpleDateFormat("yyyy-MM-dd").format(new Date())}" }
             }
         """
-        extension.headerFormat = "[{0}] - {1}"
 
         project.evaluate()
         runTask("patchChangelog")

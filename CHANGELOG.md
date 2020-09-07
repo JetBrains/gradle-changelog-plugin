@@ -1,12 +1,19 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Added
+- `header` extension property for setting new header text
+- `date` helper method
+- `Helper Methods` section in README
+
+### Removed
+- `headerFormat` and `headerArguments` in favor of `header` property
 
 ## [0.4.0]
 ### Added
 - `initializeChangelog` task for creating new changelog file
-- `getAll` extensions method for fetching all changelog items 
-- `groups` extensions property for defining the groups created with the Unreleased section
+- `getAll` extension method for fetching all changelog items 
+- `groups` extension property for defining the groups created with the Unreleased section
 - `ktlint` integration
 
 ### Changed

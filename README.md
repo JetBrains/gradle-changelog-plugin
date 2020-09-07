@@ -8,10 +8,26 @@
 
 **This project requires Gradle 5.4.1 or newer**
 
-> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 6.5.1`
+> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 6.6.1`
 
 A Gradle plugin that provides tasks and helper methods to simplify working with a changelog that is managed
 in the [keep a changelog][keep-a-changelog] style.
+
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Tasks](#tasks)
+    - [initializeChangelog](#initializechangelog)
+    - [getChangelog](#getchangelog)
+- [Methods](#methods)
+    - [get](#get)
+    - [getUnreleased](#getunreleased)
+    - [getLatest](#getlatest)
+    - [getAll](#getall)
+    - [hasVersion](#hasversion)
+- [Changelog.Item](#changelogitem)
+- [Gradle Closure in Kotlin DSL](#gradle-closure-in-kotlin-dsl)
+- [Helper Methods](#helper-methods)
+- [Usage Examples](#usage-examples)
 
 ## Usage
 
@@ -20,7 +36,7 @@ Kotlin:
 import org.jetbrains.changelog.closure
 
 plugins {
-    id("org.jetbrains.changelog") version "0.4.0"
+    id("org.jetbrains.changelog") version "0.5.0"
 }
 
 tasks {
@@ -34,8 +50,7 @@ tasks {
 changelog {
     version = "${project.version}"
     path = "${project.projectDir}/CHANGELOG.md"
-    headerFormat = "[{0}]"
-    headerArguments = listOf("${project.version}")
+    header = closure { "[${project.version}]" }
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
@@ -46,7 +61,7 @@ changelog {
 Groovy:
 ```groovy
 plugins {
-    id 'org.jetbrains.changelog' version '0.4.0'
+    id 'org.jetbrains.changelog' version '0.5.0'
 }
 
 apply plugin: 'org.jetbrains.changelog'
@@ -62,8 +77,7 @@ intellij {
 changelog {
     version = "${project.version}"
     path = "${project.projectDir}/CHANGELOG.md"
-    headerFormat = "[{0}]"
-    headerArguments = ["${project.version}"]
+    header = { "[${project.version}]" }
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
@@ -86,8 +100,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | Property                | Description                                                | Default value                                                        |
 | ----------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------- |
 | `groups`                | List of groups created with a new Unreleased section.      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]` |
-| `headerArguments`       | Arguments passed to the header by the patchChangelog task. | `["${project.version}"]`                                             |
-| `headerFormat`          | Format of the version section header.                      | `"[{0}]"`                                                            |
+| `header`                | Closure that returns current header value.                 | `{ "[${project.version}]" }`                                         |
 | `itemPrefix`            | Single item's prefix, allows to customise the bullet sign. | `"-"`                                                                |
 | `keepUnreleasedSection` | Add Unreleased empty section after patching.               | `true`                                                               |
 | `patchEmpty`            | Patches changelog even if no release note is provided.     | `true`                                                               |
@@ -322,6 +335,16 @@ import org.jetbrains.changelog.closure
 
 closure { changelog.get() }
 ```
+
+## Helper Methods
+
+| Name                                   | Description                                                     | Returned type |
+| -------------------------------------- | --------------------------------------------------------------- | ------------- |
+| `closure(function: () -> T)`           | Produces Gradle-specific Closure for Kotlin DSL.                | `Closure<T>`  |
+| `date(pattern: String = "yyyy-MM-dd")` | Shorthand for retrieving the current date in the given format.  | `String`      |
+| `markdownToHTML(input: String)`        | Converts given Markdown content to HTML output.                 | `String`      |
+| `markdownToPlainText(input: String)`   | Converts given Markdown content to Plain Text output.           | `String`      |
+
 
 ## Usage Examples
 
