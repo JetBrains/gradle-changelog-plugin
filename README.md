@@ -13,27 +13,31 @@
 A Gradle plugin that provides tasks and helper methods to simplify working with a changelog that is managed
 in the [keep a changelog][keep-a-changelog] style.
 
+## Table of contents
+
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Tasks](#tasks)
-    - [initializeChangelog](#initializechangelog)
-    - [getChangelog](#getchangelog)
+    - [`initializeChangelog`](#initializechangelog)
+    - [`getChangelog`](#getchangelog)
 - [Methods](#methods)
-    - [get](#get)
-    - [getUnreleased](#getunreleased)
-    - [getLatest](#getlatest)
-    - [getAll](#getall)
-    - [hasVersion](#hasversion)
-- [Changelog.Item](#changelogitem)
+    - [`get`](#get)
+    - [`getUnreleased`](#getunreleased)
+    - [`getLatest`](#getlatest)
+    - [`getAll`](#getall)
+    - [`hasVersion`](#hasversion)
+- [`Changelog.Item`](#changelogitem)
 - [Gradle Closure in Kotlin DSL](#gradle-closure-in-kotlin-dsl)
 - [Helper Methods](#helper-methods)
 - [Usage Examples](#usage-examples)
+
 
 ## Usage
 
 Kotlin:
 ```kotlin
 import org.jetbrains.changelog.closure
+import org.jetbrains.changelog.date
 
 plugins {
     id("org.jetbrains.changelog") version "0.5.0"
@@ -50,7 +54,7 @@ tasks {
 changelog {
     version = "${project.version}"
     path = "${project.projectDir}/CHANGELOG.md"
-    header = closure { "[${project.version}]" }
+    header = closure { "[${project.version}] - ${date()}" }
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
@@ -60,6 +64,8 @@ changelog {
 
 Groovy:
 ```groovy
+import org.jetbrains.changelog.date
+
 plugins {
     id 'org.jetbrains.changelog' version '0.5.0'
 }
@@ -77,7 +83,7 @@ intellij {
 changelog {
     version = "${project.version}"
     path = "${project.projectDir}/CHANGELOG.md"
-    header = { "[${project.version}]" }
+    header = { "[${project.version}] - ${date()}" }
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
