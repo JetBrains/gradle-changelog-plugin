@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [0.5.0]
+### Added
 - `header` extension property for setting new header text
 - `date` helper method
 - `Helper Methods` section in README
