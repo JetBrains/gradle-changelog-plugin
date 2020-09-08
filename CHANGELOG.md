@@ -12,6 +12,7 @@
 ### Fixed
 
 ### Security
+
 ## [0.5.0]
 ### Added
 - `header` extension property for setting new header text
