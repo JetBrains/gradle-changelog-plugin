@@ -1,6 +1,8 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+
+## [0.6.0]
 ### Added
 - `headerParserRegex` extension property for setting custom regex used to extract version from the header string 
 
