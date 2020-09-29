@@ -1,34 +1,36 @@
 package org.jetbrains.changelog.tasks
 
+import org.jetbrains.changelog.BaseTest
+import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import org.jetbrains.changelog.BaseTest
-import org.jetbrains.changelog.exceptions.MissingVersionException
 
 class PatchChangelogTaskTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
         version = "1.0.0"
-        changelog = """
+        changelog =
+            """
             # Changelog
             ## [Unreleased]
             ### Added
             - foo
-        """
+            """
 
-        buildFile = """
+        buildFile =
+            """
             plugins {
                 id 'org.jetbrains.changelog'
             }
             changelog {
                 version = "1.0.0"
             }
-        """
+            """
     }
 
     @Test
@@ -36,12 +38,16 @@ class PatchChangelogTaskTest : BaseTest() {
         project.evaluate()
         runTask("patchChangelog")
 
-        assertEquals("""
+        assertEquals(
+            """
             ### Added
             - foo
-        """.trimIndent(), extension.get().toText())
+            """.trimIndent(),
+            extension.get().toText()
+        )
 
-        assertEquals("""
+        assertEquals(
+            """
             ## [Unreleased]
             ### Added
             
@@ -54,12 +60,15 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Fixed
             
             ### Security
-        """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
+            """.trimIndent(),
+            extension.getUnreleased().withHeader(true).toText()
+        )
     }
 
     @Test
     fun `patches Unreleased version to the current one`() {
-        buildFile = """
+        buildFile =
+            """
             plugins {
                 id 'org.jetbrains.changelog'
             }
@@ -67,15 +76,18 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 keepUnreleasedSection = false
             }
-        """
+            """
 
         project.evaluate()
         runTask("patchChangelog")
 
-        assertEquals("""
+        assertEquals(
+            """
             ### Added
             - foo
-        """.trimIndent(), extension.get().toText())
+            """.trimIndent(),
+            extension.get().toText()
+        )
 
         assertFailsWith<MissingVersionException> {
             extension.getUnreleased()
@@ -84,7 +96,8 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `applies custom header patcher`() {
-        buildFile = """
+        buildFile =
+            """
             plugins {
                 id 'org.jetbrains.changelog'
             }
@@ -92,7 +105,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 header = { "Foo ${project.version} bar" }
             }
-        """
+            """
 
         project.evaluate()
         runTask("patchChangelog")
@@ -102,7 +115,8 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `applies custom header with date`() {
-        changelog = """
+        changelog =
+            """
             # Changelog
             All notable changes to this project will be documented in this file.
 
@@ -114,8 +128,9 @@ class PatchChangelogTaskTest : BaseTest() {
 
             ### Added
             - Something added.
-        """
-        buildFile = """
+            """
+        buildFile =
+            """
             import java.text.SimpleDateFormat
             import java.util.Arrays
             import java.util.Date
@@ -128,7 +143,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 
                 header = { "[${'$'}version] - ${'$'}{new SimpleDateFormat("yyyy-MM-dd").format(new Date())}" }
             }
-        """
+            """
 
         project.evaluate()
         runTask("patchChangelog")
@@ -139,11 +154,13 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `doesn't patch changelog if no change notes provided in Unreleased section`() {
-        changelog = """
+        changelog =
+            """
             # Changelog
             ## [Unreleased]
-        """
-        buildFile = """
+            """
+        buildFile =
+            """
             plugins {
                 id 'org.jetbrains.changelog'
             }
@@ -151,7 +168,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 patchEmpty = false
             }
-        """
+            """
 
         project.evaluate()
 
@@ -167,7 +184,8 @@ class PatchChangelogTaskTest : BaseTest() {
         project.evaluate()
         runTask("patchChangelog")
 
-        assertEquals("""
+        assertEquals(
+            """
             ## [Unreleased]
             ### Added
             
@@ -180,12 +198,15 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Fixed
             
             ### Security
-        """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
+            """.trimIndent(),
+            extension.getUnreleased().withHeader(true).toText()
+        )
     }
 
     @Test
     fun `Remove empty groups for the new released section`() {
-        changelog = """
+        changelog =
+            """
             # Changelog
             ## [Unreleased]
             ### Added
@@ -201,24 +222,28 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Fixed
             
             ### Security
-        """
+            """
 
         project.evaluate()
         runTask("patchChangelog")
 
-        assertEquals("""
+        assertEquals(
+            """
             ## [1.0.0]
             ### Added
             - foo
             
             ### Removed
             - bar
-        """.trimIndent(), extension.get().withHeader(true).toText())
+            """.trimIndent(),
+            extension.get().withHeader(true).toText()
+        )
     }
 
     @Test
     fun `Create empty custom groups for the new Unreleased section`() {
-        buildFile = """
+        buildFile =
+            """
             plugins {
                 id 'org.jetbrains.changelog'
             }
@@ -226,16 +251,19 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 groups = ["Aaaa", "Bbb"]
             }
-        """
+            """
 
         project.evaluate()
         runTask("patchChangelog")
 
-        assertEquals("""
+        assertEquals(
+            """
             ## [Unreleased]
             ### Aaaa
 
             ### Bbb
-        """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
+            """.trimIndent(),
+            extension.getUnreleased().withHeader(true).toText()
+        )
     }
 }

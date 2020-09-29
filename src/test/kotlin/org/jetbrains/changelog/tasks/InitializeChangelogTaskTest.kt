@@ -1,24 +1,25 @@
 package org.jetbrains.changelog.tasks
 
+import org.jetbrains.changelog.BaseTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import org.jetbrains.changelog.BaseTest
 
 class InitializeChangelogTaskTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
         version = "1.0.0"
-        buildFile = """
+        buildFile =
+            """
             plugins {
                 id 'org.jetbrains.changelog'
             }
             changelog {
                 version = "1.0.0"
             }
-        """
+            """
 
         project.evaluate()
     }
@@ -30,7 +31,8 @@ class InitializeChangelogTaskTest : BaseTest() {
         extension.getAll().apply {
             assertEquals(1, keys.size)
             assertEquals("[Unreleased]", keys.first())
-            assertEquals("""
+            assertEquals(
+                """
                 ## [Unreleased]
                 ### Added
                 - Example item
@@ -44,7 +46,9 @@ class InitializeChangelogTaskTest : BaseTest() {
                 ### Fixed
 
                 ### Security
-            """.trimIndent(), values.first().withHeader(true).toText())
+                """.trimIndent(),
+                values.first().withHeader(true).toText()
+            )
         }
 
         assertNotNull(extension.getUnreleased())
@@ -52,14 +56,16 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @Test
     fun `overrides existing changelog file`() {
-        changelog = """
+        changelog =
+            """
             # Changelog
-        """
+            """
         project.evaluate()
 
         runTask("initializeChangelog")
 
-        assertEquals("""
+        assertEquals(
+            """
             ## [Unreleased]
             ### Added
             - Example item
@@ -73,12 +79,15 @@ class InitializeChangelogTaskTest : BaseTest() {
             ### Fixed
 
             ### Security
-        """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
+            """.trimIndent(),
+            extension.getUnreleased().withHeader(true).toText()
+        )
     }
 
     @Test
     fun `creates customized changelog file`() {
-        buildFile = """
+        buildFile =
+            """
             plugins {
                 id 'org.jetbrains.changelog'
             }
@@ -89,7 +98,7 @@ class InitializeChangelogTaskTest : BaseTest() {
                 unreleasedTerm = "Upcoming version"
                 groups = ["Added", "Removed"]
             }
-        """
+            """
         extension.apply {
             path = "${project.projectDir}/CHANGES.md"
             unreleasedTerm = "Upcoming version"
@@ -99,12 +108,15 @@ class InitializeChangelogTaskTest : BaseTest() {
 
         runTask("initializeChangelog")
 
-        assertEquals("""
+        assertEquals(
+            """
             ## Upcoming version
             ### Added
             * Example item
             
             ### Removed
-        """.trimIndent(), extension.getUnreleased().withHeader(true).toText())
+            """.trimIndent(),
+            extension.getUnreleased().withHeader(true).toText()
+        )
     }
 }

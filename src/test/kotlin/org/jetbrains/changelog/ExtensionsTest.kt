@@ -23,34 +23,42 @@ class ExtensionsTest {
 
     @Test
     fun markdownToHTMLTest() {
-        val content = """
+        val content =
+            """
             # Foo
             ## Bar
             - buz
             - [biz](https://jetbrains.com)
-        """.trimIndent()
+            """.trimIndent()
 
-        assertEquals("""
+        assertEquals(
+            """
             <h1>Foo</h1>
             <h2>Bar</h2>
             <ul><li>buz</li><li><a href="https://jetbrains.com">biz</a></li></ul>
-        """.trimIndent(), markdownToHTML(content))
+            """.trimIndent(),
+            markdownToHTML(content)
+        )
     }
 
     @Test
     fun markdownToPlainTextTest() {
-        val content = """
+        val content =
+            """
             # Foo
             ## Bar
             - buz
             - [biz](https://jetbrains.com)
-        """.trimIndent()
+            """.trimIndent()
 
-        assertEquals("""
+        assertEquals(
+            """
             Foo
             Bar
             - buz
             - biz
-        """.trimIndent(), markdownToPlainText(content))
+            """.trimIndent(),
+            markdownToPlainText(content)
+        )
     }
 }

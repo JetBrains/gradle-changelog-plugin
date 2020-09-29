@@ -2,16 +2,11 @@
 
 ## [Unreleased]
 ### Added
+- `headerParserRegex` extension property for setting custom regex used to extract version from the header string 
 
 ### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
+- Project dependencies upgrade
+- Apply ktlint and detekt rules to the code
 
 ## [0.5.0]
 ### Added

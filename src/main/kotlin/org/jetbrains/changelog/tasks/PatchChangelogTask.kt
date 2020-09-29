@@ -1,12 +1,12 @@
 package org.jetbrains.changelog.tasks
 
-import java.io.File
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogPluginExtension
+import java.io.File
 
 open class PatchChangelogTask : DefaultTask() {
 
@@ -29,14 +29,16 @@ open class PatchChangelogTask : DefaultTask() {
                     return
                 }
 
-                File(extension.path).writeText(content.run {
-                    if (extension.keepUnreleasedSection) {
-                        val unreleasedGroups = extension.groups.joinToString("\n") { "### $it\n" }
-                        StringBuilder(this).insert(header.endOffset, "\n$unreleasedGroups$versionHeader").toString()
-                    } else {
-                        replaceRange(header.startOffset, header.endOffset, versionHeader)
+                File(extension.path).writeText(
+                    content.run {
+                        if (extension.keepUnreleasedSection) {
+                            val unreleasedGroups = extension.groups.joinToString("\n") { "### $it\n" }
+                            StringBuilder(this).insert(header.endOffset, "\n$unreleasedGroups$versionHeader").toString()
+                        } else {
+                            replaceRange(header.startOffset, header.endOffset, versionHeader)
+                        }
                     }
-                })
+                )
             }
         }
     }

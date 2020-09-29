@@ -1,12 +1,12 @@
 package org.jetbrains.changelog
 
+import org.jetbrains.changelog.tasks.GetChangelogTask
+import org.jetbrains.changelog.tasks.InitializeChangelogTask
+import org.jetbrains.changelog.tasks.PatchChangelogTask
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import org.jetbrains.changelog.tasks.GetChangelogTask
-import org.jetbrains.changelog.tasks.InitializeChangelogTask
-import org.jetbrains.changelog.tasks.PatchChangelogTask
 
 class ChangelogPluginTest : BaseTest() {
 

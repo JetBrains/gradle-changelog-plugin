@@ -107,6 +107,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | ----------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------- |
 | `groups`                | List of groups created with a new Unreleased section.      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]` |
 | `header`                | Closure that returns current header value.                 | `{ "[${project.version}]" }`                                         |
+| `headerParserRegex`     | Regex used to extract version from the header string.      | `null`, fallbacks to [`Changelog#semVerRegex`][semver-regex]         |
 | `itemPrefix`            | Single item's prefix, allows to customise the bullet sign. | `"-"`                                                                |
 | `keepUnreleasedSection` | Add Unreleased empty section after patching.               | `true`                                                               |
 | `patchEmpty`            | Patches changelog even if no release note is provided.     | `true`                                                               |
@@ -369,3 +370,4 @@ closure { changelog.get() }
 [keep-a-changelog]: https://keepachangelog.com/en/1.0.0
 [gradle-plugin-shield]: https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugin&color=blue&metadataUrl=https://plugins.gradle.org/m2/org/jetbrains/intellij/plugins/gradle-changelog-plugin/maven-metadata.xml
 [gradle-plugin]: https://plugins.gradle.org/plugin/org.jetbrains.changelog
+[semver-regex]: https://github.com/JetBrains/gradle-changelog-plugin/blob/main/src/main/kotlin/org/jetbrains/changelog/Changelog.kt#L23

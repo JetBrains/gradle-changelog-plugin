@@ -1,6 +1,5 @@
 package org.jetbrains.changelog.tasks
 
-import java.io.File
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
@@ -9,6 +8,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogPluginExtension
+import java.io.File
 
 open class GetChangelogTask : DefaultTask() {
 
@@ -43,14 +43,16 @@ open class GetChangelogTask : DefaultTask() {
     fun getOutputFile() = getInputFile()
 
     @TaskAction
-    fun run() = logger.quiet(Changelog(extension).run {
-        val version = when (unreleased) {
-            true -> extension.unreleasedTerm
-            false -> extension.version
+    fun run() = logger.quiet(
+        Changelog(extension).run {
+            val version = when (unreleased) {
+                true -> extension.unreleasedTerm
+                false -> extension.version
+            }
+            get(version).run {
+                withHeader(!noHeader)
+                toText()
+            }
         }
-        get(version).run {
-            withHeader(!noHeader)
-            toText()
-        }
-    })
+    )
 }

@@ -30,6 +30,13 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
+    private val headerParserRegexProperty: Property<Regex?> = project.objects.property(Regex::class.java)
+    var headerParserRegex: Regex?
+        get() = headerParserRegexProperty.orNull
+        set(value) = headerParserRegexProperty.set(value)
+
+    @Optional
+    @Internal
     private val itemPrefixProperty: Property<String> = project.objects.property(String::class.java).apply {
         set("-")
     }

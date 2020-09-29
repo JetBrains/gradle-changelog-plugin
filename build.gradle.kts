@@ -5,18 +5,18 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("java-gradle-plugin")
     id("maven-publish")
-    id("org.jetbrains.changelog") version "0.4.0"
-    id("org.jetbrains.kotlin.jvm") version "1.3.72"
+    id("org.jetbrains.changelog") version "0.5.0"
+    id("org.jetbrains.kotlin.jvm") version "1.4.10"
     id("com.gradle.plugin-publish") version "0.12.0"
-    id("io.gitlab.arturbosch.detekt") version "1.10.0"
-    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
+    id("io.gitlab.arturbosch.detekt") version "1.14.0"
+    id("org.jlleitschuh.gradle.ktlint") version "9.4.0"
     id("com.github.breadmoirai.github-release") version "2.2.12"
     id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 description = "Gradle Changelog Plugin"
 group = "org.jetbrains.intellij.plugins"
-version = "0.5.0"
+version = "0.6.0"
 
 repositories {
     mavenCentral()
@@ -28,9 +28,9 @@ dependencies {
     shadow(localGroovy())
     shadow(gradleApi())
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains:markdown:0.1.41")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:0.7.1")
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.9.1")
+    implementation("org.jetbrains:markdown:0.1.45")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:0.7.2")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.14.0")
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
 }
@@ -90,11 +90,10 @@ tasks {
 publishing {
     publications.create<MavenPublication>("pluginMaven") {
         pom.withXml {
-            ((asNode().depthFirst()).find {
+            val node = (asNode().depthFirst()).find {
                 (it as Node).text() == "markdown"
-            } as Node).parent().apply {
-                parent().remove(this)
-            }
+            } as Node
+            node.parent().apply { parent().remove(this) }
         }
     }
 }

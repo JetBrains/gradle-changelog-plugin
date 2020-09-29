@@ -1,6 +1,5 @@
 package org.jetbrains.changelog
 
-import java.io.File
 import org.intellij.markdown.IElementType
 import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.ast.ASTNode
@@ -10,6 +9,7 @@ import org.jetbrains.changelog.exceptions.HeaderParseException
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.changelog.flavours.ChangelogFlavourDescriptor
+import java.io.File
 
 class Changelog(extension: ChangelogPluginExtension) {
     val content = File(extension.path).run {
@@ -18,9 +18,11 @@ class Changelog(extension: ChangelogPluginExtension) {
         }
         readText()
     }
+    @Suppress("MaxLineLength")
+    private val semVerRegex =
+        """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?${'$'}""".toRegex() // ktlint-disable max-line-length
     private val flavour = ChangelogFlavourDescriptor()
     private val parser = MarkdownParser(flavour)
-    private val semVerRegex = """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?${'$'}""".toRegex()
     private val tree = parser.buildMarkdownTreeFromString(content)
 
     private val items = tree.children
@@ -28,8 +30,9 @@ class Changelog(extension: ChangelogPluginExtension) {
             it.children.last().text().trim().run {
                 when (this) {
                     extension.unreleasedTerm -> this
-                    else -> split("""[^-+.0-9a-zA-Z]+""".toRegex()).firstOrNull(semVerRegex::matches)
-                        ?: throw HeaderParseException(this, extension)
+                    else -> split("""[^-+.0-9a-zA-Z]+""".toRegex()).firstOrNull(
+                        (extension.headerParserRegex ?: semVerRegex)::matches
+                    ) ?: throw HeaderParseException(this, extension)
                 }
             }
         }

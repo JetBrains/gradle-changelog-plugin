@@ -1,5 +1,7 @@
 package org.jetbrains.changelog
 
+import org.jetbrains.changelog.exceptions.MissingFileException
+import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -8,15 +10,14 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import org.jetbrains.changelog.exceptions.MissingFileException
-import org.jetbrains.changelog.exceptions.MissingVersionException
 
 class ChangelogPluginExtensionTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
         version = "1.0.0"
-        changelog = """
+        changelog =
+            """
             # Changelog
             
             ## [Unreleased]
@@ -26,7 +27,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             ## [1.0.0]
             ### Removed
             - Bar
-        """
+            """
     }
 
     @Test
@@ -49,21 +50,30 @@ class ChangelogPluginExtensionTest : BaseTest() {
         extension.get().apply {
             assertEquals(project.version, version)
 
-            assertEquals("""
+            assertEquals(
+                """
                 ### Removed
                 - Bar
-            """.trimIndent(), toText())
+                """.trimIndent(),
+                toText()
+            )
 
-            assertEquals("""
+            assertEquals(
+                """
                 ### Removed
                 - Bar
-            """.trimIndent(), toString())
+                """.trimIndent(),
+                toString()
+            )
 
             // TODO return HTML without <body>
-            assertEquals("""
+            assertEquals(
+                """
                 <h3>Removed</h3>
                 <ul><li>Bar</li></ul>
-            """.trimIndent(), toHTML())
+                """.trimIndent(),
+                toHTML()
+            )
         }
     }
 
@@ -80,11 +90,14 @@ class ChangelogPluginExtensionTest : BaseTest() {
     fun `getUnreleased() returns Unreleased section`() {
         extension.getUnreleased().withHeader(true).apply {
             assertEquals("[Unreleased]", version)
-            assertEquals("""
+            assertEquals(
+                """
                 ## [Unreleased]
                 ### Added
                 - Foo
-            """.trimIndent(), toText())
+                """.trimIndent(),
+                toText()
+            )
         }
     }
 
@@ -94,17 +107,21 @@ class ChangelogPluginExtensionTest : BaseTest() {
         extension.unreleasedTerm = "[Upcoming]"
         extension.getUnreleased().withHeader(true).apply {
             assertEquals("[Upcoming]", version)
-            assertEquals("""
+            assertEquals(
+                """
                 ## [Upcoming]
                 ### Added
                 - Foo
-            """.trimIndent(), toText())
+                """.trimIndent(),
+                toText()
+            )
         }
     }
 
     @Test
     fun `parses changelog into structured sections`() {
-        changelog = """
+        changelog =
+            """
             # Changelog
             
             ## [1.0.0]
@@ -122,7 +139,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             
             ### Removed
             - Hola
-        """
+            """
 
         extension.get().apply {
             assertEquals(this@ChangelogPluginExtensionTest.version, version)
@@ -136,7 +153,8 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 assertTrue(containsKey("Removed"))
                 assertEquals(1, get("Removed")?.size)
             }
-            assertEquals("""
+            assertEquals(
+                """
                 ## [1.0.0]
                 ### Added
                 - Foo *FOO* foo
@@ -152,8 +170,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
                 ### Removed
                 - Hola
-            """.trimIndent(), toText())
-            assertEquals("""
+                """.trimIndent(),
+                toText()
+            )
+            assertEquals(
+                """
                 <h2>[1.0.0]</h2>
                 <h3>Added</h3>
                 <ul><li>Foo <em>FOO</em> foo</li><li>Bar <strong>BAR</strong> bar</li><li>Test <a href="https://www.example.org">link</a> test</li><li>Code <code>block</code> code</li><li>Bravo</li><li>Alpha</li></ul>
@@ -163,8 +184,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 <h3>Removed</h3>
                 <ul><li>Hola</li></ul>
-            """.trimIndent(), toHTML())
-            assertEquals("""
+                """.trimIndent(),
+                toHTML()
+            )
+            assertEquals(
+                """
                 [1.0.0]
                 Added
                 - Foo FOO foo
@@ -180,13 +204,16 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 Removed
                 - Hola
-            """.trimIndent(), toPlainText())
+                """.trimIndent(),
+                toPlainText()
+            )
         }
     }
 
     @Test
     fun `filters out entries from the change notes for the given version`() {
-        changelog = """
+        changelog =
+            """
             # Changelog
             
             ## [1.0.0]
@@ -203,7 +230,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             
             ### Removed
             - Hola x
-        """
+            """
 
         extension.get().apply {
             assertEquals(this@ChangelogPluginExtensionTest.version, version)
@@ -218,7 +245,8 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 assertEquals(1, get("Fixed")?.size)
                 assertFalse(containsKey("Removed"))
 
-                assertEquals("""
+                assertEquals(
+                    """
                     ### Added
                     - Foo
                     - Buz
@@ -226,14 +254,19 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
                     ### Fixed
                     - World
-                """.trimIndent(), toText())
-                assertEquals("""
+                    """.trimIndent(),
+                    toText()
+                )
+                assertEquals(
+                    """
                     <h3>Added</h3>
                     <ul><li>Foo</li><li>Buz</li><li>Alpha</li></ul>
 
                     <h3>Fixed</h3>
                     <ul><li>World</li></ul>
-                """.trimIndent(), toHTML())
+                    """.trimIndent(),
+                    toHTML()
+                )
             }
         }
     }
@@ -255,14 +288,15 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `parses header with custom format containing version and date`() {
-        changelog = """
+        changelog =
+            """
             # Changelog
             ## NEW VERSION
             - Compatible with IDEA 2020.2 EAPs
             
             ## Version 1.0.1119-eap (29 May 2020)
             - Compatible with IDEA 2020.2 EAPs
-        """
+            """
 
         extension.unreleasedTerm = "NEW VERSION"
         extension.get("1.0.1119-eap").apply {
@@ -272,11 +306,12 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `returns change notes without group sections if not present`() {
-        changelog = """
+        changelog =
+            """
             # Changelog
             ## [1.0.0]
             - Foo
-        """
+            """
 
         extension.get("1.0.0").apply {
             assertEquals("1.0.0", version)
@@ -286,36 +321,46 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 assertTrue(containsKey(""))
                 assertEquals(1, get("")?.size)
             }
-            assertEquals("""
+            assertEquals(
+                """
                 ## [1.0.0]
                 - Foo
-            """.trimIndent(), toText())
-            assertEquals("""
+                """.trimIndent(),
+                toText()
+            )
+            assertEquals(
+                """
                 <h2>[1.0.0]</h2>
                 <ul><li>Foo</li></ul>
-            """.trimIndent(), toHTML())
+                """.trimIndent(),
+                toHTML()
+            )
         }
     }
 
     @Test
     fun `splits change notes into a list by the given itemPrefix`() {
-        changelog = """
+        changelog =
+            """
             # Changelog
             ## [1.0.0]
             - Foo - bar
             * Foo2
             - Bar
-        """
+            """
 
         extension.get("1.0.0").apply {
             assertEquals("1.0.0", version)
             assertEquals(1, getSections().keys.size)
             getSections().values.first().apply {
                 assertEquals(2, size)
-                assertEquals("""
+                assertEquals(
+                    """
                     - Foo - bar
                     * Foo2
-                """.trimIndent(), first())
+                    """.trimIndent(),
+                    first()
+                )
                 assertEquals("- Bar", last())
             }
         }
@@ -330,24 +375,36 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertEquals("1.0.0", keys.last())
             assertEquals("## [Unreleased]", values.first().getHeader())
             assertEquals("## [1.0.0]", values.last().getHeader())
-            assertEquals("""
+            assertEquals(
+                """
                 ### Added
                 - Foo
-            """.trimIndent(), values.first().toText())
-            assertEquals("""
+                """.trimIndent(),
+                values.first().toText()
+            )
+            assertEquals(
+                """
                 ## [Unreleased]
                 ### Added
                 - Foo
-            """.trimIndent(), values.first().withHeader(true).toText())
-            assertEquals("""
+                """.trimIndent(),
+                values.first().withHeader(true).toText()
+            )
+            assertEquals(
+                """
                 ### Removed
                 - Bar
-            """.trimIndent(), values.last().toText())
-            assertEquals("""
+                """.trimIndent(),
+                values.last().toText()
+            )
+            assertEquals(
+                """
                 ## [1.0.0]
                 ### Removed
                 - Bar
-            """.trimIndent(), values.last().withHeader(true).toText())
+                """.trimIndent(),
+                values.last().withHeader(true).toText()
+            )
         }
     }
 
@@ -355,18 +412,38 @@ class ChangelogPluginExtensionTest : BaseTest() {
     fun `returns Changelog items for change note without category`() {
         extension.itemPrefix = "*"
         extension.unreleasedTerm = "Unreleased"
-        changelog = """
+        changelog =
+            """
             # My Changelog
 
             ## Unreleased
             
             * Foo
-        """
+            """
 
         assertNotNull(extension.getLatest())
-        assertEquals("""
+        assertEquals(
+            """
             <h2>Unreleased</h2>
             <ul><li>Foo</li></ul>
-        """.trimIndent(), extension.getLatest().withHeader(true).toHTML())
+            """.trimIndent(),
+            extension.getLatest().withHeader(true).toHTML()
+        )
+    }
+
+    @Test
+    fun `allows to customize the header parser regex to match version in different format than semver`() {
+        extension.headerParserRegex =
+            """\d+\.\d+""".toRegex()
+        changelog =
+            """
+            # My Changelog
+
+            ## 2020.1
+            
+            * Foo
+            """
+
+        assertNotNull(extension.get("2020.1"))
     }
 }
