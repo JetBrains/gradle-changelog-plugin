@@ -12,6 +12,7 @@
 ### Fixed
 
 ### Security
+
 ## [0.6.1]
 ### Changed
 - Renamed `hasVersion` method to `has`
