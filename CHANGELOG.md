@@ -1,6 +1,18 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [0.6.1]
 ### Changed
 - Renamed `hasVersion` method to `has`
 - Better error handling in `patchChangelog` task
