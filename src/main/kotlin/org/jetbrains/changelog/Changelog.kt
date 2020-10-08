@@ -12,12 +12,14 @@ import org.jetbrains.changelog.flavours.ChangelogFlavourDescriptor
 import java.io.File
 
 class Changelog(extension: ChangelogPluginExtension) {
+
     val content = File(extension.path).run {
         if (extension.path.isEmpty() || !exists()) {
             throw MissingFileException(extension.path)
         }
         readText()
     }
+
     @Suppress("MaxLineLength")
     private val semVerRegex =
         """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?${'$'}""".toRegex() // ktlint-disable max-line-length
