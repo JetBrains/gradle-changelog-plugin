@@ -1,6 +1,8 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Changed
+- Renamed `hasVersion` method to `has`
 
 ## [0.6.0]
 ### Added

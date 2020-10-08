@@ -56,7 +56,7 @@ class Changelog(extension: ChangelogPluginExtension) {
                 }
         }
 
-    fun hasVersion(version: String) = items.containsKey(version)
+    fun has(version: String) = items.containsKey(version)
 
     fun get(version: String) = items[version] ?: throw MissingVersionException(version)
 

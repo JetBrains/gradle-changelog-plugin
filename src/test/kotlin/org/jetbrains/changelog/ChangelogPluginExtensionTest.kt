@@ -281,9 +281,9 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `checks if the given version exists in the changelog`() {
-        assertTrue(extension.hasVersion("[Unreleased]"))
-        assertTrue(extension.hasVersion("1.0.0"))
-        assertFalse(extension.hasVersion("2.0.0"))
+        assertTrue(extension.has("[Unreleased]"))
+        assertTrue(extension.has("1.0.0"))
+        assertFalse(extension.has("2.0.0"))
     }
 
     @Test

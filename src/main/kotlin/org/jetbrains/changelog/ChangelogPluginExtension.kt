@@ -95,5 +95,5 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     fun getAll() = Changelog(this).getAll()
 
-    fun hasVersion(version: String) = Changelog(this).hasVersion(version)
+    fun has(version: String) = Changelog(this).has(version)
 }

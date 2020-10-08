@@ -10,8 +10,7 @@
 
 > **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 6.6.1`
 
-A Gradle plugin that provides tasks and helper methods to simplify working with a changelog that is managed
-in the [keep a changelog][keep-a-changelog] style.
+A Gradle plugin that provides tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
 
 ## Table of contents
 
@@ -20,12 +19,12 @@ in the [keep a changelog][keep-a-changelog] style.
 - [Tasks](#tasks)
     - [`initializeChangelog`](#initializechangelog)
     - [`getChangelog`](#getchangelog)
-- [Methods](#methods)
+- [Extension Methods](#extension-methods)
     - [`get`](#get)
     - [`getUnreleased`](#getunreleased)
     - [`getLatest`](#getlatest)
     - [`getAll`](#getall)
-    - [`hasVersion`](#hasversion)
+    - [`has`](#has)
 - [`Changelog.Item`](#changelogitem)
 - [Gradle Closure in Kotlin DSL](#gradle-closure-in-kotlin-dsl)
 - [Helper Methods](#helper-methods)
@@ -170,10 +169,9 @@ $ ./gradlew getChangelog --console=plain -q --no-header
 ```
 
 
-## Methods
+## Extension Methods
 
-All the methods are available via the `changelog` extension and allow for reading the changelog file within
-the Gradle tasks to provide the latest (or specific) change notes.
+All the methods are available via the `changelog` extension and allow for reading the changelog file within the Gradle tasks to provide the latest (or specific) change notes.
 
 > **Note:** Following methods depend on the `changelog` extension, which is set in the *Configuration*
 > [build phase][build-phases]. To make it running properly, it's required to place the configuration before the fist
@@ -278,9 +276,9 @@ Groovy:
 extension.getAll().values().each { it.toText() }
 ```
 
-### `hasVersion`
+### `has`
 
-The method checks if the giver version exists in the changelog
+The method checks if the given version exists in the changelog.
 
 #### Examples
 
@@ -288,7 +286,7 @@ Kotlin:
 ```kotlin
 tasks {
     patchPluginXml {
-        closure { changelog.hasVersion() }
+        closure { changelog.has("1.0.0") }
     }
 }
 ```
@@ -297,16 +295,15 @@ Groovy:
 ```groovy
 tasks {
     patchPluginXml {
-        { changelog.hasVersion() }
+        { changelog.has("1.0.0") }
     }
 }
 ```
 
 ## `Changelog.Item`
 
-Methods described in the above section return `Changelog.Item` object, which is a representation of the single
-changelog section for the specific version. It provides a couple of properties and methods that allow altering
-the output form of the change notes:
+Methods described in the above section return `Changelog.Item` object, which is a representation of the single changelog section for the specific version.
+It provides a couple of properties and methods that allow altering the output form of the change notes:
 
 ### Properties 
 
@@ -328,8 +325,7 @@ the output form of the change notes:
 
 ## Gradle Closure in Kotlin DSL
 
-To produce Gradle-specific closure in Kotlin DSL, required by some third-party plugins, like
-[gradle-intellij-plugin][gh:gradle-intellij-plugin] it is required to wrap the Kotlin Unit with `KotlinClosure0` class:
+To produce Gradle-specific closure in Kotlin DSL, required by some third-party plugins, like [gradle-intellij-plugin][gh:gradle-intellij-plugin] it is required to wrap the Kotlin Unit with `KotlinClosure0` class:
 
 ```kotlin
 KotlinClosure0({ changelog.get() })
@@ -345,12 +341,12 @@ closure { changelog.get() }
 
 ## Helper Methods
 
-| Name                                   | Description                                                     | Returned type |
-| -------------------------------------- | --------------------------------------------------------------- | ------------- |
-| `closure(function: () -> T)`           | Produces Gradle-specific Closure for Kotlin DSL.                | `Closure<T>`  |
-| `date(pattern: String = "yyyy-MM-dd")` | Shorthand for retrieving the current date in the given format.  | `String`      |
-| `markdownToHTML(input: String)`        | Converts given Markdown content to HTML output.                 | `String`      |
-| `markdownToPlainText(input: String)`   | Converts given Markdown content to Plain Text output.           | `String`      |
+| Name                                   | Description                                                    | Returned type |
+| -------------------------------------- | -------------------------------------------------------------- | ------------- |
+| `closure(function: () -> T)`           | Produces Gradle-specific Closure for Kotlin DSL.               | `Closure<T>`  |
+| `date(pattern: String = "yyyy-MM-dd")` | Shorthand for retrieving the current date in the given format. | `String`      |
+| `markdownToHTML(input: String)`        | Converts given Markdown content to HTML output.                | `String`      |
+| `markdownToPlainText(input: String)`   | Converts given Markdown content to Plain Text output.          | `String`      |
 
 
 ## Usage Examples
