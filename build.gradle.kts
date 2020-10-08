@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.changelog") version "0.6.0"
     id("org.jetbrains.kotlin.jvm") version "1.4.10"
     id("com.gradle.plugin-publish") version "0.12.0"
-    id("io.gitlab.arturbosch.detekt") version "1.14.0"
+    id("io.gitlab.arturbosch.detekt") version "1.14.1"
     id("org.jlleitschuh.gradle.ktlint") version "9.4.0"
     id("com.github.breadmoirai.github-release") version "2.2.12"
     id("com.github.johnrengelman.shadow") version "5.2.0"
@@ -30,7 +30,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains:markdown:0.1.45")
     implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:0.7.2")
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.14.0")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.14.1")
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
 }
