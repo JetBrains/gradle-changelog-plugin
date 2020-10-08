@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - Renamed `hasVersion` method to `has`
+- Better error handling in `patchChangelog` task
 
 ## [0.6.0]
 ### Added

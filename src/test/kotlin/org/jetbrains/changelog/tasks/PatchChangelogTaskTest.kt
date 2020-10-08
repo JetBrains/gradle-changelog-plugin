@@ -266,4 +266,36 @@ class PatchChangelogTaskTest : BaseTest() {
             extension.getUnreleased().withHeader(true).toText()
         )
     }
+
+    @Test
+    fun `Throws MissingUnreleasedSectionException when Unreleased section is not present`() {
+        val unreleasedTerm = "Not released"
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                unreleasedTerm = "$unreleasedTerm"
+            }
+            """
+        changelog =
+            """
+            ## [1.0.0]
+            """
+
+        project.evaluate()
+        val result = runTask("patchChangelog", "--warn")
+
+        assertFailsWith<MissingVersionException> {
+            extension.getUnreleased()
+        }
+
+        assertEquals(
+            ":patchChangelog task requires '$unreleasedTerm' section to be present. " +
+                "Add '## $unreleasedTerm' section header to your changelog file: ${extension.path}",
+            result.output.trim()
+        )
+    }
 }

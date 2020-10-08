@@ -119,11 +119,11 @@ Plugin can be configured with the following properties set in the `changelog {}`
 
 The plugin introduces the following tasks:
 
-| Task                  | Description                                                          |
-| --------------------- | -------------------------------------------------------------------- |
-| `getChangelog`        | Retrieves changelog for the specified version.                       |
-| `initializeChangelog` | Creates new changelog file with Unreleased section and empty groups. |
-| `patchChangelog`      | Updates the unreleased section to the given version.                 |
+| Task                  | Description                                                                                                             |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `getChangelog`        | Retrieves changelog for the specified version.                                                                          |
+| `initializeChangelog` | Creates new changelog file with Unreleased section and empty groups.                                                    |
+| `patchChangelog`      | Updates the unreleased section to the given version. Requires *unreleased* section to be present in the changelog file. |
 
 ### `initializeChangelog`
 

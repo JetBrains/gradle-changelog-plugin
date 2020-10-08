@@ -3,6 +3,7 @@ package org.jetbrains.changelog.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.StopActionException
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogPluginExtension
@@ -21,6 +22,13 @@ open class PatchChangelogTask : DefaultTask() {
     @TaskAction
     fun run() {
         Changelog(extension).apply {
+            if (!has(extension.unreleasedTerm)) {
+                logger.warn(
+                    ":patchChangelog task requires '${extension.unreleasedTerm}' section to be present. " +
+                        "Add '## ${extension.unreleasedTerm}' section header to your changelog file: ${extension.path}"
+                )
+                throw StopActionException()
+            }
             get(extension.unreleasedTerm).let { item ->
                 val header = item.getHeaderNode()
                 val versionHeader = "## ${extension.header.call()}"

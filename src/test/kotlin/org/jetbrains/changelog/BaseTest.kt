@@ -49,7 +49,7 @@ open class BaseTest {
 
     protected fun runTask(taskName: String, vararg arguments: String): BuildResult = GradleRunner.create()
         .withProjectDir(project.projectDir)
-        .withArguments(taskName, "--console=plain", "-q", "--stacktrace", *arguments)
+        .withArguments(taskName, "--console=plain", "--stacktrace", *arguments)
         .withPluginClasspath()
         .build()
 }
