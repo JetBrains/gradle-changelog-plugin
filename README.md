@@ -39,7 +39,7 @@ import org.jetbrains.changelog.closure
 import org.jetbrains.changelog.date
 
 plugins {
-    id("org.jetbrains.changelog") version "0.6.0"
+    id("org.jetbrains.changelog") version "0.6.1"
 }
 
 tasks {
@@ -66,7 +66,7 @@ Groovy:
 import org.jetbrains.changelog.date
 
 plugins {
-    id 'org.jetbrains.changelog' version '0.6.0'
+    id 'org.jetbrains.changelog' version '0.6.1'
 }
 
 apply plugin: 'org.jetbrains.changelog'
