@@ -47,9 +47,15 @@ open class BaseTest {
         extension = project.extensions.getByType(ChangelogPluginExtension::class.java)
     }
 
-    protected fun runTask(taskName: String, vararg arguments: String): BuildResult = GradleRunner.create()
-        .withProjectDir(project.projectDir)
-        .withArguments(taskName, "--console=plain", "--stacktrace", *arguments)
-        .withPluginClasspath()
-        .build()
+    private fun prepareTask(taskName: String, vararg arguments: String) =
+        GradleRunner.create()
+            .withProjectDir(project.projectDir)
+            .withArguments(taskName, "--console=plain", "--stacktrace", *arguments)
+            .withPluginClasspath()
+
+    protected fun runTask(taskName: String, vararg arguments: String): BuildResult =
+        prepareTask(taskName, *arguments).build()
+
+    protected fun runFailingTask(taskName: String, vararg arguments: String): BuildResult =
+        prepareTask(taskName, *arguments).buildAndFail()
 }

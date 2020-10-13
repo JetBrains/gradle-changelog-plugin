@@ -4,14 +4,7 @@
 ### Added
 
 ### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
+- Smart processing of `headerParserRegex` property
 
 ## [0.6.1]
 ### Changed

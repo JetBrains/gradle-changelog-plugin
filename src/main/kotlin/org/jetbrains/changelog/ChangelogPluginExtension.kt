@@ -6,6 +6,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
+import java.util.regex.Pattern
 
 @Suppress("UnstableApiUsage")
 open class ChangelogPluginExtension(private val project: Project) {
@@ -30,17 +31,17 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val headerParserRegexProperty: Property<Any?> = project.objects.property(Any::class.java)
-    var headerParserRegex: Regex?
-        get() {
-            val value = headerParserRegexProperty.orNull ?: return null
-            return when (value) {
-                is Regex -> value
-                is String -> value.toRegex()
-                else -> error("String or Regex object expected for 'headerParserRegex', but got ${value.javaClass}")
-            }
-        }
-        set(value) = headerParserRegexProperty.set(value)
+    private val headerParserRegexProperty: Property<Regex?> = project.objects.property(Regex::class.java)
+    var headerParserRegex: Any?
+        get() = headerParserRegexProperty.orNull
+        set(value) = headerParserRegexProperty.set(headerParserRegexHelper(value))
+
+    private fun <T> headerParserRegexHelper(t: T) = when (t) {
+        is Regex -> t
+        is String -> t.toRegex()
+        is Pattern -> t.toRegex()
+        else -> throw IllegalArgumentException()
+    }
 
     @Optional
     @Internal
