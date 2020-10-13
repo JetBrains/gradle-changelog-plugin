@@ -72,4 +72,58 @@ class GetChangelogTaskTest : BaseTest() {
             result.output.trim()
         )
     }
+
+    @Test
+    fun `returns change notes with Pattern set to headerParserRegex`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                headerParserRegex = ~/\d\.\d\.\d/
+            }
+            """
+
+        project.evaluate()
+
+        runTask("getChangelog")
+    }
+
+    @Test
+    fun `returns change notes with String set to headerParserRegex`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                headerParserRegex = "\\d\\.\\d\\.\\d"
+            }
+            """
+
+        project.evaluate()
+
+        runTask("getChangelog")
+    }
+
+    @Test
+    fun `fails with Integer set to headerParserRegex`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                headerParserRegex = 123
+            }
+            """
+
+        project.evaluate()
+
+        runFailingTask("getChangelog")
+    }
 }

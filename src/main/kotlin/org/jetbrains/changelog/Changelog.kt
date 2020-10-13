@@ -33,7 +33,7 @@ class Changelog(extension: ChangelogPluginExtension) {
                 when (this) {
                     extension.unreleasedTerm -> this
                     else -> split("""[^-+.0-9a-zA-Z]+""".toRegex()).firstOrNull(
-                        (extension.headerParserRegex ?: semVerRegex)::matches
+                        (extension.headerParserRegex as Regex? ?: semVerRegex)::matches
                     ) ?: throw HeaderParseException(this, extension)
                 }
             }

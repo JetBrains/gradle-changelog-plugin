@@ -433,8 +433,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `allows to customize the header parser regex to match version in different format than semver`() {
-        extension.headerParserRegex =
-            """\d+\.\d+""".toRegex()
         changelog =
             """
             # My Changelog
@@ -444,6 +442,20 @@ class ChangelogPluginExtensionTest : BaseTest() {
             * Foo
             """
 
+        extension.headerParserRegex =
+            """\d+\.\d+""".toRegex()
         assertNotNull(extension.get("2020.1"))
+
+        extension.headerParserRegex = "\\d+\\.\\d+"
+        assertNotNull(extension.get("2020.1"))
+
+        extension.headerParserRegex =
+            """\d+\.\d+""".toPattern()
+        assertNotNull(extension.get("2020.1"))
+
+        assertFailsWith<IllegalArgumentException> {
+            extension.headerParserRegex = 123
+            assertNotNull(extension.get("2020.1"))
+        }
     }
 }
