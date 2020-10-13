@@ -30,9 +30,16 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val headerParserRegexProperty: Property<Regex?> = project.objects.property(Regex::class.java)
+    private val headerParserRegexProperty: Property<Any?> = project.objects.property(Any::class.java)
     var headerParserRegex: Regex?
-        get() = headerParserRegexProperty.orNull
+        get() {
+            val value = headerParserRegexProperty.orNull ?: return null
+            return when (value) {
+                is Regex -> value
+                is String -> value.toRegex()
+                else -> error("String or Regex object expected for 'headerParserRegex', but got ${value.javaClass}")
+            }
+        }
         set(value) = headerParserRegexProperty.set(value)
 
     @Optional
