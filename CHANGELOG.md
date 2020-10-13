@@ -1,6 +1,18 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [0.6.2]
 ### Changed
 - Smart processing of `headerParserRegex` property
 
