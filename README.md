@@ -315,15 +315,16 @@ It provides a couple of properties and methods that allow altering the output fo
 
 ### Methods
 
-| Name                | Description                    | Returned type |
-| ------------------- | ------------------------------ | ------------- |
-| `noHeader()`        | Excludes header part.          | `this`        |
-| `noHeader(Boolean)` | Includes/excludes header part. | `this`        |
-| `getHeader()`       | Returns header text.           | `String`      |
-| `toText()`          | Generates Markdown output.     | `String`      |
-| `toPlainText()`     | Generates Plain Text output.   | `String`      |
-| `toString()`        | Generates Markdown output.     | `String`      |
-| `toHTML()`          | Generates HTML output.         | `String`      |
+| Name                | Description                       | Returned type |
+| ------------------- | --------------------------------- | ------------- |
+| `noHeader()`        | Excludes header part.             | `this`        |
+| `noHeader(Boolean)` | Includes/excludes header part.    | `this`        |
+| `getHeader()`       | Returns header text.              | `String`      |
+| `toText()`          | Generates Markdown output.        | `String`      |
+| `toPlainText()`     | Generates Plain Text output.      | `String`      |
+| `toString()`        | Generates Markdown output.        | `String`      |
+| `toHTML()`          | Generates HTML output.            | `String`      |
+| `toSlack()`         | Generates Slack Markdown output.  | `String`      |
 
 ## Gradle Closure in Kotlin DSL
 
@@ -349,6 +350,7 @@ closure { changelog.get() }
 | `date(pattern: String = "yyyy-MM-dd")` | Shorthand for retrieving the current date in the given format. | `String`      |
 | `markdownToHTML(input: String)`        | Converts given Markdown content to HTML output.                | `String`      |
 | `markdownToPlainText(input: String)`   | Converts given Markdown content to Plain Text output.          | `String`      |
+| `markdownToSlack(input: String)`       | Converts given Markdown content to Slack Markdown output.      | `String`      |
 
 
 ## Usage Examples

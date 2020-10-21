@@ -2,14 +2,7 @@
 
 ## [Unreleased]
 ### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
+- `toSlack()` method to generate the changelog using the slack-specific markdown
 
 ### Security
 ## [0.6.2]

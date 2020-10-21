@@ -110,6 +110,8 @@ class Changelog(extension: ChangelogPluginExtension) {
 
         fun toPlainText() = markdownToPlainText(toText())
 
+        fun toSlack() = markdownToSlack(toText())
+
         override fun toString() = toText()
     }
 
