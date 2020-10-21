@@ -22,6 +22,7 @@ repositories {
     mavenCentral()
     jcenter()
     maven("https://dl.bintray.com/jetbrains/markdown")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -30,6 +31,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains:markdown:0.1.45")
     implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:0.7.2")
+    implementation("com.github.AlexPl292:mark-down-to-slack:1.0.1")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.14.1")
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))

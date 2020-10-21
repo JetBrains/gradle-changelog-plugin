@@ -1,5 +1,6 @@
 package org.jetbrains.changelog
 
+import dev.feedforward.markdownto.DownParser
 import groovy.lang.Closure
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
@@ -24,3 +25,5 @@ fun markdownToPlainText(input: String) = PlainTextFlavourDescriptor().run {
     HtmlGenerator(input, MarkdownParser(this).buildMarkdownTreeFromString(input), this, false)
         .generateHtml(PlainTextTagRenderer())
 }
+
+fun markdownToSlack(input: String) = DownParser(input).toSlack().toString()

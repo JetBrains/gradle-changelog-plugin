@@ -74,6 +74,13 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 toHTML()
             )
+            assertEquals(
+                """
+                *Removed*
+                • Bar
+                """.trimIndent(),
+                toSlack()
+            )
         }
     }
 
@@ -207,6 +214,26 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 toPlainText()
             )
+            assertEquals(
+                """
+                *[1.0.0]*
+                *Added*
+                • Foo _FOO_ foo
+                • Bar *BAR* bar
+                • Test <https://www.example.org|link> test
+                • Code `block` code
+                • Bravo
+                • Alpha
+                
+                *Fixed*
+                • Hello
+                • World
+                
+                *Removed*
+                • Hola
+                """.trimIndent(),
+                toSlack()
+            )
         }
     }
 
@@ -266,6 +293,18 @@ class ChangelogPluginExtensionTest : BaseTest() {
                     <ul><li>World</li></ul>
                     """.trimIndent(),
                     toHTML()
+                )
+                assertEquals(
+                    """
+                    *Added*
+                    • Foo
+                    • Buz
+                    • Alpha
+
+                    *Fixed*
+                    • World
+                    """.trimIndent(),
+                    toSlack()
                 )
             }
         }
@@ -334,6 +373,13 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 <ul><li>Foo</li></ul>
                 """.trimIndent(),
                 toHTML()
+            )
+            assertEquals(
+                """
+                *[1.0.0]*
+                • Foo
+                """.trimIndent(),
+                toSlack()
             )
         }
     }
