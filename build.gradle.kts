@@ -28,7 +28,7 @@ dependencies {
     shadow(localGroovy())
     shadow(gradleApi())
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains:markdown:0.1.45")
+    implementation("org.jetbrains:markdown:0.2.0.pre-62")
     implementation("org.jetbrains.kotlinx:kotlinx-html-assembly:0.7.2")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.15.0")
     testImplementation(kotlin("test"))
