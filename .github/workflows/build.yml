@@ -77,8 +77,8 @@ jobs:
         id: properties
         shell: bash
         run: |
-          VERSION=$(./gradlew properties --console=plain -q | grep "^version:" | awk '{printf $2}')
           NAME=$(./gradlew properties --console=plain -q | grep "^name:" | awk '{printf $2}')
+          VERSION=$(./gradlew properties --console=plain -q | grep "^version:" | awk '{printf $2}')
           ARTIFACT="$NAME-$VERSION.jar"
           CHANGELOG=$(./gradlew getChangelog --unreleased --no-header --console=plain -q)
           CHANGELOG="${CHANGELOG//'%'/'%25'}"
@@ -87,7 +87,7 @@ jobs:
 
           echo "::set-output name=version::$VERSION"
           echo "::set-output name=name::$NAME"
-          echo "::set-output name=artifact::$ARTIFACT
+          echo "::set-output name=artifact::$ARTIFACT"
           echo "::set-output name=changelog::$CHANGELOG"
 
       - name: Build Plugin
