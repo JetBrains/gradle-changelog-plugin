@@ -63,7 +63,7 @@ changelog {
 
 Groovy:
 ```groovy
-import org.jetbrains.changelog.date
+import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
     id 'org.jetbrains.changelog' version '0.6.2'
@@ -82,7 +82,7 @@ intellij {
 changelog {
     version = "${project.version}"
     path = "${project.projectDir}/CHANGELOG.md"
-    header = { "[${project.version}] - ${date()}" }
+    header = { "[${project.version}] - ${ExtensionsKt.date()}" }
     headerParserRegex = ~/\d+\.\d+/
     itemPrefix = "-"
     keepUnreleasedSection = true
@@ -349,6 +349,14 @@ closure { changelog.get() }
 | `markdownToHTML(input: String)`        | Converts given Markdown content to HTML output.                | `String`      |
 | `markdownToPlainText(input: String)`   | Converts given Markdown content to Plain Text output.          | `String`      |
 
+> **Note:** To use package-level Kotlin functions in Groovy, you need to import the containing file as a class:
+> ```groovy
+> import org.jetbrains.changelog.ExtensionsKt
+> 
+> changelog {
+>   header = { "[${project.version}] - ${ExtensionsKt.date('yyyy-MM-dd')}" }
+> }
+> ```
 
 ## Usage Examples
 

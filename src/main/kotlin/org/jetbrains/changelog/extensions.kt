@@ -1,3 +1,5 @@
+@file:JvmName("ChangelogUtils")
+
 package org.jetbrains.changelog
 
 import groovy.lang.Closure
