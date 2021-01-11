@@ -9,13 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Fetch Sources
-        uses: actions/checkout@v2
-
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+
+      - name: Fetch Sources
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.release.tag_name }}
 
       - name: Deploy Plugin
         env:
