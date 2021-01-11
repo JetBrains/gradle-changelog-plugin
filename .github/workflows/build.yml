@@ -50,7 +50,7 @@ jobs:
       name: ${{ steps.properties.outputs.name }}
       version: ${{ steps.properties.outputs.version }}
       changelog: ${{ steps.properties.outputs.changelog }}
-      artifact: ${{ steps.properties.outputs.name }}-${{ steps.properties.outputs.version }}.jar
+      artifact: ${{ steps.properties.outputs.artifact }}
     steps:
 
       - name: Setup Java
@@ -77,13 +77,17 @@ jobs:
         id: properties
         shell: bash
         run: |
-          echo "::set-output name=version::$(./gradlew properties --console=plain -q | grep "^version:" | awk '{printf $2}')"
-          echo "::set-output name=name::$(./gradlew properties --console=plain -q | grep "^name:" | awk '{printf $2}')"
-
+          VERSION=$(./gradlew properties --console=plain -q | grep "^version:" | awk '{printf $2}')
+          NAME=$(./gradlew properties --console=plain -q | grep "^name:" | awk '{printf $2}')
+          ARTIFACT="$NAME-$VERSION.jar"
           CHANGELOG=$(./gradlew getChangelog --unreleased --no-header --console=plain -q)
           CHANGELOG="${CHANGELOG//'%'/'%25'}"
           CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
           CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+
+          echo "::set-output name=version::$VERSION"
+          echo "::set-output name=name::$NAME"
+          echo "::set-output name=artifact::$ARTIFACT
           echo "::set-output name=changelog::$CHANGELOG"
 
       - name: Build Plugin
