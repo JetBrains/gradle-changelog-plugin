@@ -16,7 +16,7 @@ plugins {
 
 description = "Gradle Changelog Plugin"
 group = "org.jetbrains.intellij.plugins"
-version = "0.6.2"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -75,7 +75,7 @@ tasks {
     }
 
     shadowJar {
-        classifier = ""
+        archiveClassifier.set("")
         dependencies { include { it.moduleName == "markdown" } }
     }
 
@@ -85,10 +85,12 @@ tasks {
     }
 }
 
-// Hack for removing the org.jetbrains:markdown:0.1.41 dependency from the generated POM file.
-// Somehow shadowJar does not alter the dependencies list.
 publishing {
     publications.create<MavenPublication>("pluginMaven") {
+        artifact(tasks.shadowJar)
+
+        // Hack for removing the org.jetbrains:markdown:0.1.41 dependency from the generated POM file.
+        // Somehow shadowJar does not alter the dependencies list.
         pom.withXml {
             val node = (asNode().depthFirst()).find {
                 (it as Node).text() == "markdown"
