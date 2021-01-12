@@ -7,6 +7,9 @@
 ### Changed
 - `header` closure has the delegate explicitly set to the extension's context
 - Upgrade Gradle Wrapper to `6.6`
+- Upgrade `org.jetbrains.kotlin.jvm` to `1.4.21`
+- Upgrade `io.gitlab.arturbosch.detekt` to `1.15.0`
+- Upgrade `com.github.johnrengelman.shadow` to `6.1.0`
 
 ## [0.6.2]
 ### Changed
