@@ -6,7 +6,7 @@
 [![Build](https://github.com/JetBrains/gradle-changelog-plugin/workflows/Build/badge.svg)][gh:build]
 [![Slack](https://img.shields.io/badge/Slack-%23gradle--changelog--plugin-blue)][jb:slack]
 
-**This project requires Gradle 5.4.1 or newer**
+**This project requires Gradle 6.6 or newer**
 
 > **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 6.8`
 
@@ -53,7 +53,7 @@ tasks {
 changelog {
     version = "${project.version}"
     path = "${project.projectDir}/CHANGELOG.md"
-    header = closure { "[${project.version}] - ${date()}" }
+    header = closure { "[$version] - ${date()}" }
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
@@ -82,7 +82,7 @@ intellij {
 changelog {
     version = "${project.version}"
     path = "${project.projectDir}/CHANGELOG.md"
-    header = { "[${project.version}] - ${ExtensionsKt.date()}" }
+    header = { "[$version] - ${ExtensionsKt.date()}" }
     headerParserRegex = ~/\d+\.\d+/
     itemPrefix = "-"
     keepUnreleasedSection = true
@@ -106,7 +106,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | Property                | Description                                                                | Default value                                                        |
 | ----------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | `groups`                | List of groups created with a new Unreleased section.                      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]` |
-| `header`                | Closure that returns current header value.                                 | `{ "[${project.version}]" }`                                         |
+| `header`                | Closure that returns current header value.                                 | `{ "[$version]" }`                                                   |
 | `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string. | `null`, fallbacks to [`Changelog#semVerRegex`][semver-regex]         |
 | `itemPrefix`            | Single item's prefix, allows to customise the bullet sign.                 | `"-"`                                                                |
 | `keepUnreleasedSection` | Add Unreleased empty section after patching.                               | `true`                                                               |
@@ -115,6 +115,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | `unreleasedTerm`        | Unreleased section text.                                                   | `"[Unreleased]"`                                                     |
 | `version`               | Current project's version.                                                 | `"${project.version}"`                                               |
 
+> **Note:** `header` closure has the delegate explicitly set to the extension's context for the sake of the [Configuration cache][configuration-cache] support.
 
 ## Tasks
 
@@ -354,7 +355,7 @@ closure { changelog.get() }
 > import org.jetbrains.changelog.ExtensionsKt
 > 
 > changelog {
->   header = { "[${project.version}] - ${ExtensionsKt.date('yyyy-MM-dd')}" }
+>   header = { "[$version] - ${ExtensionsKt.date('yyyy-MM-dd')}" }
 > }
 > ```
 
@@ -372,6 +373,7 @@ closure { changelog.get() }
 [jb:twitter]: https://twitter.com/JBPlatform
 
 [build-phases]: https://docs.gradle.org/current/userguide/build_lifecycle.html#sec:build_phases
+[configuration-cache]: https://docs.gradle.org/6.8/userguide/configuration_cache.html
 [keep-a-changelog]: https://keepachangelog.com/en/1.0.0
 [gradle-plugin-shield]: https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugin&color=blue&metadataUrl=https://plugins.gradle.org/m2/org/jetbrains/intellij/plugins/gradle-changelog-plugin/maven-metadata.xml
 [gradle-plugin]: https://plugins.gradle.org/plugin/org.jetbrains.changelog

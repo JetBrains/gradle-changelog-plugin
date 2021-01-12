@@ -1,19 +1,24 @@
 package org.jetbrains.changelog
 
 import groovy.lang.Closure
-import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
+import java.io.File
 import java.util.regex.Pattern
 
 @Suppress("UnstableApiUsage")
-open class ChangelogPluginExtension(private val project: Project) {
+open class ChangelogPluginExtension(
+    objects: ObjectFactory,
+    private val projectDir: File,
+    private val projectVersion: String,
+) {
 
     @Optional
     @Internal
-    private val groupsProperty: ListProperty<String> = project.objects.listProperty(String::class.java)
+    private val groupsProperty: ListProperty<String> = objects.listProperty(String::class.java)
     var groups: List<String>
         get() = groupsProperty.getOrElse(emptyList()).ifEmpty {
             listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security")
@@ -22,7 +27,7 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val headerProperty: Property<Closure<*>> = project.objects.property(Closure::class.java).apply {
+    private val headerProperty: Property<Closure<*>> = objects.property(Closure::class.java).apply {
         set(closure { "[$version]" })
     }
     var header: Closure<*>
@@ -31,7 +36,7 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val headerParserRegexProperty: Property<Regex?> = project.objects.property(Regex::class.java)
+    private val headerParserRegexProperty: Property<Regex?> = objects.property(Regex::class.java)
     var headerParserRegex: Any?
         get() = headerParserRegexProperty.orNull
         set(value) = headerParserRegexProperty.set(headerParserRegexHelper(value))
@@ -45,7 +50,7 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val itemPrefixProperty: Property<String> = project.objects.property(String::class.java).apply {
+    private val itemPrefixProperty: Property<String> = objects.property(String::class.java).apply {
         set("-")
     }
     var itemPrefix: String
@@ -54,7 +59,7 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val keepUnreleasedSectionProperty: Property<Boolean> = project.objects.property(Boolean::class.java).apply {
+    private val keepUnreleasedSectionProperty: Property<Boolean> = objects.property(Boolean::class.java).apply {
         set(true)
     }
     var keepUnreleasedSection: Boolean
@@ -63,7 +68,7 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val patchEmptyProperty: Property<Boolean> = project.objects.property(Boolean::class.java).apply {
+    private val patchEmptyProperty: Property<Boolean> = objects.property(Boolean::class.java).apply {
         set(true)
     }
     var patchEmpty: Boolean
@@ -72,8 +77,8 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val pathProperty: Property<String> = project.objects.property(String::class.java).apply {
-        set("${project.projectDir}/CHANGELOG.md")
+    private val pathProperty: Property<String> = objects.property(String::class.java).apply {
+        set("$projectDir/CHANGELOG.md")
     }
     var path: String
         get() = pathProperty.get()
@@ -81,14 +86,14 @@ open class ChangelogPluginExtension(private val project: Project) {
 
     @Optional
     @Internal
-    private val versionProperty: Property<String> = project.objects.property(String::class.java)
+    private val versionProperty: Property<String> = objects.property(String::class.java)
     var version: String
-        get() = versionProperty.getOrElse(project.version.toString())
+        get() = versionProperty.getOrElse(projectVersion)
         set(value) = versionProperty.set(value)
 
     @Optional
     @Internal
-    private val unreleasedTermProperty: Property<String> = project.objects.property(String::class.java).apply {
+    private val unreleasedTermProperty: Property<String> = objects.property(String::class.java).apply {
         set("[Unreleased]")
     }
     var unreleasedTerm: String

@@ -42,6 +42,7 @@ open class BaseTest {
             .withName("project")
             .withProjectDir(createTempDir()).build() as DefaultProject
 
+        project.version = "1.0.0"
         project.plugins.apply(ChangelogPlugin::class.java)
 
         extension = project.extensions.getByType(ChangelogPluginExtension::class.java)

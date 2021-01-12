@@ -30,20 +30,21 @@ open class PatchChangelogTask : DefaultTask() {
                 throw StopActionException()
             }
             get(extension.unreleasedTerm).let { item ->
-                val header = item.getHeaderNode()
-                val versionHeader = "## ${extension.header.call()}"
+                val node = item.getHeaderNode()
+                val content = extension.header.apply { delegate = extension }.call()
+                val header = "## $content"
 
                 if (extension.getUnreleased().getSections().isEmpty() && !extension.patchEmpty) {
                     return
                 }
 
                 File(extension.path).writeText(
-                    content.run {
+                    this.content.run {
                         if (extension.keepUnreleasedSection) {
                             val unreleasedGroups = extension.groups.joinToString("\n") { "### $it\n" }
-                            StringBuilder(this).insert(header.endOffset, "\n$unreleasedGroups$versionHeader").toString()
+                            StringBuilder(this).insert(node.endOffset, "\n$unreleasedGroups$header").toString()
                         } else {
-                            replaceRange(header.startOffset, header.endOffset, versionHeader)
+                            replaceRange(node.startOffset, node.endOffset, header)
                         }
                     }
                 )

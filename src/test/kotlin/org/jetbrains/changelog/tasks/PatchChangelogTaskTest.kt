@@ -8,6 +8,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class PatchChangelogTaskTest : BaseTest() {
 
@@ -103,7 +104,7 @@ class PatchChangelogTaskTest : BaseTest() {
             }
             changelog {
                 version = "1.0.0"
-                header = { "Foo ${project.version} bar" }
+                header = { "Foo ${'$'}version bar" }
             }
             """
 
@@ -297,5 +298,13 @@ class PatchChangelogTaskTest : BaseTest() {
                 "Add '## $unreleasedTerm' section header to your changelog file: ${extension.path}",
             result.output.trim()
         )
+    }
+
+    @Test
+    fun `task loads from the configuration cache`() {
+        runTask("patchChangelog", "--configuration-cache")
+        val result = runTask("patchChangelog", "--configuration-cache")
+
+        assertTrue(result.output.contains("Reusing configuration cache."))
     }
 }

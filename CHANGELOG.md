@@ -2,16 +2,12 @@
 
 ## [Unreleased]
 ### Added
+- Support for the [Configuration cache](https://docs.gradle.org/6.8/userguide/configuration_cache.html)
 
 ### Changed
+- `header` closure has the delegate explicitly set to the extension's context
+- Upgrade Gradle Wrapper to `6.6`
 
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 ## [0.6.2]
 ### Changed
 - Smart processing of `headerParserRegex` property

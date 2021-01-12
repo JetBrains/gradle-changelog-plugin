@@ -4,6 +4,7 @@ import org.jetbrains.changelog.BaseTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class GetChangelogTaskTest : BaseTest() {
 
@@ -125,5 +126,13 @@ class GetChangelogTaskTest : BaseTest() {
         project.evaluate()
 
         runFailingTask("getChangelog")
+    }
+
+    @Test
+    fun `task loads from the configuration cache`() {
+        runTask("getChangelog", "--configuration-cache")
+        val result = runTask("getChangelog", "--configuration-cache")
+
+        assertTrue(result.output.contains("Reusing configuration cache."))
     }
 }

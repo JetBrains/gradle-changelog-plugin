@@ -14,7 +14,7 @@ class ChangelogPlugin : Plugin<Project> {
         this.project = project
 
         project.run {
-            extensions.create("changelog", ChangelogPluginExtension::class.java, project)
+            extensions.create("changelog", ChangelogPluginExtension::class.java, objects, projectDir, version)
 
             tasks.apply {
                 create("patchChangelog", PatchChangelogTask::class.java) {

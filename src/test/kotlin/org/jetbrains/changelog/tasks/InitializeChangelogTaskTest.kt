@@ -5,6 +5,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class InitializeChangelogTaskTest : BaseTest() {
 
@@ -118,5 +119,13 @@ class InitializeChangelogTaskTest : BaseTest() {
             """.trimIndent(),
             extension.getUnreleased().withHeader(true).toText()
         )
+    }
+
+    @Test
+    fun `task loads from the configuration cache`() {
+        runTask("initializeChangelog", "--configuration-cache")
+        val result = runTask("initializeChangelog", "--configuration-cache")
+
+        assertTrue(result.output.contains("Reusing configuration cache."))
     }
 }
