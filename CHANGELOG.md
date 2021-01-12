@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [1.0.0]
+### Added
 - Support for the [Configuration cache](https://docs.gradle.org/6.8/userguide/configuration_cache.html)
 
 ### Changed
