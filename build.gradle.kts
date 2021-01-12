@@ -11,7 +11,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version "1.15.0"
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
     id("com.github.breadmoirai.github-release") version "2.2.12"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 description = "Gradle Changelog Plugin"
