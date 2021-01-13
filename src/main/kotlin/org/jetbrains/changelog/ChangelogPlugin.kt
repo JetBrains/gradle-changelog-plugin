@@ -10,14 +10,11 @@ import org.jetbrains.changelog.tasks.PatchChangelogTask
 
 class ChangelogPlugin : Plugin<Project> {
 
-    private lateinit var project: Project
-
     override fun apply(project: Project) {
-        this.project = project
-
         project.run {
-            val extension = extensions.create("changelog", ChangelogPluginExtension::class.java, objects, projectDir, version)
-            conventionMappingOf(extension).map("version") { version }
+            extensions.create("changelog", ChangelogPluginExtension::class.java, objects, projectDir, version).let {
+                conventionMappingOf(it).map("version") { version }
+            }
 
             tasks.apply {
                 create("patchChangelog", PatchChangelogTask::class.java) {

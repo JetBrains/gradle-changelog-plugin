@@ -2,8 +2,6 @@ package org.jetbrains.changelog
 
 import groovy.lang.Closure
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import java.io.File
@@ -18,7 +16,7 @@ open class ChangelogPluginExtension(
 
     @Optional
     @Internal
-    private val groupsProperty: ListProperty<String> = objects.listProperty(String::class.java)
+    private val groupsProperty = objects.listProperty(String::class.java)
     var groups: List<String>
         get() = groupsProperty.getOrElse(emptyList()).ifEmpty {
             listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security")
@@ -27,7 +25,7 @@ open class ChangelogPluginExtension(
 
     @Optional
     @Internal
-    private val headerProperty: Property<Closure<*>> = objects.property(Closure::class.java).apply {
+    private val headerProperty = objects.property(Closure::class.java).apply {
         set(closure { "[$version]" })
     }
     var header: Closure<*>
@@ -36,7 +34,7 @@ open class ChangelogPluginExtension(
 
     @Optional
     @Internal
-    private val headerParserRegexProperty: Property<Regex?> = objects.property(Regex::class.java)
+    private val headerParserRegexProperty = objects.property(Regex::class.java)
     var headerParserRegex: Any?
         get() = headerParserRegexProperty.orNull
         set(value) = headerParserRegexProperty.set(headerParserRegexHelper(value))
@@ -50,7 +48,7 @@ open class ChangelogPluginExtension(
 
     @Optional
     @Internal
-    private val itemPrefixProperty: Property<String> = objects.property(String::class.java).apply {
+    private val itemPrefixProperty = objects.property(String::class.java).apply {
         set("-")
     }
     var itemPrefix: String
@@ -59,7 +57,7 @@ open class ChangelogPluginExtension(
 
     @Optional
     @Internal
-    private val keepUnreleasedSectionProperty: Property<Boolean> = objects.property(Boolean::class.java).apply {
+    private val keepUnreleasedSectionProperty = objects.property(Boolean::class.java).apply {
         set(true)
     }
     var keepUnreleasedSection: Boolean
@@ -68,7 +66,7 @@ open class ChangelogPluginExtension(
 
     @Optional
     @Internal
-    private val patchEmptyProperty: Property<Boolean> = objects.property(Boolean::class.java).apply {
+    private val patchEmptyProperty = objects.property(Boolean::class.java).apply {
         set(true)
     }
     var patchEmpty: Boolean
@@ -77,7 +75,7 @@ open class ChangelogPluginExtension(
 
     @Optional
     @Internal
-    private val pathProperty: Property<String> = objects.property(String::class.java).apply {
+    private val pathProperty = objects.property(String::class.java).apply {
         set("$projectDir/CHANGELOG.md")
     }
     var path: String
@@ -86,7 +84,7 @@ open class ChangelogPluginExtension(
 
     @Optional
     @Internal
-    private val versionProperty: Property<String> = objects.property(String::class.java).apply {
+    private val versionProperty = objects.property(String::class.java).apply {
         set(projectVersion)
     }
     var version: String
@@ -95,7 +93,7 @@ open class ChangelogPluginExtension(
 
     @Optional
     @Internal
-    private val unreleasedTermProperty: Property<String> = objects.property(String::class.java).apply {
+    private val unreleasedTermProperty = objects.property(String::class.java).apply {
         set("[Unreleased]")
     }
     var unreleasedTerm: String
