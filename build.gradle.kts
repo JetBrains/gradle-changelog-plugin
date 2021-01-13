@@ -6,7 +6,7 @@ plugins {
     id("java-gradle-plugin")
     id("maven-publish")
     id("org.jetbrains.changelog") version "1.0.0"
-    id("org.jetbrains.kotlin.jvm") version "1.4.21"
+    id("org.jetbrains.kotlin.jvm") version "1.4.21-2"
     id("com.gradle.plugin-publish") version "0.12.0"
     id("io.gitlab.arturbosch.detekt") version "1.15.0"
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
