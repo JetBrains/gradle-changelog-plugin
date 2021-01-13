@@ -1,17 +1,9 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
-
 ### Fixed
+- Provide `project.version` to the extension using conventions
 
-### Security
 ## [1.0.0]
 ### Added
 - Support for the [Configuration cache](https://docs.gradle.org/6.8/userguide/configuration_cache.html)

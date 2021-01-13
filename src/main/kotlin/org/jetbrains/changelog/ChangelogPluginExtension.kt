@@ -86,9 +86,11 @@ open class ChangelogPluginExtension(
 
     @Optional
     @Internal
-    private val versionProperty: Property<String> = objects.property(String::class.java)
+    private val versionProperty: Property<String> = objects.property(String::class.java).apply {
+        set(projectVersion)
+    }
     var version: String
-        get() = versionProperty.getOrElse(projectVersion)
+        get() = versionProperty.get()
         set(value) = versionProperty.set(value)
 
     @Optional

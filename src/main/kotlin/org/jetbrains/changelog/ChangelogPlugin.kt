@@ -2,6 +2,8 @@ package org.jetbrains.changelog
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.internal.ConventionMapping
+import org.gradle.api.internal.IConventionAware
 import org.jetbrains.changelog.tasks.GetChangelogTask
 import org.jetbrains.changelog.tasks.InitializeChangelogTask
 import org.jetbrains.changelog.tasks.PatchChangelogTask
@@ -14,7 +16,8 @@ class ChangelogPlugin : Plugin<Project> {
         this.project = project
 
         project.run {
-            extensions.create("changelog", ChangelogPluginExtension::class.java, objects, projectDir, version)
+            val extension = extensions.create("changelog", ChangelogPluginExtension::class.java, objects, projectDir, version)
+            conventionMappingOf(extension).map("version") { version }
 
             tasks.apply {
                 create("patchChangelog", PatchChangelogTask::class.java) {
@@ -29,5 +32,9 @@ class ChangelogPlugin : Plugin<Project> {
                 }
             }
         }
+    }
+
+    companion object {
+        fun conventionMappingOf(obj: Any): ConventionMapping = (obj as IConventionAware).conventionMapping
     }
 }
