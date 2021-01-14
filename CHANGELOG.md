@@ -1,6 +1,18 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [unspecified]
 ### Fixed
 - Provide `project.version` to the extension using conventions
 
