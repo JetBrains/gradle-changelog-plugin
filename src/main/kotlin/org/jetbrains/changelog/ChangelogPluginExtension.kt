@@ -11,7 +11,7 @@ import java.util.regex.Pattern
 open class ChangelogPluginExtension(
     objects: ObjectFactory,
     private val projectDir: File,
-    private val projectVersion: String,
+    private val projectVersion: Any,
 ) {
 
     @Optional
@@ -85,7 +85,7 @@ open class ChangelogPluginExtension(
     @Optional
     @Internal
     private val versionProperty = objects.property(String::class.java).apply {
-        set(projectVersion)
+        set("$projectVersion")
     }
     var version: String
         get() = versionProperty.get()
