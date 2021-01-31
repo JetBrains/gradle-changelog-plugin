@@ -28,7 +28,7 @@ class ChangelogPluginTest : BaseTest() {
 
         (project.tasks.findByName("getChangelog") as GetChangelogTask).apply {
             assertNotNull(this)
-            assertEquals("${project.projectDir}${File.separatorChar}CHANGELOG.md", getInputFile().path)
+            assertEquals(File("${project.projectDir}/CHANGELOG.md").path, getInputFile().path)
         }
 
         (project.tasks.findByName("patchChangelog") as PatchChangelogTask).apply {
