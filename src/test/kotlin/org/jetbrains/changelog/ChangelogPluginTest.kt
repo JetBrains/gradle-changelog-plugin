@@ -3,6 +3,7 @@ package org.jetbrains.changelog
 import org.jetbrains.changelog.tasks.GetChangelogTask
 import org.jetbrains.changelog.tasks.InitializeChangelogTask
 import org.jetbrains.changelog.tasks.PatchChangelogTask
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -27,7 +28,7 @@ class ChangelogPluginTest : BaseTest() {
 
         (project.tasks.findByName("getChangelog") as GetChangelogTask).apply {
             assertNotNull(this)
-            assertEquals("${project.projectDir}/CHANGELOG.md", getInputFile().path)
+            assertEquals("${project.projectDir}${File.separatorChar}CHANGELOG.md", getInputFile().path)
         }
 
         (project.tasks.findByName("patchChangelog") as PatchChangelogTask).apply {
