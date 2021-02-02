@@ -225,7 +225,7 @@ class PatchChangelogTaskTest : BaseTest() {
             """
 
         project.evaluate()
-        val result = runTask("patchChangelog")
+        runTask("patchChangelog")
 
         assertEquals(
             """
