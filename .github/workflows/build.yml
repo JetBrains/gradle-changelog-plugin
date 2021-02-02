@@ -16,7 +16,14 @@ jobs:
   test:
     name: Test
     needs: gradleValidation
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+          - os: ubuntu-latest
+          - os: macos-latest
+
     steps:
 
       - name: Setup Java
