@@ -4,6 +4,7 @@ import org.jetbrains.changelog.exceptions.VersionNotSpecifiedException
 import org.jetbrains.changelog.tasks.GetChangelogTask
 import org.jetbrains.changelog.tasks.InitializeChangelogTask
 import org.jetbrains.changelog.tasks.PatchChangelogTask
+import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -38,7 +39,7 @@ class ChangelogPluginTest : BaseTest() {
 
         (project.tasks.findByName("getChangelog") as GetChangelogTask).apply {
             assertNotNull(this)
-            assertEquals("${project.projectDir}/CHANGELOG.md", getInputFile().path)
+            assertEquals(File("${project.projectDir}/CHANGELOG.md").path, getInputFile().path)
         }
 
         (project.tasks.findByName("patchChangelog") as PatchChangelogTask).apply {

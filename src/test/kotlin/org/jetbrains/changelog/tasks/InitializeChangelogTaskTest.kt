@@ -1,6 +1,7 @@
 package org.jetbrains.changelog.tasks
 
 import org.jetbrains.changelog.BaseTest
+import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -94,14 +95,14 @@ class InitializeChangelogTaskTest : BaseTest() {
             }
             changelog {
                 version = "1.0.0"
-                path = "${project.projectDir}/CHANGES.md"
+                path = "${File("${project.projectDir}/CHANGES.md").path.replace("\\", "\\\\")}"
                 itemPrefix = "*"
                 unreleasedTerm = "Upcoming version"
                 groups = ["Added", "Removed"]
             }
             """
         extension.apply {
-            path = "${project.projectDir}/CHANGES.md"
+            path = File("${project.projectDir}/CHANGES.md").path
             unreleasedTerm = "Upcoming version"
             itemPrefix = "*"
         }
