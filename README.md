@@ -51,7 +51,7 @@ tasks {
 }
 
 changelog {
-    version = "${project.version}"
+    version = "1.0.0"
     path = "${project.projectDir}/CHANGELOG.md"
     header = closure { "[$version] - ${date()}" }
     itemPrefix = "-"
@@ -80,7 +80,7 @@ intellij {
 }
 
 changelog {
-    version = "${project.version}"
+    version = "1.0.0"
     path = "${project.projectDir}/CHANGELOG.md"
     header = { "[$version] - ${ExtensionsKt.date()}" }
     headerParserRegex = ~/\d+\.\d+/
@@ -105,6 +105,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 
 | Property                | Description                                                                | Default value                                                        |
 | ----------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **`version`**           | **Required.** Current project's version.                                   |                                                                      |
 | `groups`                | List of groups created with a new Unreleased section.                      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]` |
 | `header`                | Closure that returns current header value.                                 | `{ "[$version]" }`                                                   |
 | `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string. | `null`, fallbacks to [`Changelog#semVerRegex`][semver-regex]         |
@@ -113,7 +114,6 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | `patchEmpty`            | Patches changelog even if no release note is provided.                     | `true`                                                               |
 | `path`                  | Path to the changelog file.                                                | `"${project.projectDir}/CHANGELOG.md"`                               |
 | `unreleasedTerm`        | Unreleased section text.                                                   | `"[Unreleased]"`                                                     |
-| `version`               | Current project's version.                                                 | `"${project.version}"`                                               |
 
 > **Note:** `header` closure has the delegate explicitly set to the extension's context for the sake of the [Configuration cache][configuration-cache] support.
 
@@ -190,9 +190,9 @@ It is possible to specify the *unreleased* section with setting the `${changelog
 
 #### Parameters
 
-| Parameter   | Type      | Description             | Default value          |
-| ----------- | --------- | ----------------------- | ---------------------- |
-| `version`   | `String`  | Change note version.    | `${changelog.version}` |
+| Parameter   | Type      | Description          | Default value          |
+| ----------- | --------- | -------------------- | ---------------------- |
+| `version`   | `String`  | Change note version. | `${changelog.version}` |
 
 #### Examples
 
@@ -305,6 +305,7 @@ tasks {
 ## `Changelog.Item`
 
 Methods described in the above section return `Changelog.Item` object, which is a representation of the single changelog section for the specific version.
+
 It provides a couple of properties and methods that allow altering the output form of the change notes:
 
 ### Properties 
@@ -330,7 +331,7 @@ It provides a couple of properties and methods that allow altering the output fo
 To produce Gradle-specific closure in Kotlin DSL, required by some third-party plugins, like [gradle-intellij-plugin][gh:gradle-intellij-plugin] it is required to wrap the Kotlin Unit with `KotlinClosure0` class:
 
 ```kotlin
-KotlinClosure0({ changelog.get() })
+KotlinClosure0({ changelog.get("1.0.0") })
 ```
 
 There is also a *neater* method available:
@@ -338,7 +339,7 @@ There is also a *neater* method available:
 ```kotlin
 import org.jetbrains.changelog.closure
 
-closure { changelog.get() }
+closure { changelog.get("1.0.0") }
 ```
 
 ## Helper Methods
