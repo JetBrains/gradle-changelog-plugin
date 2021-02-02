@@ -316,8 +316,8 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertTrue(
             result.output.contains(
-                "org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Changelog version wasn't provided." +
-                    "Please specify the value for the `changelog.version` property explicitly."
+                "org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Version is missing. " +
+                    "Please provide the project version to the `changelog.version` property explicitly."
             )
         )
     }
