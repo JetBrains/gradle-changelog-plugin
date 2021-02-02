@@ -5,6 +5,7 @@ import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -12,7 +13,6 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
-        version = "1.0.0"
         buildFile =
             """
             plugins {
@@ -120,6 +120,24 @@ class InitializeChangelogTaskTest : BaseTest() {
             """.trimIndent(),
             extension.getUnreleased().withHeader(true).toText()
         )
+    }
+
+    @Test
+    fun `Doesn't throw VersionNotSpecifiedException when changelog extension has no version provided`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+            }
+            """
+
+        project.evaluate()
+
+        val result = runTask("initializeChangelog")
+
+        assertFalse(result.output.contains("VersionNotSpecifiedException"))
     }
 
     @Test

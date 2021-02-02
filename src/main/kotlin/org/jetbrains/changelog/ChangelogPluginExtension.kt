@@ -4,15 +4,12 @@ import groovy.lang.Closure
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
+import org.jetbrains.changelog.exceptions.VersionNotSpecifiedException
 import java.io.File
 import java.util.regex.Pattern
 
 @Suppress("UnstableApiUsage")
-open class ChangelogPluginExtension(
-    objects: ObjectFactory,
-    private val projectDir: File,
-    private val projectVersion: Any,
-) {
+open class ChangelogPluginExtension(objects: ObjectFactory, private val projectDir: File) {
 
     @Optional
     @Internal
@@ -82,13 +79,15 @@ open class ChangelogPluginExtension(
         get() = pathProperty.get()
         set(value) = pathProperty.set(value)
 
-    @Optional
     @Internal
-    private val versionProperty = objects.property(String::class.java).apply {
-        set("$projectVersion")
-    }
+    private val versionProperty = objects.property(String::class.java)
     var version: String
-        get() = versionProperty.get()
+        get() = versionProperty.run {
+            if (isPresent) {
+                return get()
+            }
+            throw VersionNotSpecifiedException()
+        }
         set(value) = versionProperty.set(value)
 
     @Optional
@@ -102,7 +101,7 @@ open class ChangelogPluginExtension(
 
     fun getUnreleased() = get(unreleasedTerm)
 
-    fun get(version: String = this.version) = Changelog(this).get(version)
+    fun get(version: String) = Changelog(this).get(version)
 
     fun getLatest() = Changelog(this).getLatest()
 

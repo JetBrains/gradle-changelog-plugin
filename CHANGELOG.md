@@ -1,24 +1,19 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
-### Added
-
 ### Changed
-
-### Deprecated
-
-### Removed
+- Require `changelog.version` to be provided explicitly
 
 ### Fixed
+- `unspecified` version when patching the changelog
 
-### Security
-## [unspecified]
+## [1.0.1]
 ### Fixed
 - Provide `project.version` to the extension using conventions
 
 ## [1.0.0]
 ### Added
-- Support for the [Configuration cache](https://docs.gradle.org/6.8/userguide/configuration_cache.html)
+- Support for the [Configuration cache](https://docs.gradle.org/6.8.1/userguide/configuration_cache.html)
 
 ### Changed
 - `header` closure has the delegate explicitly set to the extension's context
