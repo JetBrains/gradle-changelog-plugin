@@ -13,7 +13,7 @@
 
 ## [1.0.0]
 ### Added
-- Support for the [Configuration cache](https://docs.gradle.org/6.8/userguide/configuration_cache.html)
+- Support for the [Configuration cache](https://docs.gradle.org/6.8.1/userguide/configuration_cache.html)
 
 ### Changed
 - `header` closure has the delegate explicitly set to the extension's context
