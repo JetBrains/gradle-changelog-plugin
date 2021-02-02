@@ -31,8 +31,7 @@ open class PatchChangelogTask : DefaultTask() {
             }
             get(extension.unreleasedTerm).let { item ->
                 val node = item.getHeaderNode()
-                val content = extension.header.apply { delegate = extension }.call()
-                val header = "## $content"
+                val header = "## ${extension.header.call()}"
 
                 if (extension.getUnreleased().getSections().isEmpty() && !extension.patchEmpty) {
                     return

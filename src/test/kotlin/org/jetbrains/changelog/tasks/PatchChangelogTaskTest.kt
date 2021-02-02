@@ -14,7 +14,6 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
-        version = "1.0.0"
         changelog =
             """
             # Changelog
@@ -28,6 +27,7 @@ class PatchChangelogTaskTest : BaseTest() {
             plugins {
                 id 'org.jetbrains.changelog'
             }
+
             changelog {
                 version = "1.0.0"
             }
@@ -44,7 +44,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Added
             - foo
             """.trimIndent(),
-            extension.get().toText()
+            extension.get(version).toText()
         )
 
         assertEquals(
@@ -87,7 +87,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Added
             - foo
             """.trimIndent(),
-            extension.get().toText()
+            extension.get(version).toText()
         )
 
         assertFailsWith<MissingVersionException> {
@@ -111,7 +111,7 @@ class PatchChangelogTaskTest : BaseTest() {
         project.evaluate()
         runTask("patchChangelog")
 
-        assertEquals("## Foo 1.0.0 bar", extension.get().getHeader())
+        assertEquals("## Foo 1.0.0 bar", extension.get(version).getHeader())
     }
 
     @Test
@@ -141,7 +141,6 @@ class PatchChangelogTaskTest : BaseTest() {
             }
             changelog {
                 version = "1.0.0"
-                
                 header = { "[${'$'}version] - ${'$'}{new SimpleDateFormat("yyyy-MM-dd").format(new Date())}" }
             }
             """
@@ -150,7 +149,7 @@ class PatchChangelogTaskTest : BaseTest() {
         runTask("patchChangelog")
 
         val date = SimpleDateFormat("yyyy-MM-dd").format(Date())
-        assertEquals("## [1.0.0] - $date", extension.get().getHeader())
+        assertEquals("## [1.0.0] - $date", extension.get(version).getHeader())
     }
 
     @Test
@@ -176,7 +175,7 @@ class PatchChangelogTaskTest : BaseTest() {
         runTask("patchChangelog")
 
         assertFailsWith<MissingVersionException> {
-            extension.get()
+            extension.get(version)
         }
     }
 
@@ -226,7 +225,7 @@ class PatchChangelogTaskTest : BaseTest() {
             """
 
         project.evaluate()
-        runTask("patchChangelog")
+        val result = runTask("patchChangelog")
 
         assertEquals(
             """
@@ -237,7 +236,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Removed
             - bar
             """.trimIndent(),
-            extension.get().withHeader(true).toText()
+            extension.get(version).withHeader(true).toText()
         )
     }
 
@@ -298,6 +297,24 @@ class PatchChangelogTaskTest : BaseTest() {
                 "Add '## $unreleasedTerm' section header to your changelog file: ${extension.path}",
             result.output.trim()
         )
+    }
+
+    @Test
+    fun `throws VersionNotSpecifiedException when changelog extension has no version provided`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+            }
+            """
+
+        project.evaluate()
+
+        val result = runFailingTask("patchChangelog")
+
+        assertTrue(result.output.contains("org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Changelog version wasn't provided.Please specify the value for the `changelog.version` property explicitly."))
     }
 
     @Test

@@ -10,7 +10,6 @@ class GetChangelogTaskTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
-        version = "1.0.0"
         changelog =
             """
             # Changelog
@@ -126,6 +125,24 @@ class GetChangelogTaskTest : BaseTest() {
         project.evaluate()
 
         runFailingTask("getChangelog")
+    }
+
+    @Test
+    fun `throws VersionNotSpecifiedException when changelog extension has no version provided`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+            }
+            """
+
+        project.evaluate()
+
+        val result = runFailingTask("getChangelog")
+
+        assertTrue(result.output.contains("org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Changelog version wasn't provided.Please specify the value for the `changelog.version` property explicitly."))
     }
 
     @Test

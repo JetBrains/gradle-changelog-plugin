@@ -15,7 +15,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
-        version = "1.0.0"
         changelog =
             """
             # Changelog
@@ -34,7 +33,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     fun `throws MissingFileException when changelog file does not exist`() {
         File(extension.path).delete()
         assertFailsWith<MissingFileException> {
-            extension.get()
+            extension.get(version)
         }
     }
 
@@ -47,7 +46,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `returns change notes for the v1_0_0 version`() {
-        extension.get().apply {
+        extension.get(version).apply {
             assertEquals(project.version, version)
 
             assertEquals(
@@ -66,7 +65,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 toString()
             )
 
-            // TODO return HTML without <body>
             assertEquals(
                 """
                 <h3>Removed</h3>
@@ -81,7 +79,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     fun `parses changelog with custom format`() {
         changelog = changelog.replace("""\[([^]]+)]""".toRegex(), "[[$1]]")
         extension.unreleasedTerm = "[[Unreleased]]"
-        extension.get().apply {
+        extension.get(version).apply {
             assertEquals("1.0.0", version)
         }
     }
@@ -141,7 +139,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             - Hola
             """
 
-        extension.get().apply {
+        extension.get(version).apply {
             assertEquals(this@ChangelogPluginExtensionTest.version, version)
             assertEquals("## [1.0.0]", getHeader())
             withHeader(true).getSections().apply {
@@ -232,7 +230,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             - Hola x
             """
 
-        extension.get().apply {
+        extension.get(version).apply {
             assertEquals(this@ChangelogPluginExtensionTest.version, version)
             assertEquals("## [1.0.0]", getHeader())
             withFilter {

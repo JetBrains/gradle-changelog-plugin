@@ -1,18 +1,13 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
-### Added
-
 ### Changed
-
-### Deprecated
-
-### Removed
+- Require `changelog.version` to be provided explicitly
 
 ### Fixed
+- `unspecified` version when patching the changelog
 
-### Security
-## [unspecified]
+## [1.0.1]
 ### Fixed
 - Provide `project.version` to the extension using conventions
 
