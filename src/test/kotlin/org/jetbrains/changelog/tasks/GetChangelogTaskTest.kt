@@ -142,7 +142,12 @@ class GetChangelogTaskTest : BaseTest() {
 
         val result = runFailingTask("getChangelog")
 
-        assertTrue(result.output.contains("org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Changelog version wasn't provided.Please specify the value for the `changelog.version` property explicitly."))
+        assertTrue(
+            result.output.contains(
+                "org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Changelog version wasn't provided." +
+                    "Please specify the value for the `changelog.version` property explicitly."
+            )
+        )
     }
 
     @Test

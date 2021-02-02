@@ -117,6 +117,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     }
 
     @Test
+    @Suppress("LongMethod", "MaxLineLength")
     fun `parses changelog into structured sections`() {
         changelog =
             """
