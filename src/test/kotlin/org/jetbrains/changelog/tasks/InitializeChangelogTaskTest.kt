@@ -123,7 +123,7 @@ class InitializeChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `Doesn't throw VersionNotSpecifiedException when changelog extension has no version provided`() {
+    fun `doesn't throw VersionNotSpecifiedException when changelog extension has no version provided`() {
         buildFile =
             """
             plugins {

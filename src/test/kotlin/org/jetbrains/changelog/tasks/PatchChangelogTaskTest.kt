@@ -180,7 +180,7 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `Create empty groups for the new Unreleased section`() {
+    fun `create empty groups for the new Unreleased section`() {
         project.evaluate()
         runTask("patchChangelog")
 
@@ -204,7 +204,7 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `Remove empty groups for the new released section`() {
+    fun `remove empty groups for the new released section`() {
         changelog =
             """
             # Changelog
@@ -241,7 +241,7 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `Create empty custom groups for the new Unreleased section`() {
+    fun `create empty custom groups for the new Unreleased section`() {
         buildFile =
             """
             plugins {
@@ -268,7 +268,7 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `Throws MissingUnreleasedSectionException when Unreleased section is not present`() {
+    fun `throws MissingUnreleasedSectionException when Unreleased section is not present`() {
         val unreleasedTerm = "Not released"
         buildFile =
             """
