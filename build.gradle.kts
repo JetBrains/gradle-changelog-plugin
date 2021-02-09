@@ -91,10 +91,10 @@ publishing {
         // Hack for removing the org.jetbrains:markdown:0.1.41 dependency from the generated POM file.
         // Somehow shadowJar does not alter the dependencies list.
         pom.withXml {
-            val node = (asNode().depthFirst()).find {
-                (it as Node).text() == "markdown"
-            } as Node
-            node.parent().apply { parent().remove(this) }
+            (asNode().depthFirst())
+                .filterIsInstance<Node>()
+                .find { it.text() == "markdown" }
+                ?.let { it.apply { parent().remove(this) } }
         }
     }
 }
