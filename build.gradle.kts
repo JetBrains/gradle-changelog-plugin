@@ -94,7 +94,7 @@ publishing {
             (asNode().depthFirst())
                 .filterIsInstance<Node>()
                 .find { it.text() == "markdown" }
-                ?.let { it.apply { parent().remove(this) } }
+                ?.run { parent().apply { parent().remove(this) } }
         }
     }
 }
