@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("java-gradle-plugin")
     id("maven-publish")
-    id("org.jetbrains.changelog") version "1.0.0"
+    id("org.jetbrains.changelog") version "1.1.1"
     id("org.jetbrains.kotlin.jvm") version "1.4.30"
     id("com.gradle.plugin-publish") version "0.12.0"
     id("io.gitlab.arturbosch.detekt") version "1.15.0"
