@@ -367,6 +367,26 @@ closure { changelog.get("1.0.0") }
 - [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 - [Package Search](https://plugins.jetbrains.com/plugin/12507-package-search)
 
+## Contributing
+
+### Integration tests
+
+To perform integration tests with an existing project, bind the `gradle-changelog-plugin` sources in the Gradle settings file:
+
+`settings.gradle`:
+```
+rootProject.name = "IntelliJ Platform Plugin Template"
+
+includeBuild '/Users/hsz/Projects/JetBrains/gradle-changelog-plugin'
+```
+
+`settings.gradle.kts`:
+```
+rootProject.name = "IntelliJ Platform Plugin Template"
+
+includeBuild("/Users/hsz/Projects/JetBrains/gradle-changelog-plugin")
+```
+
 [gh:build]: https://github.com/JetBrains/gradle-changelog-plugin/actions?query=workflow%3ABuild
 [gh:gradle-intellij-plugin]: https://github.com/JetBrains/gradle-intellij-plugin
 
