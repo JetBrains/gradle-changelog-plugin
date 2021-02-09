@@ -1,6 +1,18 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [unspecified]
 ### Changed
 - Require `changelog.version` to be provided explicitly
 
