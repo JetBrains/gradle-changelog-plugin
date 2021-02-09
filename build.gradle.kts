@@ -16,7 +16,7 @@ plugins {
 
 description = "Gradle Changelog Plugin"
 group = "org.jetbrains.intellij.plugins"
-version = "1.1.0"
+version = "1.1.1"
 
 repositories {
     mavenCentral()
@@ -48,6 +48,10 @@ pluginBundle {
     vcsUrl = "https://github.com/JetBrains/${project.name}.git"
     description = "Gradle Changelog Plugin"
     tags = listOf("changelog", "jetbrains")
+}
+
+changelog {
+    version = "${project.version}"
 }
 
 detekt {
