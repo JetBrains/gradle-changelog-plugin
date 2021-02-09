@@ -8,7 +8,7 @@
 
 **This project requires Gradle 6.6 or newer**
 
-> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 6.8.1`
+> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 6.8.2`
 
 A Gradle plugin that provides tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
 
@@ -29,6 +29,7 @@ A Gradle plugin that provides tasks and helper methods to simplify working with 
 - [Gradle Closure in Kotlin DSL](#gradle-closure-in-kotlin-dsl)
 - [Helper Methods](#helper-methods)
 - [Usage Examples](#usage-examples)
+- [Contributing](#contributing)
 
 
 ## Usage
@@ -39,7 +40,7 @@ import org.jetbrains.changelog.closure
 import org.jetbrains.changelog.date
 
 plugins {
-    id("org.jetbrains.changelog") version "1.0.0"
+    id("org.jetbrains.changelog") version "1.1.1"
 }
 
 tasks {
@@ -66,7 +67,7 @@ Groovy:
 import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
-    id 'org.jetbrains.changelog' version '1.0.0'
+    id 'org.jetbrains.changelog' version '1.1.1'
 }
 
 apply plugin: 'org.jetbrains.changelog'
@@ -374,7 +375,7 @@ closure { changelog.get("1.0.0") }
 [jb:twitter]: https://twitter.com/JBPlatform
 
 [build-phases]: https://docs.gradle.org/current/userguide/build_lifecycle.html#sec:build_phases
-[configuration-cache]: https://docs.gradle.org/6.8.1/userguide/configuration_cache.html
+[configuration-cache]: https://docs.gradle.org/6.8.2/userguide/configuration_cache.html
 [keep-a-changelog]: https://keepachangelog.com/en/1.0.0
 [gradle-plugin-shield]: https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugin&color=blue&metadataUrl=https://plugins.gradle.org/m2/org/jetbrains/intellij/plugins/gradle-changelog-plugin/maven-metadata.xml
 [gradle-plugin]: https://plugins.gradle.org/plugin/org.jetbrains.changelog
