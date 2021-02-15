@@ -21,7 +21,6 @@ version = "1.1.1"
 repositories {
     mavenCentral()
     jcenter()
-    maven("https://dl.bintray.com/jetbrains/markdown")
 }
 
 dependencies {
