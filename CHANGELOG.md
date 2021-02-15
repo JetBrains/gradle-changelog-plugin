@@ -1,6 +1,18 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [1.1.2]
 ### Changed
 - Remove `shadowJar`
 
