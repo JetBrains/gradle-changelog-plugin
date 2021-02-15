@@ -13,11 +13,11 @@ open class ChangelogPluginExtension(objects: ObjectFactory, private val projectD
 
     @Optional
     @Internal
-    private val groupsProperty = objects.listProperty(String::class.java)
+    private val groupsProperty = objects.listProperty(String::class.java).apply {
+        set(listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"))
+    }
     var groups: List<String>
-        get() = groupsProperty.getOrElse(emptyList()).ifEmpty {
-            listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security")
-        }
+        get() = groupsProperty.getOrElse(emptyList())
         set(value) = groupsProperty.set(value)
 
     @Optional

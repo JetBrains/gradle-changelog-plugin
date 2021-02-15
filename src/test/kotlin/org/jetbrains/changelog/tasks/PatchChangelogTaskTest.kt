@@ -268,6 +268,31 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
+    fun `don't create groups for the new Unreleased section if empty array is provided`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                groups = []
+            }
+            """
+
+        project.evaluate()
+        runTask("patchChangelog")
+
+        assertEquals(
+            """
+            ## [Unreleased]
+            
+            """.trimIndent(),
+            extension.getUnreleased().withHeader(true).toText()
+        )
+    }
+
+    @Test
     fun `throws MissingUnreleasedSectionException when Unreleased section is not present`() {
         val unreleasedTerm = "Not released"
         buildFile =

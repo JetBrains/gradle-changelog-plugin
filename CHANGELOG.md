@@ -4,6 +4,9 @@
 ### Changed
 - Remove `shadowJar`
 
+### Fixed
+- Don't create groups for the new Unreleased section if empty array is provided
+
 ## [1.1.1]
 ### Changed
 - Require `changelog.version` to be provided explicitly
