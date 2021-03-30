@@ -40,7 +40,7 @@ open class ChangelogPluginExtension(objects: ObjectFactory, private val projectD
         is Regex -> t
         is String -> t.toRegex()
         is Pattern -> t.toRegex()
-        else -> throw IllegalArgumentException()
+        else -> throw IllegalArgumentException("Unsupported type of $t. Expected value types: Regex, String, Pattern.")
     }
 
     @Optional
