@@ -12,7 +12,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          distribution: zulu
+          java-version: 8
 
       - name: Fetch Sources
         uses: actions/checkout@v2
