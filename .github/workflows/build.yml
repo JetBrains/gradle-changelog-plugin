@@ -103,7 +103,7 @@ jobs:
         run: ./gradlew build
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2.2.2
+        uses: actions/upload-artifact@v2.2.3
         with:
           name: plugin-artifact
           path: ./build/libs/${{ steps.properties.outputs.artifact }}
