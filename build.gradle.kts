@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.jetbrains:markdown:0.2.1")
+    implementation("org.jetbrains:markdown:0.2.2")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.16.0")
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
