@@ -13,13 +13,13 @@ class ChangelogPlugin : Plugin<Project> {
             extensions.create("changelog", ChangelogPluginExtension::class.java, objects, projectDir)
 
             tasks.apply {
-                create("patchChangelog", PatchChangelogTask::class.java) {
+                register("patchChangelog", PatchChangelogTask::class.java) {
                     it.group = "changelog"
                 }
-                create("initializeChangelog", InitializeChangelogTask::class.java) {
+                register("initializeChangelog", InitializeChangelogTask::class.java) {
                     it.group = "changelog"
                 }
-                create("getChangelog", GetChangelogTask::class.java) {
+                register("getChangelog", GetChangelogTask::class.java) {
                     it.group = "changelog"
                     it.outputs.upToDateWhen { false }
                 }
