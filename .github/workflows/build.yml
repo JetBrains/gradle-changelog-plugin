@@ -8,7 +8,7 @@ jobs:
     steps:
 
       - name: Fetch Sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
 
       - name: Gradle Wrapper Validation
         uses: gradle/wrapper-validation-action@v1.0.3
@@ -33,7 +33,7 @@ jobs:
           java-version: 8
 
       - name: Fetch Sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
 
       - name: Setup Gradle Dependencies Cache
         uses: actions/cache@v2.1.5
@@ -68,7 +68,7 @@ jobs:
           java-version: 8
 
       - name: Fetch Sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
 
       - name: Setup Gradle Dependencies Cache
         uses: actions/cache@v2.1.5
@@ -116,7 +116,7 @@ jobs:
     steps:
 
       - name: Fetch Sources
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.4
 
       - name: Remove Old Release Drafts
         env:
