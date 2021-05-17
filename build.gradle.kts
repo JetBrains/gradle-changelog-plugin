@@ -7,7 +7,7 @@ plugins {
     id("org.jetbrains.changelog") version "1.1.2"
     id("org.jetbrains.kotlin.jvm") version "1.5.0"
     id("com.gradle.plugin-publish") version "0.14.0"
-    id("io.gitlab.arturbosch.detekt") version "1.16.0"
+    id("io.gitlab.arturbosch.detekt") version "1.17.0"
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
     id("com.github.breadmoirai.github-release") version "2.2.12"
 }
