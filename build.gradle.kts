@@ -1,6 +1,8 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+fun properties(key: String) = project.findProperty(key).toString()
+
 plugins {
     id("java-gradle-plugin")
     id("maven-publish")
@@ -11,9 +13,9 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "10.1.0"
 }
 
-description = "Gradle Changelog Plugin"
-group = "org.jetbrains.intellij.plugins"
-version = "1.1.2"
+description = properties("description")
+group = properties("group")
+version = properties("version")
 
 repositories {
     mavenCentral()
@@ -28,18 +30,18 @@ dependencies {
 
 gradlePlugin {
     plugins.create("changelog") {
-        id = "org.jetbrains.changelog"
-        implementationClass = "org.jetbrains.changelog.ChangelogPlugin"
-        displayName = "Gradle Changelog Plugin"
-        description = "Provides tasks and helper methods for handling changelog in the Project."
+        id = properties("pluginId")
+        implementationClass = properties("pluginImplementationClass")
+        displayName = properties("pluginDisplayName")
+        description = properties("pluginDescription")
     }
 }
 
 pluginBundle {
-    website = "https://github.com/JetBrains/${project.name}"
-    vcsUrl = "https://github.com/JetBrains/${project.name}.git"
-    description = "Gradle Changelog Plugin"
-    tags = listOf("changelog", "jetbrains")
+    website = properties("website")
+    vcsUrl = properties("vcsUrl")
+    description = properties("description")
+    tags = properties("tags").split(',')
 }
 
 changelog {
