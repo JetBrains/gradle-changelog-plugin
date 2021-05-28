@@ -9,7 +9,6 @@ plugins {
     id("com.gradle.plugin-publish") version "0.15.0"
     id("io.gitlab.arturbosch.detekt") version "1.17.1"
     id("org.jlleitschuh.gradle.ktlint") version "10.1.0"
-    id("com.github.breadmoirai.github-release") version "2.2.12"
 }
 
 description = "Gradle Changelog Plugin"
@@ -18,11 +17,9 @@ version = "1.1.2"
 
 repositories {
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains:markdown:0.2.4")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.17.1")
     testImplementation(kotlin("test"))
