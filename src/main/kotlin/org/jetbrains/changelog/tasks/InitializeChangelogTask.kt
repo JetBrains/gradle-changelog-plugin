@@ -20,8 +20,7 @@ open class InitializeChangelogTask : DefaultTask() {
                 # Changelog
                 
                 ## ${extension.unreleasedTerm}
-                ### ${extension.groups.first()}
-                ${extension.itemPrefix} Example item
+                ${extension.groups.firstOrNull()?.let { "### $it\n" } ?: ""}${extension.itemPrefix} Example item
                 
             """.trimIndent() + extension.groups.drop(1).joinToString("\n") { "### $it\n" }
         )
