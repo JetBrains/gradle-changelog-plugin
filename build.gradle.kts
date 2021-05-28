@@ -14,7 +14,7 @@ plugins {
 }
 
 description = properties("description")
-group = properties("group")
+group = properties("projectGroup")
 version = properties("version")
 
 repositories {
