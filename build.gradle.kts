@@ -8,7 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.5.10"
     id("com.gradle.plugin-publish") version "0.15.0"
     id("io.gitlab.arturbosch.detekt") version "1.17.1"
-    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    id("org.jlleitschuh.gradle.ktlint") version "10.1.0"
     id("com.github.breadmoirai.github-release") version "2.2.12"
 }
 
