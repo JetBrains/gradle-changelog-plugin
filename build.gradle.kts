@@ -22,7 +22,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains:markdown:0.2.4")
+    implementation("org.jetbrains:markdown:0.2.4") {
+        exclude(group = "org.jetbrains.kotlin")
+    }
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.17.1")
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
