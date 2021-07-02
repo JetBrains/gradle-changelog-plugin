@@ -1,7 +1,7 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-fun properties(key: String) = project.findProperty(key).toString()
+fun properties(key: String) = project.findProperty(key)?.toString()
 
 plugins {
     id("java-gradle-plugin")
@@ -14,8 +14,8 @@ plugins {
 }
 
 description = properties("description")
-group = properties("projectGroup")
-version = properties("version")
+group = properties("projectGroup")!!
+version = properties("version")!!
 
 repositories {
     mavenCentral()
@@ -41,7 +41,7 @@ pluginBundle {
     website = properties("website")
     vcsUrl = properties("vcsUrl")
     description = properties("description")
-    tags = properties("tags").split(',')
+    tags = properties("tags")?.split(',')
 }
 
 changelog {
