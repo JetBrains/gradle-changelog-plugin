@@ -16,16 +16,32 @@ jobs:
       - name: Gradle Wrapper Validation
         uses: gradle/wrapper-validation-action@v1.0.4
 
+  codeInspection:
+    name: Code Inspection
+    needs: gradleValidation
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Fetch Sources
+        uses: actions/checkout@v2.3.4
+
+      - name: Qodana - Code Inspection
+        uses: JetBrains/qodana-action@v2.0-eap
+
   test:
     name: Test
     needs: gradleValidation
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        include:
-          - os: windows-latest
-          - os: ubuntu-latest
-          - os: macos-latest
+        gradleVersion:
+          - 6.6.1
+          - 6.9
+          - 7.1
+        os:
+          - windows-latest
+          - ubuntu-latest
+          - macos-latest
 
     steps:
 
@@ -51,7 +67,14 @@ jobs:
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
 
       - name: Run Linters and Test
-        run: ./gradlew check
+        run: ./gradlew check -PtestGradleVersion="${{ matrix.gradleVersion }}"
+
+      - name: Collect Test Results
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results-${{ matrix.gradleVersion }}-${{ runner.os }}
+          path: ${{ github.workspace }}/build/reports/tests/test/
 
   build:
     name: Build

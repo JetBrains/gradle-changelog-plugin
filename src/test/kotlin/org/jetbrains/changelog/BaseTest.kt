@@ -13,6 +13,10 @@ open class BaseTest {
     protected lateinit var project: DefaultProject
     protected lateinit var extension: ChangelogPluginExtension
 
+    private val gradleDefault = System.getProperty("test.gradle.default")
+    private val gradleHome = System.getProperty("test.gradle.home")
+    private val gradleVersion = System.getProperty("test.gradle.version").takeIf(String::isNotEmpty) ?: gradleDefault
+
     protected var changelog: String = ""
         set(value) {
             field = value
@@ -52,8 +56,11 @@ open class BaseTest {
     private fun prepareTask(taskName: String, vararg arguments: String) =
         GradleRunner.create()
             .withProjectDir(project.projectDir)
-            .withArguments(taskName, "--console=plain", "--stacktrace", *arguments)
+            .withGradleVersion(gradleVersion)
+            .forwardOutput()
             .withPluginClasspath()
+            .withTestKitDir(File(gradleHome))
+            .withArguments(taskName, "--console=plain", "--stacktrace", *arguments)
 
     protected fun runTask(taskName: String, vararg arguments: String): BuildResult =
         prepareTask(taskName, *arguments).build()

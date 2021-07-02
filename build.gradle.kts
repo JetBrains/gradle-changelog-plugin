@@ -63,11 +63,26 @@ detekt {
 tasks {
     listOf("compileKotlin", "compileTestKotlin").forEach {
         getByName<KotlinCompile>(it) {
-            kotlinOptions.jvmTarget = "1.8"
+            kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
         }
     }
 
     withType<Detekt>().configureEach {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    wrapper {
+        gradleVersion = properties("gradleVersion")
+        distributionUrl = "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+    }
+
+    test {
+        val testGradleHomePath = "$buildDir/testGradleHome"
+        doFirst {
+            File(testGradleHomePath).mkdir()
+        }
+        systemProperties["test.gradle.home"] = testGradleHomePath
+        systemProperties["test.gradle.default"] = properties("gradleVersion")
+        systemProperties["test.gradle.version"] = properties("testGradleVersion")
     }
 }
