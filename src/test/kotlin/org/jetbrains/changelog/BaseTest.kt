@@ -5,6 +5,7 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import java.io.File
+import java.nio.file.Files.createTempDirectory
 import kotlin.test.BeforeTest
 
 open class BaseTest {
@@ -15,7 +16,7 @@ open class BaseTest {
     protected var changelog: String = ""
         set(value) {
             field = value
-            File(extension.path).run {
+            File(extension.path.get()).run {
                 createNewFile()
                 writeText(value.trimIndent().trim())
             }
@@ -40,7 +41,7 @@ open class BaseTest {
     fun setUp() {
         project = ProjectBuilder.builder()
             .withName("project")
-            .withProjectDir(createTempDir()).build() as DefaultProject
+            .withProjectDir(createTempDirectory("tmp").toFile()).build() as DefaultProject
 
         project.version = "1.0.0"
         project.plugins.apply(ChangelogPlugin::class.java)

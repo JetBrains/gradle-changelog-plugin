@@ -104,7 +104,7 @@ class PatchChangelogTaskTest : BaseTest() {
             }
             changelog {
                 version = "1.0.0"
-                header = { "Foo ${'$'}version bar" }
+                header = provider { "Foo ${'$'}{version.get()} bar" }
             }
             """
 
@@ -133,7 +133,6 @@ class PatchChangelogTaskTest : BaseTest() {
         buildFile =
             """
             import java.text.SimpleDateFormat
-            import java.util.Arrays
             import java.util.Date
 
             plugins {
@@ -141,7 +140,9 @@ class PatchChangelogTaskTest : BaseTest() {
             }
             changelog {
                 version = "1.0.0"
-                header = { "[${'$'}version] - ${'$'}{new SimpleDateFormat("yyyy-MM-dd").format(new Date())}" }
+                header = provider {
+                    "[${'$'}{version.get()}] - ${'$'}{new SimpleDateFormat("yyyy-MM-dd").format(new Date())}"
+                }
             }
             """
 
@@ -319,7 +320,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertEquals(
             ":patchChangelog task requires '$unreleasedTerm' section to be present. " +
-                "Add '## $unreleasedTerm' section header to your changelog file: ${extension.path}",
+                "Add '## $unreleasedTerm' section header to your changelog file: ${extension.path.get()}",
             result.output.trim()
         )
     }
@@ -342,7 +343,7 @@ class PatchChangelogTaskTest : BaseTest() {
         assertTrue(
             result.output.contains(
                 "org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Version is missing. " +
-                    "Please provide the project version to the `changelog.version` property explicitly."
+                    "Please provide the project version to the `project` or `changelog.version` property explicitly."
             )
         )
     }

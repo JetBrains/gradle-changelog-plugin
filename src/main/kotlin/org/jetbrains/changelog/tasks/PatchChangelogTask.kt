@@ -14,7 +14,7 @@ open class PatchChangelogTask : DefaultTask() {
     private val extension = project.extensions.getByType(ChangelogPluginExtension::class.java)
 
     @InputFile
-    fun getInputFile() = File(extension.path)
+    fun getInputFile() = File(extension.path.get())
 
     @OutputFile
     fun getOutputFile() = getInputFile()
@@ -22,25 +22,26 @@ open class PatchChangelogTask : DefaultTask() {
     @TaskAction
     fun run() {
         Changelog(extension).apply {
-            if (!has(extension.unreleasedTerm)) {
+            val unreleasedTerm = extension.unreleasedTerm.get()
+            if (!has(unreleasedTerm)) {
                 logger.warn(
-                    ":patchChangelog task requires '${extension.unreleasedTerm}' section to be present. " +
-                        "Add '## ${extension.unreleasedTerm}' section header to your changelog file: ${extension.path}"
+                    ":patchChangelog task requires '$unreleasedTerm' section to be present. " +
+                        "Add '## $unreleasedTerm' section header to your changelog file: ${extension.path.get()}"
                 )
                 throw StopActionException()
             }
-            get(extension.unreleasedTerm).let { item ->
+            get(unreleasedTerm).let { item ->
                 val node = item.getHeaderNode()
-                val header = "## ${extension.header.call()}"
+                val header = "## ${extension.header.get()}"
 
-                if (extension.getUnreleased().getSections().isEmpty() && !extension.patchEmpty) {
+                if (extension.getUnreleased().getSections().isEmpty() && !extension.patchEmpty.get()) {
                     return
                 }
 
-                File(extension.path).writeText(
+                File(extension.path.get()).writeText(
                     this.content.run {
-                        if (extension.keepUnreleasedSection) {
-                            val unreleasedGroups = extension.groups.joinToString("\n") { "### $it\n" }
+                        if (extension.keepUnreleasedSection.get()) {
+                            val unreleasedGroups = extension.groups.get().joinToString("\n") { "### $it\n" }
                             StringBuilder(this).insert(node.endOffset, "\n$unreleasedGroups$header").toString()
                         } else {
                             replaceRange(node.startOffset, node.endOffset, header)

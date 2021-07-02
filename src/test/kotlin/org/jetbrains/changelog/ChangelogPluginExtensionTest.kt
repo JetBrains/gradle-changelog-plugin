@@ -31,7 +31,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `throws MissingFileException when changelog file does not exist`() {
-        File(extension.path).delete()
+        File(extension.path.get()).delete()
         assertFailsWith<MissingFileException> {
             extension.get(version)
         }
@@ -78,7 +78,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `parses changelog with custom format`() {
         changelog = changelog.replace("""\[([^]]+)]""".toRegex(), "[[$1]]")
-        extension.unreleasedTerm = "[[Unreleased]]"
+        extension.unreleasedTerm.set("[[Unreleased]]")
         extension.get(version).apply {
             assertEquals("1.0.0", version)
         }
@@ -102,7 +102,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `getUnreleased() returns Upcoming section if unreleasedTerm is customised`() {
         changelog = changelog.replace("Unreleased", "Upcoming")
-        extension.unreleasedTerm = "[Upcoming]"
+        extension.unreleasedTerm.set("[Upcoming]")
         extension.getUnreleased().withHeader(true).apply {
             assertEquals("[Upcoming]", version)
             assertEquals(
@@ -297,7 +297,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             - Compatible with IDEA 2020.2 EAPs
             """
 
-        extension.unreleasedTerm = "NEW VERSION"
+        extension.unreleasedTerm.set("NEW VERSION")
         extension.get("1.0.1119-eap").apply {
             assertEquals("1.0.1119-eap", version)
         }
@@ -409,8 +409,8 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `returns Changelog items for change note without category`() {
-        extension.itemPrefix = "*"
-        extension.unreleasedTerm = "Unreleased"
+        extension.itemPrefix.set("*")
+        extension.unreleasedTerm.set("Unreleased")
         changelog =
             """
             # My Changelog
@@ -441,19 +441,17 @@ class ChangelogPluginExtensionTest : BaseTest() {
             * Foo
             """
 
-        extension.headerParserRegex =
-            """\d+\.\d+""".toRegex()
+        extension.headerParserRegex.set("""\d+\.\d+""".toRegex())
         assertNotNull(extension.get("2020.1"))
 
-        extension.headerParserRegex = "\\d+\\.\\d+"
+        extension.headerParserRegex.set("\\d+\\.\\d+")
         assertNotNull(extension.get("2020.1"))
 
-        extension.headerParserRegex =
-            """\d+\.\d+""".toPattern()
+        extension.headerParserRegex.set("""\d+\.\d+""".toPattern())
         assertNotNull(extension.get("2020.1"))
 
         assertFailsWith<IllegalArgumentException> {
-            extension.headerParserRegex = 123
+            extension.headerParserRegex.set(123)
             assertNotNull(extension.get("2020.1"))
         }
     }

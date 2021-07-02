@@ -37,7 +37,7 @@ open class GetChangelogTask : DefaultTask() {
     fun getUnreleased() = unreleased
 
     @InputFile
-    fun getInputFile() = File(extension.path)
+    fun getInputFile() = File(extension.path.get())
 
     @OutputFile
     fun getOutputFile() = getInputFile()
@@ -48,7 +48,7 @@ open class GetChangelogTask : DefaultTask() {
             val version = when (unreleased) {
                 true -> extension.unreleasedTerm
                 false -> extension.version
-            }
+            }.get()
             get(version).run {
                 withHeader(!noHeader)
                 toText()

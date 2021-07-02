@@ -145,7 +145,7 @@ class GetChangelogTaskTest : BaseTest() {
         assertTrue(
             result.output.contains(
                 "org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Version is missing. " +
-                    "Please provide the project version to the `changelog.version` property explicitly."
+                    "Please provide the project version to the `project` or `changelog.version` property explicitly."
             )
         )
     }

@@ -1,105 +1,51 @@
 package org.jetbrains.changelog
 
-import groovy.lang.Closure
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.tasks.Internal
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Optional
-import org.jetbrains.changelog.exceptions.VersionNotSpecifiedException
-import java.io.File
 import java.util.regex.Pattern
 
 @Suppress("UnstableApiUsage")
-open class ChangelogPluginExtension(objects: ObjectFactory, private val projectDir: File) {
+open class ChangelogPluginExtension(objects: ObjectFactory) {
 
     @Optional
-    @Internal
-    private val groupsProperty = objects.listProperty(String::class.java).apply {
-        set(listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"))
-    }
-    var groups: List<String>
-        get() = groupsProperty.getOrElse(emptyList())
-        set(value) = groupsProperty.set(value)
+    val groups: ListProperty<String> = objects.listProperty(String::class.java)
 
     @Optional
-    @Internal
-    private val headerProperty = objects.property(Closure::class.java).apply {
-        set(closure { "[$version]" })
-    }
-    var header: Closure<*>
-        get() = headerProperty.get()
-        set(value) = headerProperty.set(value)
+    val header: Property<String> = objects.property(String::class.java)
 
     @Optional
-    @Internal
-    private val headerParserRegexProperty = objects.property(Regex::class.java)
-    var headerParserRegex: Any?
-        get() = headerParserRegexProperty.orNull
-        set(value) = headerParserRegexProperty.set(headerParserRegexHelper(value))
+    val headerParserRegex: Property<Any> = objects.property(Any::class.java)
 
-    private fun <T> headerParserRegexHelper(t: T) = when (t) {
-        is Regex -> t
-        is String -> t.toRegex()
-        is Pattern -> t.toRegex()
-        else -> throw IllegalArgumentException("Unsupported type of $t. Expected value types: Regex, String, Pattern.")
+    internal fun getHeaderParserRegex() = when (val value = headerParserRegex.orNull) {
+        is Regex -> value
+        is String -> value.toRegex()
+        is Pattern -> value.toRegex()
+        null -> null
+        else -> throw IllegalArgumentException(
+            "Unsupported type of $value. Expected value types: Regex, String, Pattern."
+        )
     }
 
     @Optional
-    @Internal
-    private val itemPrefixProperty = objects.property(String::class.java).apply {
-        set("-")
-    }
-    var itemPrefix: String
-        get() = itemPrefixProperty.get()
-        set(value) = itemPrefixProperty.set(value)
+    val itemPrefix: Property<String> = objects.property(String::class.java)
 
     @Optional
-    @Internal
-    private val keepUnreleasedSectionProperty = objects.property(Boolean::class.java).apply {
-        set(true)
-    }
-    var keepUnreleasedSection: Boolean
-        get() = keepUnreleasedSectionProperty.get()
-        set(value) = keepUnreleasedSectionProperty.set(value)
+    val keepUnreleasedSection: Property<Boolean> = objects.property(Boolean::class.java)
 
     @Optional
-    @Internal
-    private val patchEmptyProperty = objects.property(Boolean::class.java).apply {
-        set(true)
-    }
-    var patchEmpty: Boolean
-        get() = patchEmptyProperty.get()
-        set(value) = patchEmptyProperty.set(value)
+    val patchEmpty: Property<Boolean> = objects.property(Boolean::class.java)
 
     @Optional
-    @Internal
-    private val pathProperty = objects.property(String::class.java).apply {
-        set("$projectDir/CHANGELOG.md")
-    }
-    var path: String
-        get() = pathProperty.get()
-        set(value) = pathProperty.set(value)
+    val path: Property<String> = objects.property(String::class.java)
 
-    @Internal
-    private val versionProperty = objects.property(String::class.java)
-    var version: String
-        get() = versionProperty.run {
-            if (isPresent) {
-                return get()
-            }
-            throw VersionNotSpecifiedException()
-        }
-        set(value) = versionProperty.set(value)
+    val version: Property<String> = objects.property(String::class.java)
 
     @Optional
-    @Internal
-    private val unreleasedTermProperty = objects.property(String::class.java).apply {
-        set("[Unreleased]")
-    }
-    var unreleasedTerm: String
-        get() = unreleasedTermProperty.get()
-        set(value) = unreleasedTermProperty.set(value)
+    val unreleasedTerm: Property<String> = objects.property(String::class.java)
 
-    fun getUnreleased() = get(unreleasedTerm)
+    fun getUnreleased() = get(unreleasedTerm.get())
 
     fun get(version: String) = Changelog(this).get(version)
 

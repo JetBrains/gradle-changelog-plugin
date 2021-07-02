@@ -102,9 +102,9 @@ class InitializeChangelogTaskTest : BaseTest() {
             }
             """
         extension.apply {
-            path = File("${project.projectDir}/CHANGES.md").path
-            unreleasedTerm = "Upcoming version"
-            itemPrefix = "*"
+            path.set(File("${project.projectDir}/CHANGES.md").path)
+            unreleasedTerm.set("Upcoming version")
+            itemPrefix.set("*")
         }
         project.evaluate()
 

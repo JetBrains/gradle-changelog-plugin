@@ -13,11 +13,13 @@ import java.io.File
 
 class Changelog(extension: ChangelogPluginExtension) {
 
-    val content = File(extension.path).run {
-        if (extension.path.isEmpty() || !exists()) {
-            throw MissingFileException(extension.path)
+    val content = extension.path.get().let {
+        File(it).run {
+            if (it.isEmpty() || !exists()) {
+                throw MissingFileException(it)
+            }
+            readText()
         }
-        readText()
     }
 
     @Suppress("MaxLineLength")
@@ -31,9 +33,9 @@ class Changelog(extension: ChangelogPluginExtension) {
         .groupByType(MarkdownElementTypes.ATX_2) {
             it.children.last().text().trim().run {
                 when (this) {
-                    extension.unreleasedTerm -> this
+                    extension.unreleasedTerm.get() -> this
                     else -> split("""[^-+.0-9a-zA-Z]+""".toRegex()).firstOrNull(
-                        (extension.headerParserRegex as Regex? ?: semVerRegex)::matches
+                        (extension.getHeaderParserRegex() ?: semVerRegex)::matches
                     ) ?: throw HeaderParseException(this, extension)
                 }
             }
@@ -48,12 +50,12 @@ class Changelog(extension: ChangelogPluginExtension) {
                 .mapValues {
                     it.value
                         .joinToString("") { node -> node.text() }
-                        .split("""\n${Regex.escape(extension.itemPrefix)}""".toRegex())
-                        .map { line -> extension.itemPrefix + line.trim('\n') }
+                        .split("""\n${Regex.escape(extension.itemPrefix.get())}""".toRegex())
+                        .map { line -> extension.itemPrefix.get() + line.trim('\n') }
                         .drop(1)
                         .filterNot(String::isEmpty)
                 }.run {
-                    val isUnreleased = key == extension.unreleasedTerm
+                    val isUnreleased = key == extension.unreleasedTerm.get()
                     Item(key, value.first(), this, isUnreleased)
                 }
         }
@@ -70,7 +72,7 @@ class Changelog(extension: ChangelogPluginExtension) {
         val version: String,
         private val header: ASTNode,
         private val items: Map<String, List<String>>,
-        private val isUnreleased: Boolean = false
+        private val isUnreleased: Boolean = false,
     ) {
 
         private var withHeader = false
@@ -117,7 +119,7 @@ class Changelog(extension: ChangelogPluginExtension) {
 
     private fun List<ASTNode>.groupByType(
         type: IElementType,
-        getKey: ((item: ASTNode) -> String)? = null
+        getKey: ((item: ASTNode) -> String)? = null,
     ): Map<String, List<ASTNode>> {
         var key = ""
         return groupBy {

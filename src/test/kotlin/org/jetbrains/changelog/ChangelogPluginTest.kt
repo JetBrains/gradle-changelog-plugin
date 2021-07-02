@@ -1,6 +1,7 @@
 package org.jetbrains.changelog
 
-import org.jetbrains.changelog.exceptions.VersionNotSpecifiedException
+import org.gradle.api.Project
+import org.gradle.api.internal.provider.AbstractProperty
 import org.jetbrains.changelog.tasks.GetChangelogTask
 import org.jetbrains.changelog.tasks.InitializeChangelogTask
 import org.jetbrains.changelog.tasks.PatchChangelogTask
@@ -16,19 +17,20 @@ class ChangelogPluginTest : BaseTest() {
     @Test
     fun `default properties values`() {
         assertNotNull(extension)
-        assertTrue(extension.keepUnreleasedSection)
-        assertEquals("${project.projectDir}/CHANGELOG.md", extension.path)
-        assertEquals("[Unreleased]", extension.unreleasedTerm)
+        assertTrue(extension.keepUnreleasedSection.get())
+        assertEquals("${project.projectDir}/CHANGELOG.md", extension.path.get())
+        assertEquals("[Unreleased]", extension.unreleasedTerm.get())
     }
 
     @Test
     fun `throws VersionNotSpecifiedException when changelog extension has no version provided`() {
-        assertFailsWith<VersionNotSpecifiedException> {
-            extension.version
+        assertFailsWith<AbstractProperty.PropertyQueryException> {
+            project.version = Project.DEFAULT_VERSION
+            extension.version.get()
         }
 
-        extension.version = "1.0.0"
-        assertEquals("1.0.0", extension.version)
+        extension.version.set("1.0.0")
+        assertEquals("1.0.0", extension.version.get())
     }
 
     @Test

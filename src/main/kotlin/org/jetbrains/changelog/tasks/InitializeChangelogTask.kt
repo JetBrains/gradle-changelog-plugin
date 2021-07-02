@@ -11,7 +11,8 @@ open class InitializeChangelogTask : DefaultTask() {
 
     @TaskAction
     fun run() {
-        File(extension.path).apply {
+        val groups = extension.groups.get()
+        File(extension.path.get()).apply {
             if (!exists()) {
                 createNewFile()
             }
@@ -19,10 +20,12 @@ open class InitializeChangelogTask : DefaultTask() {
             """
                 # Changelog
                 
-                ## ${extension.unreleasedTerm}
-                ${extension.groups.firstOrNull()?.let { "### $it\n" } ?: ""}${extension.itemPrefix} Example item
+                ## ${extension.unreleasedTerm.get()}
+                ${groups.firstOrNull()?.let { "### $it" } ?: ""}
+                ${extension.itemPrefix.get()} Example item
                 
-            """.trimIndent() + extension.groups.drop(1).joinToString("\n") { "### $it\n" }
+                
+            """.trimIndent() + groups.drop(1).joinToString("\n") { "### $it\n" }
         )
     }
 }

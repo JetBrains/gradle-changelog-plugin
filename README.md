@@ -54,7 +54,7 @@ tasks {
 changelog {
     version = "1.0.0"
     path = "${project.projectDir}/CHANGELOG.md"
-    header = closure { "[$version] - ${date()}" }
+    header = closure { "[${version.get()}] - ${date()}" }
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
@@ -83,7 +83,7 @@ intellij {
 changelog {
     version = "1.0.0"
     path = "${project.projectDir}/CHANGELOG.md"
-    header = { "[$version] - ${ExtensionsKt.date()}" }
+    header = "[${-> version.get()}] - ${new SimpleDateFormat("yyyy-MM-dd").format(new Date())}"
     headerParserRegex = ~/\d+\.\d+/
     itemPrefix = "-"
     keepUnreleasedSection = true
@@ -108,7 +108,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | ----------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | **`version`**           | **Required.** Current project's version.                                   |                                                                      |
 | `groups`                | List of groups created with a new Unreleased section.                      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]` |
-| `header`                | Closure that returns current header value.                                 | `{ "[$version]" }`                                                   |
+| `header`                | `String` or `Provider` that returns current header value.                  | `provider { "[${version.get()}]" }`                                  |
 | `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string. | `null`, fallbacks to [`Changelog#semVerRegex`][semver-regex]         |
 | `itemPrefix`            | Single item's prefix, allows to customise the bullet sign.                 | `"-"`                                                                |
 | `keepUnreleasedSection` | Add Unreleased empty section after patching.                               | `true`                                                               |
