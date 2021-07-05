@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [1.2.0]
+### Added
 - Task Configuration Avoidance
 - Lazy Properties
 
