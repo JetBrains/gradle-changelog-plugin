@@ -8,13 +8,6 @@ import kotlin.test.assertEquals
 class ExtensionsTest {
 
     @Test
-    fun closureTest() {
-        val c = closure { "response" }
-
-        assertEquals("response", c.call())
-    }
-
-    @Test
     fun dateTest() {
         assertEquals(SimpleDateFormat("yyyy-MM-dd").format(Date()), date())
 
