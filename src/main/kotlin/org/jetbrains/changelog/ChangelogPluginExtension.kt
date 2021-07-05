@@ -49,6 +49,14 @@ open class ChangelogPluginExtension(objects: ObjectFactory) {
 
     fun get(version: String) = Changelog(this).get(version)
 
+    fun getOrNull(version: String) = Changelog(this).run {
+        if (has(version)) {
+            get(version)
+        } else {
+            null
+        }
+    }
+
     fun getLatest() = Changelog(this).getLatest()
 
     fun getAll() = Changelog(this).getAll()

@@ -21,6 +21,7 @@ A Gradle plugin that provides tasks and helper methods to simplify working with 
     - [`getChangelog`](#getchangelog)
 - [Extension Methods](#extension-methods)
     - [`get`](#get)
+    - [`getOrNull`](#getOrNull)
     - [`getUnreleased`](#getunreleased)
     - [`getLatest`](#getlatest)
     - [`getAll`](#getall)
@@ -184,7 +185,6 @@ Throws `MissingVersionException` if the version is not available.
 
 It is possible to specify the *unreleased* section with setting the `${changelog.unreleasedTerm}` value.
 
-
 #### Parameters
 
 | Parameter   | Type      | Description          | Default value          |
@@ -210,6 +210,16 @@ tasks {
     }
 }
 ```
+
+### `getOrNull`
+
+Same as `get`, but returns `null` instead of throwing `MissingVersionException`.
+
+#### Parameters
+
+| Parameter   | Type      | Description          | Default value          |
+| ----------- | --------- | -------------------- | ---------------------- |
+| `version`   | `String`  | Change note version. | `${changelog.version}` |
 
 ### `getUnreleased`
 
