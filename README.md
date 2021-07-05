@@ -26,7 +26,6 @@ A Gradle plugin that provides tasks and helper methods to simplify working with 
     - [`getAll`](#getall)
     - [`has`](#has)
 - [`Changelog.Item`](#changelogitem)
-- [Gradle Closure in Kotlin DSL](#gradle-closure-in-kotlin-dsl)
 - [Helper Methods](#helper-methods)
 - [Usage Examples](#usage-examples)
 - [Contributing](#contributing)
@@ -36,7 +35,6 @@ A Gradle plugin that provides tasks and helper methods to simplify working with 
 
 Kotlin:
 ```kotlin
-import org.jetbrains.changelog.closure
 import org.jetbrains.changelog.date
 
 plugins {
@@ -47,18 +45,18 @@ tasks {
     // ...
 
     patchPluginXml {
-        changeNotes(closure { changelog.getUnreleased().toHTML() })
+        changeNotes(provider { changelog.getUnreleased().toHTML() })
     }
 }
 
 changelog {
-    version = "1.0.0"
-    path = "${project.projectDir}/CHANGELOG.md"
-    header = closure { "[${version.get()}] - ${date()}" }
-    itemPrefix = "-"
-    keepUnreleasedSection = true
-    unreleasedTerm = "[Unreleased]"
-    groups = listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security")
+    version.set("1.0.0")
+    path.set("${project.projectDir}/CHANGELOG.md")
+    header.set(provider { "[${version.get()}] - ${date()}" })
+    itemPrefix.set("-")
+    keepUnreleasedSection.set(true)
+    unreleasedTerm.set("[Unreleased]")
+    groups.set(listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"))
 }
 ```
 
@@ -92,12 +90,11 @@ changelog {
 }
 ```
 
-> **Note:** `closure` is a wrapper for the `KotlinClosure0` class and can be used directly as following:
-> ```kotlin
-> import org.gradle.kotlin.dsl.KotlinClosure0
+> **Note:** All the extension and tasks properties are now lazy (see [Lazy Configuration][gradle-lazy-configuration]).
 > 
-> changeNotes(KotlinClosure0({ changelog.getUnreleased() }))
-> ```
+> To set values in Kotlin DSL, use `.set(...)` method explicitly, like `changelog.version.set("1.0.0")`, in Groovy it is still possible to use `=` assignment.
+>
+> To access property value, call `.get()`, like: `changelog.version.get()` in both variants.
 
 
 ## Configuration
@@ -176,10 +173,9 @@ $ ./gradlew getChangelog --console=plain -q --no-header
 
 All the methods are available via the `changelog` extension and allow for reading the changelog file within the Gradle tasks to provide the latest (or specific) change notes.
 
-> **Note:** Following methods depend on the `changelog` extension, which is set in the *Configuration*
-> [build phase][build-phases]. To make it running properly, it's required to place the configuration before the fist
-> usage of such a method. Alternatively, you can pass the Gradle closure to the task, which will postpone the method
-> invocation.
+> **Note:** Following methods depend on the `changelog` extension, which is set in the *Configuration* [build phase][build-phases].
+> To make it run properly, it's required to place the configuration before the fist usage of such a method.
+> Alternatively, you can pass the Gradle closure to the task, which will postpone the method invocation.
 
 ### `get`
 
@@ -201,7 +197,7 @@ Kotlin:
 ```kotlin
 tasks {
     patchPluginXml {
-        changeNotes(closure { changelog.get("1.0.0").toHTML() })
+        changeNotes.set(provider { changelog.get("1.0.0").toHTML() })
     }
 }
 ```
@@ -210,7 +206,7 @@ Groovy:
 ```groovy
 tasks {
     patchPluginXml {
-        changeNotes({ changelog.get("1.0.0").toHTML() })
+        changeNotes = { changelog.get("1.0.0").toHTML() }
     }
 }
 ```
@@ -225,7 +221,7 @@ Kotlin:
 ```kotlin
 tasks {
     patchPluginXml {
-        changeNotes(closure { changelog.getUnreleased().toHTML() })
+        changeNotes.set(provider { changelog.getUnreleased().toHTML() })
     }
 }
 ```
@@ -234,7 +230,7 @@ Groovy:
 ```groovy
 tasks {
     patchPluginXml {
-        changeNotes({ changelog.getUnreleased().toHTML() })
+        changeNotes = { changelog.getUnreleased().toHTML() }
     }
 }
 ```
@@ -249,7 +245,7 @@ Kotlin:
 ```kotlin
 tasks {
     patchPluginXml {
-        changeNotes(closure { changelog.getLatest().toHTML() })
+        changeNotes.set(provider { changelog.getLatest().toHTML() })
     }
 }
 ```
@@ -258,7 +254,7 @@ Groovy:
 ```groovy
 tasks {
     patchPluginXml {
-        changeNotes({ changelog.getLatest().toHTML() })
+        changeNotes = { changelog.getLatest().toHTML() }
     }
 }
 ```
@@ -289,7 +285,7 @@ Kotlin:
 ```kotlin
 tasks {
     patchPluginXml {
-        closure { changelog.has("1.0.0") }
+        provider { changelog.has("1.0.0") }
     }
 }
 ```
@@ -327,27 +323,10 @@ It provides a couple of properties and methods that allow altering the output fo
 | `toString()`        | Generates Markdown output.     | `String`      |
 | `toHTML()`          | Generates HTML output.         | `String`      |
 
-## Gradle Closure in Kotlin DSL
-
-To produce Gradle-specific closure in Kotlin DSL, required by some third-party plugins, like [gradle-intellij-plugin][gh:gradle-intellij-plugin] it is required to wrap the Kotlin Unit with `KotlinClosure0` class:
-
-```kotlin
-KotlinClosure0({ changelog.get("1.0.0") })
-```
-
-There is also a *neater* method available:
-
-```kotlin
-import org.jetbrains.changelog.closure
-
-closure { changelog.get("1.0.0") }
-```
-
 ## Helper Methods
 
 | Name                                   | Description                                                    | Returned type |
 | -------------------------------------- | -------------------------------------------------------------- | ------------- |
-| `closure(function: () -> T)`           | Produces Gradle-specific Closure for Kotlin DSL.               | `Closure<T>`  |
 | `date(pattern: String = "yyyy-MM-dd")` | Shorthand for retrieving the current date in the given format. | `String`      |
 | `markdownToHTML(input: String)`        | Converts given Markdown content to HTML output.                | `String`      |
 | `markdownToPlainText(input: String)`   | Converts given Markdown content to Plain Text output.          | `String`      |
@@ -399,4 +378,5 @@ includeBuild("/Users/hsz/Projects/JetBrains/gradle-changelog-plugin")
 [keep-a-changelog]: https://keepachangelog.com/en/1.0.0
 [gradle-plugin-shield]: https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugin&color=blue&metadataUrl=https://plugins.gradle.org/m2/org/jetbrains/intellij/plugins/gradle-changelog-plugin/maven-metadata.xml
 [gradle-plugin]: https://plugins.gradle.org/plugin/org.jetbrains.changelog
+[gradle-lazy-configuration]: https://docs.gradle.org/current/userguide/lazy_configuration.html
 [semver-regex]: https://github.com/JetBrains/gradle-changelog-plugin/blob/main/src/main/kotlin/org/jetbrains/changelog/Changelog.kt#L23
