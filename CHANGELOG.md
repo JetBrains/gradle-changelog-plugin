@@ -2,16 +2,12 @@
 
 ## [Unreleased]
 ### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
+- Task Configuration Avoidance
+- Lazy Properties
 
 ### Fixed
-
-### Security
+- InitializeChangelogTask issue for no groups present
+ 
 ## [1.1.2]
 ### Changed
 - Remove `shadowJar`
