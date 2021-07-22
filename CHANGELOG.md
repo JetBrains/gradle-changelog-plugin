@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - `getOrNull` extension method
+- Configuration Cache support
 
 ## [1.2.0]
 ### Added
