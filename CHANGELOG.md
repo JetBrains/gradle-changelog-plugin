@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [1.2.1]
+### Added
 - `getOrNull` extension method
 - Configuration Cache support
 
