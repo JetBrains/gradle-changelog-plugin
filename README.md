@@ -39,7 +39,7 @@ Kotlin:
 import org.jetbrains.changelog.date
 
 plugins {
-    id("org.jetbrains.changelog") version "1.1.1"
+    id("org.jetbrains.changelog") version "1.2.1"
 }
 
 tasks {
@@ -66,7 +66,7 @@ Groovy:
 import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
-    id 'org.jetbrains.changelog' version '1.1.1'
+    id 'org.jetbrains.changelog' version '1.2.1'
 }
 
 apply plugin: 'org.jetbrains.changelog'
