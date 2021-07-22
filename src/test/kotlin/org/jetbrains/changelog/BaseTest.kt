@@ -60,7 +60,7 @@ open class BaseTest {
             .forwardOutput()
             .withPluginClasspath()
             .withTestKitDir(File(gradleHome))
-            .withArguments(taskName, "--console=plain", "--stacktrace", *arguments)
+            .withArguments(taskName, "--console=plain", "--stacktrace", "--configuration-cache", *arguments)
 
     protected fun runTask(taskName: String, vararg arguments: String): BuildResult =
         prepareTask(taskName, *arguments).build()

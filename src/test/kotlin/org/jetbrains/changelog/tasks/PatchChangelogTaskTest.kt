@@ -318,10 +318,11 @@ class PatchChangelogTaskTest : BaseTest() {
             extension.getUnreleased()
         }
 
-        assertEquals(
-            ":patchChangelog task requires '$unreleasedTerm' section to be present. " +
-                "Add '## $unreleasedTerm' section header to your changelog file: ${extension.path.get()}",
-            result.output.trim()
+        assertTrue(
+            result.output.trim().contains(
+                ":patchChangelog task requires '$unreleasedTerm' section to be present. " +
+                    "Add '## $unreleasedTerm' section header to your changelog file: ${extension.path.get()}"
+            )
         )
     }
 

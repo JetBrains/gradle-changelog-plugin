@@ -9,6 +9,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class ChangelogPluginExtensionTest : BaseTest() {
@@ -454,5 +455,19 @@ class ChangelogPluginExtensionTest : BaseTest() {
             extension.headerParserRegex.set(123)
             assertNotNull(extension.get("2020.1"))
         }
+    }
+
+    @Test
+    fun `return null for non-existent version`() {
+        changelog =
+            """
+            # My Changelog
+
+            ## 1.0.0
+            
+            * Foo
+            """
+
+        assertNull(extension.getOrNull("2.0.0"))
     }
 }

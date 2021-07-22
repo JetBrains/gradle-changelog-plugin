@@ -130,6 +130,7 @@ class InitializeChangelogTaskTest : BaseTest() {
                 id 'org.jetbrains.changelog'
             }
             changelog {
+                version = "1.0.0"
             }
             """
 

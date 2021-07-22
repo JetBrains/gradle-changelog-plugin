@@ -40,6 +40,7 @@ open class ChangelogPluginExtension(objects: ObjectFactory) {
     @Optional
     val path: Property<String> = objects.property(String::class.java)
 
+    @Optional
     val version: Property<String> = objects.property(String::class.java)
 
     @Optional
