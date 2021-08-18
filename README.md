@@ -8,7 +8,7 @@
 
 **This project requires Gradle 6.6 or newer**
 
-> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 7.1.1`
+> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 7.2`
 
 A Gradle plugin that provides tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
 
