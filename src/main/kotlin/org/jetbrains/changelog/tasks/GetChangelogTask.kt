@@ -14,27 +14,13 @@ open class GetChangelogTask : DefaultTask() {
 
     private val extension = project.extensions.getByType(ChangelogPluginExtension::class.java)
 
-    private var noHeader = false
-
-    @Suppress("UnstableApiUsage")
+    @Input
     @Option(option = "no-header", description = "Omits header version line")
-    fun setNoHeader(noHeader: Boolean) {
-        this.noHeader = noHeader
-    }
+    var noHeader = false
 
     @Input
-    fun getNoHeader() = noHeader
-
-    private var unreleased = false
-
-    @Suppress("UnstableApiUsage")
     @Option(option = "unreleased", description = "Returns Unreleased change notes")
-    fun setUnreleased(unreleased: Boolean) {
-        this.unreleased = unreleased
-    }
-
-    @Input
-    fun getUnreleased() = unreleased
+    var unreleased = false
 
     @InputFile
     fun getInputFile() = File(extension.path.get())
