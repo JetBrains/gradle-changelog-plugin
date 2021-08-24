@@ -11,20 +11,21 @@ import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.changelog.flavours.ChangelogFlavourDescriptor
 import java.io.File
 
-class Changelog(extension: ChangelogPluginExtension) {
+class Changelog(
+    file: File,
+    unreleasedTerm: String,
+    headerParserRegex: Regex,
+    itemPrefix: String,
+) {
 
-    val content = extension.path.get().let {
-        File(it).run {
-            if (it.isEmpty() || !exists()) {
-                throw MissingFileException(it)
-            }
-            readText()
+    val content = file.run {
+        if (!exists()) {
+            throw MissingFileException(canonicalPath)
         }
+        readText()
     }
 
     @Suppress("MaxLineLength")
-    private val semVerRegex =
-        """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?${'$'}""".toRegex() // ktlint-disable max-line-length
     private val flavour = ChangelogFlavourDescriptor()
     private val parser = MarkdownParser(flavour)
     private val tree = parser.buildMarkdownTreeFromString(content)
@@ -33,10 +34,10 @@ class Changelog(extension: ChangelogPluginExtension) {
         .groupByType(MarkdownElementTypes.ATX_2) {
             it.children.last().text().trim().run {
                 when (this) {
-                    extension.unreleasedTerm.get() -> this
+                    unreleasedTerm -> this
                     else -> split("""[^-+.0-9a-zA-Z]+""".toRegex()).firstOrNull(
-                        (extension.getHeaderParserRegex() ?: semVerRegex)::matches
-                    ) ?: throw HeaderParseException(this, extension)
+                        headerParserRegex::matches
+                    ) ?: throw HeaderParseException(this, unreleasedTerm)
                 }
             }
         }
@@ -50,12 +51,12 @@ class Changelog(extension: ChangelogPluginExtension) {
                 .mapValues {
                     it.value
                         .joinToString("") { node -> node.text() }
-                        .split("""\n${Regex.escape(extension.itemPrefix.get())}""".toRegex())
-                        .map { line -> extension.itemPrefix.get() + line.trim('\n') }
+                        .split("""\n${Regex.escape(itemPrefix)}""".toRegex())
+                        .map { line -> itemPrefix + line.trim('\n') }
                         .drop(1)
                         .filterNot(String::isEmpty)
                 }.run {
-                    val isUnreleased = key == extension.unreleasedTerm.get()
+                    val isUnreleased = key == unreleasedTerm
                     Item(key, value.first(), this, isUnreleased)
                 }
         }

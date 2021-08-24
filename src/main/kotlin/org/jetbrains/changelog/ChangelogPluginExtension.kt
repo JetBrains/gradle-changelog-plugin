@@ -4,6 +4,7 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Optional
+import java.io.File
 import java.util.regex.Pattern
 
 @Suppress("UnstableApiUsage")
@@ -22,11 +23,14 @@ open class ChangelogPluginExtension(objects: ObjectFactory) {
         is Regex -> value
         is String -> value.toRegex()
         is Pattern -> value.toRegex()
-        null -> null
+        null -> semVerRegex
         else -> throw IllegalArgumentException(
             "Unsupported type of $value. Expected value types: Regex, String, Pattern."
         )
     }
+
+    private val semVerRegex =
+        """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?${'$'}""".toRegex() // ktlint-disable max-line-length
 
     @Optional
     val itemPrefix: Property<String> = objects.property(String::class.java)
@@ -48,9 +52,9 @@ open class ChangelogPluginExtension(objects: ObjectFactory) {
 
     fun getUnreleased() = get(unreleasedTerm.get())
 
-    fun get(version: String) = Changelog(this).get(version)
+    fun get(version: String) = changelog.get(version)
 
-    fun getOrNull(version: String) = Changelog(this).run {
+    fun getOrNull(version: String) = changelog.run {
         if (has(version)) {
             get(version)
         } else {
@@ -58,9 +62,17 @@ open class ChangelogPluginExtension(objects: ObjectFactory) {
         }
     }
 
-    fun getLatest() = Changelog(this).getLatest()
+    fun getLatest() = changelog.getLatest()
 
-    fun getAll() = Changelog(this).getAll()
+    fun getAll() = changelog.getAll()
 
-    fun has(version: String) = Changelog(this).has(version)
+    fun has(version: String) = changelog.has(version)
+
+    private val changelog
+        get() = Changelog(
+            File(path.get()),
+            unreleasedTerm.get(),
+            getHeaderParserRegex(),
+            itemPrefix.get(),
+        )
 }

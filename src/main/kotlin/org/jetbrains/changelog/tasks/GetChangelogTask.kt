@@ -1,18 +1,20 @@
 package org.jetbrains.changelog.tasks
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
-import org.jetbrains.changelog.ChangelogPluginExtension
-import java.io.File
+import javax.inject.Inject
 
-open class GetChangelogTask : DefaultTask() {
-
-    private val extension = project.extensions.getByType(ChangelogPluginExtension::class.java)
+open class GetChangelogTask @Inject constructor(
+    objectFactory: ObjectFactory,
+) : DefaultTask() {
 
     @Input
     @Option(option = "no-header", description = "Omits header version line")
@@ -23,17 +25,36 @@ open class GetChangelogTask : DefaultTask() {
     var unreleased = false
 
     @InputFile
-    fun getInputFile() = File(extension.path.get())
+    @Optional
+    val inputFile: RegularFileProperty = objectFactory.fileProperty()
 
-    @OutputFile
-    fun getOutputFile() = getInputFile()
+    @Input
+    @Optional
+    val unreleasedTerm: Property<String> = objectFactory.property(String::class.java)
+
+    @Input
+    @Optional
+    val version: Property<String> = objectFactory.property(String::class.java)
+
+    @Input
+    @Optional
+    val headerParserRegex: Property<Regex> = objectFactory.property(Regex::class.java)
+
+    @Input
+    @Optional
+    val itemPrefix: Property<String> = objectFactory.property(String::class.java)
 
     @TaskAction
     fun run() = logger.quiet(
-        Changelog(extension).run {
+        Changelog(
+            inputFile.get().asFile,
+            unreleasedTerm.get(),
+            headerParserRegex.get(),
+            itemPrefix.get(),
+        ).run {
             val version = when (unreleased) {
-                true -> extension.unreleasedTerm
-                false -> extension.version
+                true -> unreleasedTerm
+                false -> version
             }.get()
             get(version).run {
                 withHeader(!noHeader)
