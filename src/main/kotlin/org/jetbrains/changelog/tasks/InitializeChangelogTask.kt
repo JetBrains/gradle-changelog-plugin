@@ -22,15 +22,15 @@ open class InitializeChangelogTask @Inject constructor(
 
     @Input
     @Optional
+    val itemPrefix: Property<String> = objectFactory.property(String::class.java)
+
+    @Input
+    @Optional
     val groups: ListProperty<String> = objectFactory.listProperty(String::class.java)
 
     @Input
     @Optional
     val unreleasedTerm: Property<String> = objectFactory.property(String::class.java)
-
-    @Input
-    @Optional
-    val itemPrefix: Property<String> = objectFactory.property(String::class.java)
 
     @TaskAction
     fun run() {

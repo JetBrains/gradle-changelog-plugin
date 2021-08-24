@@ -30,19 +30,19 @@ open class GetChangelogTask @Inject constructor(
 
     @Input
     @Optional
-    val unreleasedTerm: Property<String> = objectFactory.property(String::class.java)
-
-    @Input
-    @Optional
-    val version: Property<String> = objectFactory.property(String::class.java)
-
-    @Input
-    @Optional
     val headerParserRegex: Property<Regex> = objectFactory.property(Regex::class.java)
 
     @Input
     @Optional
     val itemPrefix: Property<String> = objectFactory.property(String::class.java)
+
+    @Input
+    @Optional
+    val unreleasedTerm: Property<String> = objectFactory.property(String::class.java)
+
+    @Input
+    @Optional
+    val version: Property<String> = objectFactory.property(String::class.java)
 
     @TaskAction
     fun run() = logger.quiet(

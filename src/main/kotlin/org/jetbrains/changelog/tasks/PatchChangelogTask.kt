@@ -28,23 +28,11 @@ open class PatchChangelogTask @Inject constructor(
 
     @Input
     @Optional
-    val unreleasedTerm: Property<String> = objectFactory.property(String::class.java)
+    val groups: ListProperty<String> = objectFactory.listProperty(String::class.java)
 
     @Input
     @Optional
     val header: Property<String> = objectFactory.property(String::class.java)
-
-    @Input
-    @Optional
-    val patchEmpty: Property<Boolean> = objectFactory.property(Boolean::class.java)
-
-    @Input
-    @Optional
-    val keepUnreleasedSection: Property<Boolean> = objectFactory.property(Boolean::class.java)
-
-    @Input
-    @Optional
-    val groups: ListProperty<String> = objectFactory.listProperty(String::class.java)
 
     @Input
     @Optional
@@ -53,6 +41,18 @@ open class PatchChangelogTask @Inject constructor(
     @Input
     @Optional
     val itemPrefix: Property<String> = objectFactory.property(String::class.java)
+
+    @Input
+    @Optional
+    val keepUnreleasedSection: Property<Boolean> = objectFactory.property(Boolean::class.java)
+
+    @Input
+    @Optional
+    val patchEmpty: Property<Boolean> = objectFactory.property(Boolean::class.java)
+
+    @Input
+    @Optional
+    val unreleasedTerm: Property<String> = objectFactory.property(String::class.java)
 
     @TaskAction
     fun run() {

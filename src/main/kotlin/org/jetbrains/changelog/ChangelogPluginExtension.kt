@@ -6,9 +6,12 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Optional
 import java.io.File
 import java.util.regex.Pattern
+import javax.inject.Inject
 
 @Suppress("UnstableApiUsage")
-open class ChangelogPluginExtension(objects: ObjectFactory) {
+open class ChangelogPluginExtension @Inject constructor(
+    objects: ObjectFactory,
+) {
 
     @Optional
     val groups: ListProperty<String> = objects.listProperty(String::class.java)
@@ -40,14 +43,14 @@ open class ChangelogPluginExtension(objects: ObjectFactory) {
     val path: Property<String> = objects.property(String::class.java)
 
     @Optional
-    val version: Property<String> = objects.property(String::class.java)
-
-    @Optional
     val unreleasedTerm: Property<String> = objects.property(String::class.java)
 
-    fun getUnreleased() = get(unreleasedTerm.get())
+    @Optional
+    val version: Property<String> = objects.property(String::class.java)
 
     fun get(version: String) = changelog.get(version)
+
+    fun getAll() = changelog.getAll()
 
     fun getOrNull(version: String) = changelog.run {
         if (has(version)) {
@@ -59,7 +62,7 @@ open class ChangelogPluginExtension(objects: ObjectFactory) {
 
     fun getLatest() = changelog.getLatest()
 
-    fun getAll() = changelog.getAll()
+    fun getUnreleased() = get(unreleasedTerm.get())
 
     fun has(version: String) = changelog.has(version)
 
