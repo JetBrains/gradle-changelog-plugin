@@ -23,14 +23,9 @@ open class ChangelogPluginExtension(objects: ObjectFactory) {
         is Regex -> value
         is String -> value.toRegex()
         is Pattern -> value.toRegex()
-        null -> semVerRegex
-        else -> throw IllegalArgumentException(
-            "Unsupported type of $value. Expected value types: Regex, String, Pattern."
-        )
+        null -> ChangelogPluginConstants.SEM_VER_REGEX
+        else -> throw IllegalArgumentException("Unsupported type of $value. Expected value types: Regex, String, Pattern.")
     }
-
-    private val semVerRegex =
-        """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?${'$'}""".toRegex() // ktlint-disable max-line-length
 
     @Optional
     val itemPrefix: Property<String> = objects.property(String::class.java)

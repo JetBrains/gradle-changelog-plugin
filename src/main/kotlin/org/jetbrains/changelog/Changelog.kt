@@ -25,7 +25,6 @@ class Changelog(
         readText()
     }
 
-    @Suppress("MaxLineLength")
     private val flavour = ChangelogFlavourDescriptor()
     private val parser = MarkdownParser(flavour)
     private val tree = parser.buildMarkdownTreeFromString(content)

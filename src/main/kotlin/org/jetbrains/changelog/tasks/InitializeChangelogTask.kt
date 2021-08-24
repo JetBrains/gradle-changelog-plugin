@@ -9,6 +9,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import org.jetbrains.changelog.ChangelogPluginConstants
 import javax.inject.Inject
 
 open class InitializeChangelogTask @Inject constructor(
@@ -40,11 +41,11 @@ open class InitializeChangelogTask @Inject constructor(
             }
         }.writeText(
             """
-                # Changelog
+                # ${ChangelogPluginConstants.INITIALIZE_HEADER}
                 
                 ## ${unreleasedTerm.get()}
                 ${groups.firstOrNull()?.let { "### $it" } ?: ""}
-                ${itemPrefix.get()} Example item
+                ${itemPrefix.get()} ${ChangelogPluginConstants.INITIALIZE_EXAMPLE_ITEM}
                 
                 
             """.trimIndent() + groups.drop(1).joinToString("\n") { "### $it\n" }

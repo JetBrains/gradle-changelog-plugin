@@ -10,18 +10,18 @@ import org.jetbrains.changelog.tasks.PatchChangelogTask
 class ChangelogPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        val extension = project.extensions.create("changelog", ChangelogPluginExtension::class.java).apply {
-            groups.convention(listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"))
+        val extension = project.extensions.create(ChangelogPluginConstants.EXTENSION_NAME, ChangelogPluginExtension::class.java).apply {
+            groups.convention(ChangelogPluginConstants.GROUPS)
             header.convention(project.provider {
                 "[${version.get()}]"
             })
             keepUnreleasedSection.convention(true)
-            itemPrefix.convention("-")
+            itemPrefix.convention(ChangelogPluginConstants.ITEM_PREFIX)
             path.convention(project.provider {
-                "${project.projectDir}/CHANGELOG.md"
+                "${project.projectDir}/${ChangelogPluginConstants.CHANGELOG_FILE_NAME}"
             })
             patchEmpty.convention(true)
-            unreleasedTerm.convention("[Unreleased]")
+            unreleasedTerm.convention(ChangelogPluginConstants.UNRELEASED_TERM)
             version.convention(
                 project.provider {
                     project.version.toString().takeIf { it != Project.DEFAULT_VERSION }
@@ -30,8 +30,8 @@ class ChangelogPlugin : Plugin<Project> {
             )
         }
 
-        project.tasks.register("getChangelog", GetChangelogTask::class.java) {
-            it.group = "changelog"
+        project.tasks.register(ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME, GetChangelogTask::class.java) {
+            it.group = ChangelogPluginConstants.GROUP_NAME
             it.outputs.upToDateWhen { false }
 
             it.headerParserRegex.convention(project.provider {
@@ -45,8 +45,8 @@ class ChangelogPlugin : Plugin<Project> {
             it.version.set(extension.version)
         }
 
-        project.tasks.register("patchChangelog", PatchChangelogTask::class.java) {
-            it.group = "changelog"
+        project.tasks.register(ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAME, PatchChangelogTask::class.java) {
+            it.group = ChangelogPluginConstants.GROUP_NAME
 
             it.groups.set(extension.groups)
             it.header.set(extension.header)
@@ -65,8 +65,8 @@ class ChangelogPlugin : Plugin<Project> {
             it.unreleasedTerm.set(extension.unreleasedTerm)
         }
 
-        project.tasks.register("initializeChangelog", InitializeChangelogTask::class.java) {
-            it.group = "changelog"
+        project.tasks.register(ChangelogPluginConstants.INITIALIZE_CHANGELOG_TASK_NAME, InitializeChangelogTask::class.java) {
+            it.group = ChangelogPluginConstants.GROUP_NAME
 
             it.groups.set(extension.groups)
             it.outputFile.convention {
