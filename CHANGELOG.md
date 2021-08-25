@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+## [1.3.0]
+### Added
 - PatchChangelogTask: `--release-note` CLI option to add a custom release note to the latest changelog entry
 
 ## [1.2.1]
