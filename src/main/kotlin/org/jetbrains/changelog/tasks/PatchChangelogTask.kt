@@ -11,12 +11,22 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.StopActionException
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
+import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
+import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
+import org.jetbrains.changelog.exceptions.MissingReleaseNoteException
 import javax.inject.Inject
 
 open class PatchChangelogTask @Inject constructor(
     objectFactory: ObjectFactory,
 ) : DefaultTask() {
+
+    @Input
+    @Option(option = "release-note", description = "Custom release note content")
+    @Optional
+    var releaseNote: String? = null
 
     @InputFile
     @Optional
@@ -56,39 +66,55 @@ open class PatchChangelogTask @Inject constructor(
 
     @TaskAction
     fun run() {
-        Changelog(
+        val unreleasedTermValue = unreleasedTerm.get()
+        val headerValue = header.get()
+        val changelog = Changelog(
             inputFile.get().asFile,
             unreleasedTerm.get(),
             headerParserRegex.get(),
             itemPrefix.get(),
-        ).apply {
-            val unreleasedTerm = unreleasedTerm.get()
-            if (!has(unreleasedTerm)) {
-                logger.warn(
-                    ":patchChangelog task requires '$unreleasedTerm' section to be present. " +
-                        "Add '## $unreleasedTerm' section header to your changelog file: ${inputFile.get().asFile.canonicalPath}"
-                )
-                throw StopActionException()
-            }
-            get(unreleasedTerm).let { item ->
-                val node = item.getHeaderNode()
-                val header = "## ${header.get()}"
+        )
 
-                if (item.getSections().isEmpty() && !patchEmpty.get()) {
-                    return
-                }
+        val item = changelog.runCatching { get(unreleasedTermValue) }.getOrNull()
+        val noUnreleasedSection = item == null || item.getSections().isEmpty()
+        val noReleaseNote = releaseNote.isNullOrBlank()
+        val content = releaseNote ?: item?.withHeader(false)?.toText() ?: ""
 
-                outputFile.get().asFile.writeText(
-                    this.content.run {
-                        if (keepUnreleasedSection.get()) {
-                            val unreleasedGroups = groups.get().joinToString("\n") { "### $it\n" }
-                            StringBuilder(this).insert(node.endOffset, "\n$unreleasedGroups$header").toString()
-                        } else {
-                            replaceRange(node.startOffset, node.endOffset, header)
-                        }
-                    }
-                )
-            }
+        if (patchEmpty.get() && content.isEmpty()) {
+            logger.info(":patchChangelog task skipped due to the missing release note in the '$unreleasedTerm'.")
+            throw StopActionException()
         }
+
+        if (noUnreleasedSection && noReleaseNote && content.isEmpty()) {
+            throw MissingReleaseNoteException(
+                ":patchChangelog task requires release note to be provided. " +
+                    "Add '$ATX_2 $unreleasedTermValue' section header to your changelog file: " +
+                    "'${inputFile.get().asFile.canonicalPath}' " +
+                    "or provide it using '--release-note' CLI option."
+            )
+        }
+
+        outputFile.get().asFile.writeText(listOfNotNull(
+            changelog.header + NEW_LINE,
+
+            item?.header.takeIf {
+                keepUnreleasedSection.get()
+            },
+
+            groups.get().joinToString(NEW_LINE) {
+                "$ATX_3 $it$NEW_LINE"
+            },
+
+            "$ATX_2 $headerValue",
+
+            content.trim() + NEW_LINE,
+
+            changelog.getAll()
+                .values
+                .drop(1)
+                .joinToString("$NEW_LINE$NEW_LINE") {
+                    it.withHeader(true).toText().trim()
+                },
+        ).joinToString(NEW_LINE))
     }
 }

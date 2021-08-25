@@ -52,13 +52,7 @@ open class ChangelogPluginExtension @Inject constructor(
 
     fun getAll() = changelog.getAll()
 
-    fun getOrNull(version: String) = changelog.run {
-        if (has(version)) {
-            get(version)
-        } else {
-            null
-        }
-    }
+    fun getOrNull(version: String) = changelog.runCatching { get(version) }.getOrNull()
 
     fun getLatest() = changelog.getLatest()
 

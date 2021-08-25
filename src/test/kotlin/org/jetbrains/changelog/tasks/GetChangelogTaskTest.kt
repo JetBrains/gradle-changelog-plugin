@@ -1,6 +1,7 @@
 package org.jetbrains.changelog.tasks
 
 import org.jetbrains.changelog.BaseTest
+import org.jetbrains.changelog.ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,7 +36,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `returns change notes for the version specified with extension`() {
-        val result = runTask("getChangelog", "--quiet")
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
         assertEquals(
             """
@@ -49,7 +50,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `returns the Unreleased change notes`() {
-        val result = runTask("getChangelog", "--quiet", "--unreleased")
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--unreleased")
 
         assertEquals(
             """
@@ -62,7 +63,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `returns change notes without header for the version specified with extension`() {
-        val result = runTask("getChangelog", "--quiet", "--no-header")
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--no-header")
 
         assertEquals(
             """
@@ -88,7 +89,7 @@ class GetChangelogTaskTest : BaseTest() {
 
         project.evaluate()
 
-        runTask("getChangelog")
+        runTask(GET_CHANGELOG_TASK_NAME)
     }
 
     @Test
@@ -106,7 +107,7 @@ class GetChangelogTaskTest : BaseTest() {
 
         project.evaluate()
 
-        runTask("getChangelog")
+        runTask(GET_CHANGELOG_TASK_NAME)
     }
 
     @Test
@@ -124,7 +125,7 @@ class GetChangelogTaskTest : BaseTest() {
 
         project.evaluate()
 
-        runFailingTask("getChangelog")
+        runFailingTask(GET_CHANGELOG_TASK_NAME)
     }
 
     @Test
@@ -140,7 +141,7 @@ class GetChangelogTaskTest : BaseTest() {
 
         project.evaluate()
 
-        val result = runFailingTask("getChangelog")
+        val result = runFailingTask(GET_CHANGELOG_TASK_NAME)
 
         assertTrue(
             result.output.contains(
@@ -152,8 +153,8 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `task loads from the configuration cache`() {
-        runTask("getChangelog", "--configuration-cache")
-        val result = runTask("getChangelog", "--configuration-cache")
+        runTask(GET_CHANGELOG_TASK_NAME, "--configuration-cache")
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--configuration-cache")
 
         assertTrue(result.output.contains("Reusing configuration cache."))
     }

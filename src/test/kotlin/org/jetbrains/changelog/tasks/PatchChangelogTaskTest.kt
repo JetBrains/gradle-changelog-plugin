@@ -1,7 +1,10 @@
 package org.jetbrains.changelog.tasks
 
 import org.jetbrains.changelog.BaseTest
+import org.jetbrains.changelog.ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAME
+import org.jetbrains.changelog.exceptions.MissingReleaseNoteException
 import org.jetbrains.changelog.exceptions.MissingVersionException
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.test.BeforeTest
@@ -37,7 +40,7 @@ class PatchChangelogTaskTest : BaseTest() {
     @Test
     fun `patches Unreleased version to the current one and creates empty Unreleased above`() {
         project.evaluate()
-        runTask("patchChangelog")
+        runTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertEquals(
             """
@@ -80,7 +83,7 @@ class PatchChangelogTaskTest : BaseTest() {
             """
 
         project.evaluate()
-        runTask("patchChangelog")
+        runTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertEquals(
             """
@@ -109,9 +112,9 @@ class PatchChangelogTaskTest : BaseTest() {
             """
 
         project.evaluate()
-        runTask("patchChangelog")
+        runTask(PATCH_CHANGELOG_TASK_NAME)
 
-        assertEquals("## Foo 1.0.0 bar", extension.get(version).getHeader())
+        assertEquals("## Foo 1.0.0 bar", extension.get(version).header)
     }
 
     @Test
@@ -147,10 +150,10 @@ class PatchChangelogTaskTest : BaseTest() {
             """
 
         project.evaluate()
-        runTask("patchChangelog")
+        runTask(PATCH_CHANGELOG_TASK_NAME)
 
         val date = SimpleDateFormat("yyyy-MM-dd").format(Date())
-        assertEquals("## [1.0.0] - $date", extension.get(version).getHeader())
+        assertEquals("## [1.0.0] - $date", extension.get(version).header)
     }
 
     @Test
@@ -173,17 +176,28 @@ class PatchChangelogTaskTest : BaseTest() {
 
         project.evaluate()
 
-        runTask("patchChangelog")
+        val result = runFailingTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertFailsWith<MissingVersionException> {
             extension.get(version)
         }
+
+        assertTrue(
+            result.output.contains(
+                "* What went wrong:\n" +
+                    "Execution failed for task ':$PATCH_CHANGELOG_TASK_NAME'.\n" +
+                    "> ${MissingReleaseNoteException::class.qualifiedName}: " +
+                    ":$PATCH_CHANGELOG_TASK_NAME task requires release note to be provided. " +
+                    "Add '## ${extension.unreleasedTerm.get()}' section header to your changelog file: " +
+                    "'${File(extension.path.get()).canonicalPath}' or provide it using '--release-note' CLI option."
+            )
+        )
     }
 
     @Test
     fun `create empty groups for the new Unreleased section`() {
         project.evaluate()
-        runTask("patchChangelog")
+        runTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertEquals(
             """
@@ -226,7 +240,7 @@ class PatchChangelogTaskTest : BaseTest() {
             """
 
         project.evaluate()
-        runTask("patchChangelog")
+        runTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertEquals(
             """
@@ -255,7 +269,7 @@ class PatchChangelogTaskTest : BaseTest() {
             """
 
         project.evaluate()
-        runTask("patchChangelog")
+        runTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertEquals(
             """
@@ -282,7 +296,7 @@ class PatchChangelogTaskTest : BaseTest() {
             """
 
         project.evaluate()
-        runTask("patchChangelog")
+        runTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertEquals(
             """
@@ -294,7 +308,7 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `throws MissingUnreleasedSectionException when Unreleased section is not present`() {
+    fun `throws MissingReleaseNoteException when Unreleased section is not present`() {
         val unreleasedTerm = "Not released"
         buildFile =
             """
@@ -312,18 +326,11 @@ class PatchChangelogTaskTest : BaseTest() {
             """
 
         project.evaluate()
-        val result = runTask("patchChangelog", "--warn")
+        runTask(PATCH_CHANGELOG_TASK_NAME, "--warn")
 
         assertFailsWith<MissingVersionException> {
             extension.getUnreleased()
         }
-
-        assertTrue(
-            result.output.trim().contains(
-                ":patchChangelog task requires '$unreleasedTerm' section to be present. " +
-                    "Add '## $unreleasedTerm' section header to your changelog file: ${extension.path.get()}"
-            )
-        )
     }
 
     @Test
@@ -339,7 +346,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
         project.evaluate()
 
-        val result = runFailingTask("patchChangelog")
+        val result = runFailingTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertTrue(
             result.output.contains(
@@ -350,9 +357,62 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
+    fun `patch changelog with a custom release note`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                groups = []
+            }
+            """
+        changelog =
+            """
+            # My Changelog
+            Foo bar buz.
+            
+            ## [Unreleased]
+            - Foo
+            - Bar
+            
+            ## [0.1.0]
+            ### Added
+            - Buz
+            """
+        project.evaluate()
+
+        runTask(PATCH_CHANGELOG_TASK_NAME, "--release-note=- asd")
+
+        assertEquals(
+            """
+            - asd
+            """.trimIndent(),
+            extension.get("1.0.0").toText()
+        )
+        assertEquals(
+            """
+            # My Changelog
+            Foo bar buz.
+            
+            ## [Unreleased]
+            
+            ## [1.0.0]
+            - asd
+
+            ## [0.1.0]
+            ### Added
+            - Buz
+            """.trimIndent(),
+            File(extension.path.get()).readText()
+        )
+    }
+
+    @Test
     fun `task loads from the configuration cache`() {
-        runTask("patchChangelog", "--configuration-cache")
-        val result = runTask("patchChangelog", "--configuration-cache")
+        runTask(PATCH_CHANGELOG_TASK_NAME, "--configuration-cache")
+        val result = runTask(PATCH_CHANGELOG_TASK_NAME, "--configuration-cache")
 
         assertTrue(result.output.contains("Reusing configuration cache."))
     }

@@ -1,6 +1,7 @@
 package org.jetbrains.changelog.tasks
 
 import org.jetbrains.changelog.BaseTest
+import org.jetbrains.changelog.ChangelogPluginConstants.INITIALIZE_CHANGELOG_TASK_NAME
 import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -28,7 +29,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @Test
     fun `creates new changelog file`() {
-        runTask("initializeChangelog")
+        runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
         extension.getAll().apply {
             assertEquals(1, keys.size)
@@ -64,7 +65,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             """
         project.evaluate()
 
-        runTask("initializeChangelog")
+        runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
         assertEquals(
             """
@@ -108,7 +109,7 @@ class InitializeChangelogTaskTest : BaseTest() {
         }
         project.evaluate()
 
-        runTask("initializeChangelog")
+        runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
         assertEquals(
             """
@@ -136,15 +137,15 @@ class InitializeChangelogTaskTest : BaseTest() {
 
         project.evaluate()
 
-        val result = runTask("initializeChangelog")
+        val result = runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
         assertFalse(result.output.contains("VersionNotSpecifiedException"))
     }
 
     @Test
     fun `task loads from the configuration cache`() {
-        runTask("initializeChangelog", "--configuration-cache")
-        val result = runTask("initializeChangelog", "--configuration-cache")
+        runTask(INITIALIZE_CHANGELOG_TASK_NAME, "--configuration-cache")
+        val result = runTask(INITIALIZE_CHANGELOG_TASK_NAME, "--configuration-cache")
 
         assertTrue(result.output.contains("Reusing configuration cache."))
     }

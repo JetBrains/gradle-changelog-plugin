@@ -10,6 +10,10 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.changelog.ChangelogPluginConstants
+import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
+import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
+import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
+import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
 import javax.inject.Inject
 
 open class InitializeChangelogTask @Inject constructor(
@@ -41,14 +45,14 @@ open class InitializeChangelogTask @Inject constructor(
             }
         }.writeText(
             """
-                # ${ChangelogPluginConstants.INITIALIZE_HEADER}
+                $ATX_1 ${ChangelogPluginConstants.INITIALIZE_HEADER}
                 
-                ## ${unreleasedTerm.get()}
-                ${groups.firstOrNull()?.let { "### $it" } ?: ""}
+                $ATX_2 ${unreleasedTerm.get()}
+                ${groups.firstOrNull()?.let { "$ATX_3 $it" } ?: ""}
                 ${itemPrefix.get()} ${ChangelogPluginConstants.INITIALIZE_EXAMPLE_ITEM}
                 
                 
-            """.trimIndent() + groups.drop(1).joinToString("\n") { "### $it\n" }
+            """.trimIndent() + groups.drop(1).joinToString(NEW_LINE) { "$ATX_3 $it$NEW_LINE" }
         )
     }
 }

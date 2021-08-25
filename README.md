@@ -169,6 +169,26 @@ $ ./gradlew getChangelog --console=plain -q --no-header
 - Kotlin support
 ```
 
+### `patchChangelog`
+
+#### Options
+
+| Option           | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `--release-note` | Adds custom release note to the latest changelog entry. |
+
+#### Examples
+
+```bash
+$ ./gradlew patchChangelog --release-note=- Foo
+$ cat CHANGELOG.md
+
+## [Unreleased]
+
+## [1.0.0]
+- Foo
+```
+
 
 ## Extension Methods
 

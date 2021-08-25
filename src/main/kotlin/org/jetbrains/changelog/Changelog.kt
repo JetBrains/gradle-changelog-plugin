@@ -5,6 +5,8 @@ import org.intellij.markdown.MarkdownElementTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.parser.MarkdownParser
+import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
+import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
 import org.jetbrains.changelog.exceptions.HeaderParseException
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
@@ -18,7 +20,7 @@ class Changelog(
     itemPrefix: String,
 ) {
 
-    val content = file.run {
+    private val content = file.run {
         if (!exists()) {
             throw MissingFileException(canonicalPath)
         }
@@ -28,7 +30,6 @@ class Changelog(
     private val flavour = ChangelogFlavourDescriptor()
     private val parser = MarkdownParser(flavour)
     private val tree = parser.buildMarkdownTreeFromString(content)
-
     private val items = tree.children
         .groupByType(MarkdownElementTypes.ATX_2) {
             it.children.last().text().trim().run {
@@ -56,21 +57,24 @@ class Changelog(
                         .filterNot(String::isEmpty)
                 }.run {
                     val isUnreleased = key == unreleasedTerm
-                    Item(key, value.first(), this, isUnreleased)
+                    val header = retrieveHeader(value, MarkdownElementTypes.ATX_3)
+                    Item(key, header, this, isUnreleased)
                 }
         }
+
+    val header = retrieveHeader(tree.children, MarkdownElementTypes.ATX_2)
 
     fun has(version: String) = items.containsKey(version)
 
     fun get(version: String) = items[version] ?: throw MissingVersionException(version)
 
-    fun getLatest() = items[items.keys.first()] ?: throw MissingVersionException("any")
-
     fun getAll() = items
+
+    fun getLatest() = items[items.keys.first()] ?: throw MissingVersionException("any")
 
     inner class Item(
         val version: String,
-        private val header: ASTNode,
+        val header: String,
         private val items: Map<String, List<String>>,
         private val isUnreleased: Boolean = false,
     ) {
@@ -79,16 +83,12 @@ class Changelog(
         private var filterCallback: ((String) -> Boolean)? = null
 
         fun withHeader(header: Boolean) = apply {
-            this.withHeader = header
+            withHeader = header
         }
 
         fun withFilter(filter: ((String) -> Boolean)?) = apply {
-            this.filterCallback = filter
+            filterCallback = filter
         }
-
-        fun getHeaderNode() = header
-
-        fun getHeader() = header.text()
 
         fun getSections() = items
             .mapValues {
@@ -100,10 +100,10 @@ class Changelog(
 
         fun toText() = getSections().entries
             .joinToString("\n\n") { (key, value) ->
-                (listOfNotNull("### $key".takeIf { key.isNotEmpty() }) + value).joinToString("\n")
+                (listOfNotNull("$ATX_3 $key".takeIf { key.isNotEmpty() }) + value).joinToString(NEW_LINE)
             }.trim().let {
                 when {
-                    withHeader -> "${getHeader()}\n$it"
+                    withHeader -> "$header\n$it"
                     else -> it
                 }
             }
@@ -129,4 +129,8 @@ class Changelog(
             key
         }
     }
+
+    private fun retrieveHeader(items: List<ASTNode>, type: IElementType) = items.run {
+        subList(0, indexOfFirst { it.type == type }.takeIf { it >= 0 } ?: 1)
+    }.joinToString("") { it.text() }.trim()
 }
