@@ -2,7 +2,8 @@
 
 ## [Unreleased]
 ### Added
-- ''
+- PatchChangelogTask: `--release-note` CLI option to add a custom release note to the latest changelog entry
+
 ## [1.2.1]
 ### Added
 - `getOrNull` extension method
