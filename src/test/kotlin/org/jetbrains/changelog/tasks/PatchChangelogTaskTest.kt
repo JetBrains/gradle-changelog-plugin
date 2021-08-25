@@ -2,7 +2,6 @@ package org.jetbrains.changelog.tasks
 
 import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAME
-import org.jetbrains.changelog.exceptions.MissingReleaseNoteException
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.io.File
 import java.text.SimpleDateFormat
@@ -30,7 +29,6 @@ class PatchChangelogTaskTest : BaseTest() {
             plugins {
                 id 'org.jetbrains.changelog'
             }
-
             changelog {
                 version = "1.0.0"
             }
@@ -182,16 +180,7 @@ class PatchChangelogTaskTest : BaseTest() {
             extension.get(version)
         }
 
-        assertTrue(
-            result.output.contains(
-                "* What went wrong:\n" +
-                    "Execution failed for task ':$PATCH_CHANGELOG_TASK_NAME'.\n" +
-                    "> ${MissingReleaseNoteException::class.qualifiedName}: " +
-                    ":$PATCH_CHANGELOG_TASK_NAME task requires release note to be provided. " +
-                    "Add '## ${extension.unreleasedTerm.get()}' section header to your changelog file: " +
-                    "'${File(extension.path.get()).canonicalPath}' or provide it using '--release-note' CLI option."
-            )
-        )
+        assertTrue(result.output.contains(":$PATCH_CHANGELOG_TASK_NAME task requires release note to be provided."))
     }
 
     @Test
