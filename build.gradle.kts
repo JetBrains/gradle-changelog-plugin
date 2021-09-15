@@ -7,7 +7,7 @@ plugins {
     id("maven-publish")
     id("org.jetbrains.changelog") version "1.2.1"
     id("org.jetbrains.kotlin.jvm") version "1.5.30"
-    id("com.gradle.plugin-publish") version "0.15.0"
+    id("com.gradle.plugin-publish") version "0.16.0"
 }
 
 description = properties("description")
