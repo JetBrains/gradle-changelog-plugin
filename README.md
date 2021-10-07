@@ -107,7 +107,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | **`version`**           | **Required.** Current project's version.                                   |                                                                      |
 | `groups`                | List of groups created with a new Unreleased section.                      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]` |
 | `header`                | `String` or `Provider` that returns current header value.                  | `provider { "[${version.get()}]" }`                                  |
-| `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string. | `null`, fallbacks to [`Changelog#semVerRegex`][semver-regex]         |
+| `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string. | `null`, fallbacks to [`ChangelogPluginConstants#SEM_VER_REGEX`][semver-regex]         |
 | `itemPrefix`            | Single item's prefix, allows to customise the bullet sign.                 | `"-"`                                                                |
 | `keepUnreleasedSection` | Add Unreleased empty section after patching.                               | `true`                                                               |
 | `patchEmpty`            | Patches changelog even if no release note is provided.                     | `true`                                                               |
@@ -409,4 +409,4 @@ includeBuild("/Users/hsz/Projects/JetBrains/gradle-changelog-plugin")
 [gradle-plugin-shield]: https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugin&color=blue&metadataUrl=https://plugins.gradle.org/m2/org/jetbrains/intellij/plugins/gradle-changelog-plugin/maven-metadata.xml
 [gradle-plugin]: https://plugins.gradle.org/plugin/org.jetbrains.changelog
 [gradle-lazy-configuration]: https://docs.gradle.org/current/userguide/lazy_configuration.html
-[semver-regex]: https://github.com/JetBrains/gradle-changelog-plugin/blob/main/src/main/kotlin/org/jetbrains/changelog/Changelog.kt#L23
+[semver-regex]: https://github.com/JetBrains/gradle-changelog-plugin/blob/main/src/main/kotlin/org/jetbrains/changelog/ChangelogPluginConstants.kt#L38
