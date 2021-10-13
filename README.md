@@ -83,7 +83,7 @@ changelog {
     version = "1.0.0"
     path = "${project.projectDir}/CHANGELOG.md"
     header = "[${-> version.get()}] - ${new SimpleDateFormat("yyyy-MM-dd").format(new Date())}"
-    headerParserRegex = ~/\d+\.\d+/
+    headerParserRegex = ~/(\d+\.\d+)/
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
@@ -102,17 +102,17 @@ changelog {
 
 Plugin can be configured with the following properties set in the `changelog {}` closure:
 
-| Property                | Description                                                                | Default value                                                        |
-| ----------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| **`version`**           | **Required.** Current project's version.                                   |                                                                      |
-| `groups`                | List of groups created with a new Unreleased section.                      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]` |
-| `header`                | `String` or `Provider` that returns current header value.                  | `provider { "[${version.get()}]" }`                                  |
-| `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string. | `null`, fallbacks to [`ChangelogPluginConstants#SEM_VER_REGEX`][semver-regex]         |
-| `itemPrefix`            | Single item's prefix, allows to customise the bullet sign.                 | `"-"`                                                                |
-| `keepUnreleasedSection` | Add Unreleased empty section after patching.                               | `true`                                                               |
-| `patchEmpty`            | Patches changelog even if no release note is provided.                     | `true`                                                               |
-| `path`                  | Path to the changelog file.                                                | `"${project.projectDir}/CHANGELOG.md"`                               |
-| `unreleasedTerm`        | Unreleased section text.                                                   | `"[Unreleased]"`                                                     |
+| Property                | Description                                                                | Default value                                                                 |
+| ----------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| **`version`**           | **Required.** Current project's version.                                   |                                                                               |
+| `groups`                | List of groups created with a new Unreleased section.                      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]`          |
+| `header`                | `String` or `Provider` that returns current header value.                  | `provider { "[${version.get()}]" }`                                           |
+| `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string. | `null`, fallbacks to [`ChangelogPluginConstants#SEM_VER_REGEX`][semver-regex] |
+| `itemPrefix`            | Single item's prefix, allows to customise the bullet sign.                 | `"-"`                                                                         |
+| `keepUnreleasedSection` | Add Unreleased empty section after patching.                               | `true`                                                                        |
+| `patchEmpty`            | Patches changelog even if no release note is provided.                     | `true`                                                                        |
+| `path`                  | Path to the changelog file.                                                | `"${project.projectDir}/CHANGELOG.md"`                                        |
+| `unreleasedTerm`        | Unreleased section text.                                                   | `"[Unreleased]"`                                                              |
 
 > **Note:** `header` closure has the delegate explicitly set to the extension's context for the sake of the [Configuration cache][configuration-cache] support.
 
