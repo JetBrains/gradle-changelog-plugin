@@ -42,6 +42,11 @@ class Changelog(
             }
         }
         .filterKeys(String::isNotEmpty)
+        .mapKeys {
+            headerParserRegex.matchEntire(it.key)?.run {
+                groupValues.drop(1).firstOrNull()
+            } ?: it.key
+        }
         .mapValues { (key, value) ->
             value
                 .drop(1)

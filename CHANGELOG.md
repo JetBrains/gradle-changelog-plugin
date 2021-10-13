@@ -1,17 +1,9 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
-### Added
-
 ### Changed
+- Use the actual version numbers as keys for `extension.items` instead of raw header value
 
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 ## [1.3.0]
 ### Added
 - PatchChangelogTask: `--release-note` CLI option to add a custom release note to the latest changelog entry

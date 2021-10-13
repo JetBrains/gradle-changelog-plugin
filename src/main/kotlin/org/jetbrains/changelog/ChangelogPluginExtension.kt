@@ -22,7 +22,7 @@ open class ChangelogPluginExtension @Inject constructor(
     @Optional
     val headerParserRegex: Property<Any> = objects.property(Any::class.java)
 
-    internal fun getHeaderParserRegex() = when (val value = headerParserRegex.orNull) {
+    fun getHeaderParserRegex() = when (val value = headerParserRegex.orNull) {
         is Regex -> value
         is String -> value.toRegex()
         is Pattern -> value.toRegex()

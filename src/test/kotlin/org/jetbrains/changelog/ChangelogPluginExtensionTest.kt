@@ -470,4 +470,21 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
         assertNull(extension.getOrNull("2.0.0"))
     }
+
+    @Test
+    fun `return change notes for version with custom headerParserRegex`() {
+        changelog =
+            """
+            # My Changelog
+
+            ## [v1.0.0]
+            
+            * Foo
+            """
+
+        extension.headerParserRegex.set("\\[?v(\\d(?:\\.\\d+)+)]?.*".toRegex())
+
+        assertNotNull(extension.getOrNull("1.0.0"))
+        assertNull(extension.getOrNull("v1.0.0"))
+    }
 }
