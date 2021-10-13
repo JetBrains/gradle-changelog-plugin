@@ -1,6 +1,19 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [1.3.1]
 ### Changed
 - Use the actual version numbers as keys for `extension.items` instead of raw header value
 
@@ -20,7 +33,7 @@
 
 ### Fixed
 - InitializeChangelogTask issue for no groups present
- 
+
 ## [1.1.2]
 ### Changed
 - Remove `shadowJar`
@@ -138,7 +151,7 @@
 - `changelog.get` and `changelog.getLatest` return `Changelog.Item`
 - `noHeader` flag in `Changelog.Item` methods changed to builder pattern
 - `Changelog.Item#asHTML` renamed to `Changelog.Item#toHTML` 
-- `Changelog.Item#asText` renamed to `Changelog.Item#toText` 
+- `Changelog.Item#asText` renamed to `Changelog.Item#toText`
 
 ## [0.1.4]
 ### Fixed
