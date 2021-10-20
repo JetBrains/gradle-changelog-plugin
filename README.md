@@ -104,7 +104,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 
 | Property                | Description                                                                | Default value                                                                 |
 | ----------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| **`version`**           | **Required.** Current project's version.                                   |                                                                               |
+| **`version`**           | Current version. By default, global project's version is used.             | `project.version`                                                             |
 | `groups`                | List of groups created with a new Unreleased section.                      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]`          |
 | `header`                | `String` or `Provider` that returns current header value.                  | `provider { "[${version.get()}]" }`                                           |
 | `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string. | `null`, fallbacks to [`ChangelogPluginConstants#SEM_VER_REGEX`][semver-regex] |
