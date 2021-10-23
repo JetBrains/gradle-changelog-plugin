@@ -180,7 +180,7 @@ $ ./gradlew getChangelog --console=plain -q --no-header
 #### Examples
 
 ```bash
-$ ./gradlew patchChangelog --release-note=- Foo
+$ ./gradlew patchChangelog --release-note='- Foo'
 $ cat CHANGELOG.md
 
 ## [Unreleased]
