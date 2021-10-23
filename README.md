@@ -21,7 +21,7 @@ A Gradle plugin that provides tasks and helper methods to simplify working with 
     - [`getChangelog`](#getchangelog)
 - [Extension Methods](#extension-methods)
     - [`get`](#get)
-    - [`getOrNull`](#getOrNull)
+    - [`getOrNull`](#getornull)
     - [`getUnreleased`](#getunreleased)
     - [`getLatest`](#getlatest)
     - [`getAll`](#getall)
@@ -103,7 +103,7 @@ changelog {
 Plugin can be configured with the following properties set in the `changelog {}` closure:
 
 | Property                | Description                                                                | Default value                                                                 |
-| ----------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+|-------------------------|----------------------------------------------------------------------------|-------------------------------------------------------------------------------|
 | **`version`**           | Current version. By default, global project's version is used.             | `project.version`                                                             |
 | `groups`                | List of groups created with a new Unreleased section.                      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]`          |
 | `header`                | `String` or `Provider` that returns current header value.                  | `provider { "[${version.get()}]" }`                                           |
@@ -120,13 +120,36 @@ Plugin can be configured with the following properties set in the `changelog {}`
 
 The plugin introduces the following tasks:
 
-| Task                  | Description                                                                                                             |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `getChangelog`        | Retrieves changelog for the specified version.                                                                          |
-| `initializeChangelog` | Creates new changelog file with Unreleased section and empty groups.                                                    |
-| `patchChangelog`      | Updates the unreleased section to the given version. Requires *unreleased* section to be present in the changelog file. |
+| Task                                          | Description                                                                                                             |
+|-----------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| [`getChangelog`](#getchangelog)               | Retrieves changelog for the specified version.                                                                          |
+| [`initializeChangelog`](#initializechangelog) | Creates new changelog file with Unreleased section and empty groups.                                                    |
+| [`patchChangelog`](#patchchangelog)           | Updates the unreleased section to the given version. Requires *unreleased* section to be present in the changelog file. |
+
+
+### `getChangelog`
+Retrieves changelog for the specified version.
+
+#### Options
+
+| Option         | Description                                        |
+|----------------|----------------------------------------------------|
+| `--no-header`  | Skips the first version header line in the output. |
+| `--unreleased` | Returns Unreleased change notes.                   |
+
+#### Examples
+
+```bash
+$ ./gradlew getChangelog --console=plain -q --no-header
+
+### Added
+- Initial project scaffold
+- GitHub Actions to automate testing and deployment
+- Kotlin support
+```
 
 ### `initializeChangelog`
+Creates new changelog file with Unreleased section and empty groups.
 
 #### Examples
 
@@ -149,41 +172,44 @@ $ cat CHANGELOG.md
 ### Security
 ```
 
-### `getChangelog`
-
-#### Options
-
-| Option          | Description                                        |
-| --------------- | -------------------------------------------------- |
-| `--no-header`   | Skips the first version header line in the output. |
-| `--unreleased`  | Returns Unreleased change notes.                   |
-
-#### Examples
-
-```bash
-$ ./gradlew getChangelog --console=plain -q --no-header
-
-### Added
-- Initial project scaffold
-- GitHub Actions to automate testing and deployment
-- Kotlin support
-```
-
 ### `patchChangelog`
+Updates the unreleased section to the given version. Requires *unreleased* section to be present in the changelog file.
 
 #### Options
 
 | Option           | Description                                             |
-| ---------------- | ------------------------------------------------------- |
+|------------------|---------------------------------------------------------|
 | `--release-note` | Adds custom release note to the latest changelog entry. |
 
 #### Examples
 
 ```bash
-$ ./gradlew patchChangelog --release-note=- Foo
+$ cat CHANGELOG.md
+## [Unreleased]
+### Added
+- A based new feature
+ 
+$ ./gradlew patchChangelog
 $ cat CHANGELOG.md
 
 ## [Unreleased]
+### Added
+
+## [1.0.0]
+### Added
+- A based new feature
+```
+
+```bash
+$ cat CHANGELOG.md
+## [Unreleased]
+### Added
+- This note will get overridden by the `--release-note`
+
+$ ./gradlew patchChangelog --release-note='- Foo'
+$ cat CHANGELOG.md
+## [Unreleased]
+### Added
 
 ## [1.0.0]
 - Foo
@@ -207,9 +233,9 @@ It is possible to specify the *unreleased* section with setting the `${changelog
 
 #### Parameters
 
-| Parameter   | Type      | Description          | Default value          |
-| ----------- | --------- | -------------------- | ---------------------- |
-| `version`   | `String`  | Change note version. | `${changelog.version}` |
+| Parameter | Type     | Description          | Default value          |
+|-----------|----------|----------------------|------------------------|
+| `version` | `String` | Change note version. | `${changelog.version}` |
 
 #### Examples
 
@@ -237,9 +263,9 @@ Same as `get`, but returns `null` instead of throwing `MissingVersionException`.
 
 #### Parameters
 
-| Parameter   | Type      | Description          | Default value          |
-| ----------- | --------- | -------------------- | ---------------------- |
-| `version`   | `String`  | Change note version. | `${changelog.version}` |
+| Parameter | Type     | Description          | Default value          |
+|-----------|----------|----------------------|------------------------|
+| `version` | `String` | Change note version. | `${changelog.version}` |
 
 ### `getUnreleased`
 
@@ -337,14 +363,14 @@ It provides a couple of properties and methods that allow altering the output fo
 
 ### Properties 
 
-| Name      | Type      | Description             |
-| --------- | --------- | ----------------------- |
-| `version` | `String`  | Change note version.    |
+| Name      | Type     | Description          |
+|-----------|----------|----------------------|
+| `version` | `String` | Change note version. |
 
 ### Methods
 
 | Name                | Description                    | Returned type |
-| ------------------- | ------------------------------ | ------------- |
+|---------------------|--------------------------------|---------------|
 | `noHeader()`        | Excludes header part.          | `this`        |
 | `noHeader(Boolean)` | Includes/excludes header part. | `this`        |
 | `getHeader()`       | Returns header text.           | `String`      |
@@ -356,7 +382,7 @@ It provides a couple of properties and methods that allow altering the output fo
 ## Helper Methods
 
 | Name                                   | Description                                                    | Returned type |
-| -------------------------------------- | -------------------------------------------------------------- | ------------- |
+|----------------------------------------|----------------------------------------------------------------|---------------|
 | `date(pattern: String = "yyyy-MM-dd")` | Shorthand for retrieving the current date in the given format. | `String`      |
 | `markdownToHTML(input: String)`        | Converts given Markdown content to HTML output.                | `String`      |
 | `markdownToPlainText(input: String)`   | Converts given Markdown content to Plain Text output.          | `String`      |
