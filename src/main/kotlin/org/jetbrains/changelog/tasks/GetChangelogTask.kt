@@ -3,12 +3,12 @@ package org.jetbrains.changelog.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import org.gradle.kotlin.dsl.property
 import org.jetbrains.changelog.Changelog
 import javax.inject.Inject
 
@@ -30,19 +30,19 @@ open class GetChangelogTask @Inject constructor(
 
     @Input
     @Optional
-    val headerParserRegex: Property<Regex> = objectFactory.property(Regex::class.java)
+    val headerParserRegex = objectFactory.property<Regex>()
 
     @Input
     @Optional
-    val itemPrefix: Property<String> = objectFactory.property(String::class.java)
+    val itemPrefix = objectFactory.property<String>()
 
     @Input
     @Optional
-    val unreleasedTerm: Property<String> = objectFactory.property(String::class.java)
+    val unreleasedTerm = objectFactory.property<String>()
 
     @Input
     @Optional
-    val version: Property<String> = objectFactory.property(String::class.java)
+    val version = objectFactory.property<String>()
 
     @TaskAction
     fun run() = logger.quiet(

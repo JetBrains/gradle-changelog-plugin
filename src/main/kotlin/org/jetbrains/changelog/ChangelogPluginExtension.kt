@@ -1,26 +1,26 @@
 package org.jetbrains.changelog
 
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Optional
+import org.gradle.kotlin.dsl.listProperty
+import org.gradle.kotlin.dsl.property
 import java.io.File
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 @Suppress("UnstableApiUsage")
 open class ChangelogPluginExtension @Inject constructor(
-    objects: ObjectFactory,
+    objectFactory: ObjectFactory,
 ) {
 
     @Optional
-    val groups: ListProperty<String> = objects.listProperty(String::class.java)
+    val groups = objectFactory.listProperty<String>()
 
     @Optional
-    val header: Property<String> = objects.property(String::class.java)
+    val header = objectFactory.property<String>()
 
     @Optional
-    val headerParserRegex: Property<Any> = objects.property(Any::class.java)
+    val headerParserRegex = objectFactory.property<Any>()
 
     internal fun getHeaderParserRegex() = when (val value = headerParserRegex.orNull) {
         is Regex -> value
@@ -31,22 +31,22 @@ open class ChangelogPluginExtension @Inject constructor(
     }
 
     @Optional
-    val itemPrefix: Property<String> = objects.property(String::class.java)
+    val itemPrefix = objectFactory.property<String>()
 
     @Optional
-    val keepUnreleasedSection: Property<Boolean> = objects.property(Boolean::class.java)
+    val keepUnreleasedSection = objectFactory.property<Boolean>()
 
     @Optional
-    val patchEmpty: Property<Boolean> = objects.property(Boolean::class.java)
+    val patchEmpty = objectFactory.property<Boolean>()
 
     @Optional
-    val path: Property<String> = objects.property(String::class.java)
+    val path = objectFactory.property<String>()
 
     @Optional
-    val unreleasedTerm: Property<String> = objects.property(String::class.java)
+    val unreleasedTerm = objectFactory.property<String>()
 
     @Optional
-    val version: Property<String> = objects.property(String::class.java)
+    val version = objectFactory.property<String>()
 
     fun get(version: String) = changelog.get(version)
 

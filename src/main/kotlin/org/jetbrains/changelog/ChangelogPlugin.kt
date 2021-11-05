@@ -31,49 +31,49 @@ class ChangelogPlugin : Plugin<Project> {
         }
 
         project.tasks.register(ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME, GetChangelogTask::class.java) {
-            it.group = ChangelogPluginConstants.GROUP_NAME
-            it.outputs.upToDateWhen { false }
+            group = ChangelogPluginConstants.GROUP_NAME
+            outputs.upToDateWhen { false }
 
-            it.headerParserRegex.convention(project.provider {
+            headerParserRegex.convention(project.provider {
                 extension.getHeaderParserRegex()
             })
-            it.inputFile.convention {
+            inputFile.convention {
                 project.file(extension.path.get())
             }
-            it.itemPrefix.convention(extension.itemPrefix)
-            it.unreleasedTerm.set(extension.unreleasedTerm)
-            it.version.set(extension.version)
+            itemPrefix.convention(extension.itemPrefix)
+            unreleasedTerm.set(extension.unreleasedTerm)
+            version.set(extension.version)
         }
 
         project.tasks.register(ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAME, PatchChangelogTask::class.java) {
-            it.group = ChangelogPluginConstants.GROUP_NAME
+            group = ChangelogPluginConstants.GROUP_NAME
 
-            it.groups.set(extension.groups)
-            it.header.set(extension.header)
-            it.headerParserRegex.convention(project.provider {
+            groups.set(extension.groups)
+            header.set(extension.header)
+            headerParserRegex.convention(project.provider {
                 extension.getHeaderParserRegex()
             })
-            it.inputFile.convention {
+            inputFile.convention {
                 project.file(extension.path.get())
             }
-            it.itemPrefix.convention(extension.itemPrefix)
-            it.keepUnreleasedSection.set(extension.keepUnreleasedSection)
-            it.outputFile.convention {
+            itemPrefix.convention(extension.itemPrefix)
+            keepUnreleasedSection.set(extension.keepUnreleasedSection)
+            outputFile.convention {
                 project.file(extension.path.get())
             }
-            it.patchEmpty.set(extension.patchEmpty)
-            it.unreleasedTerm.set(extension.unreleasedTerm)
+            patchEmpty.set(extension.patchEmpty)
+            unreleasedTerm.set(extension.unreleasedTerm)
         }
 
         project.tasks.register(ChangelogPluginConstants.INITIALIZE_CHANGELOG_TASK_NAME, InitializeChangelogTask::class.java) {
-            it.group = ChangelogPluginConstants.GROUP_NAME
+            group = ChangelogPluginConstants.GROUP_NAME
 
-            it.groups.set(extension.groups)
-            it.outputFile.convention {
+            groups.set(extension.groups)
+            outputFile.convention {
                 project.file(extension.path.get())
             }
-            it.itemPrefix.set(extension.itemPrefix)
-            it.unreleasedTerm.set(extension.unreleasedTerm)
+            itemPrefix.set(extension.itemPrefix)
+            unreleasedTerm.set(extension.unreleasedTerm)
         }
     }
 }

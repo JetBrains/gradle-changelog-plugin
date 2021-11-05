@@ -3,12 +3,12 @@ package org.jetbrains.changelog.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import org.gradle.kotlin.dsl.listProperty
+import org.gradle.kotlin.dsl.property
 import org.jetbrains.changelog.ChangelogPluginConstants
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
@@ -26,15 +26,15 @@ open class InitializeChangelogTask @Inject constructor(
 
     @Input
     @Optional
-    val itemPrefix: Property<String> = objectFactory.property(String::class.java)
+    val itemPrefix = objectFactory.property<String>()
 
     @Input
     @Optional
-    val groups: ListProperty<String> = objectFactory.listProperty(String::class.java)
+    val groups = objectFactory.listProperty<String>()
 
     @Input
     @Optional
-    val unreleasedTerm: Property<String> = objectFactory.property(String::class.java)
+    val unreleasedTerm = objectFactory.property<String>()
 
     @TaskAction
     fun run() {

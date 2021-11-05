@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 fun properties(key: String) = project.findProperty(key)?.toString()
 
 plugins {
-    id("java-gradle-plugin")
-    id("maven-publish")
+    `kotlin-dsl`
+    `maven-publish`
     id("org.jetbrains.changelog") version "1.3.1"
     id("org.jetbrains.kotlin.jvm") version "1.5.31"
     id("com.gradle.plugin-publish") version "0.17.0"

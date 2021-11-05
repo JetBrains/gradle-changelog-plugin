@@ -3,8 +3,6 @@ package org.jetbrains.changelog.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
@@ -12,6 +10,8 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.StopActionException
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
+import org.gradle.kotlin.dsl.listProperty
+import org.gradle.kotlin.dsl.property
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
@@ -38,31 +38,31 @@ open class PatchChangelogTask @Inject constructor(
 
     @Input
     @Optional
-    val groups: ListProperty<String> = objectFactory.listProperty(String::class.java)
+    val groups = objectFactory.listProperty<String>()
 
     @Input
     @Optional
-    val header: Property<String> = objectFactory.property(String::class.java)
+    val header = objectFactory.property<String>()
 
     @Input
     @Optional
-    val headerParserRegex: Property<Regex> = objectFactory.property(Regex::class.java)
+    val headerParserRegex = objectFactory.property<Regex>()
 
     @Input
     @Optional
-    val itemPrefix: Property<String> = objectFactory.property(String::class.java)
+    val itemPrefix = objectFactory.property<String>()
 
     @Input
     @Optional
-    val keepUnreleasedSection: Property<Boolean> = objectFactory.property(Boolean::class.java)
+    val keepUnreleasedSection = objectFactory.property<Boolean>()
 
     @Input
     @Optional
-    val patchEmpty: Property<Boolean> = objectFactory.property(Boolean::class.java)
+    val patchEmpty = objectFactory.property<Boolean>()
 
     @Input
     @Optional
-    val unreleasedTerm: Property<String> = objectFactory.property(String::class.java)
+    val unreleasedTerm = objectFactory.property<String>()
 
     @TaskAction
     fun run() {
