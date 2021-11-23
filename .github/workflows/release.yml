@@ -21,23 +21,57 @@ jobs:
           java-version: 8
           cache: gradle
 
-      - name: Deploy Plugin
+      # Set environment variables
+      - name: Export Properties
+        id: properties
+        shell: bash
+        run: |
+          CHANGELOG="$(cat << 'EOM' | sed -e 's/^[[:space:]]*$//g' -e '/./,$!d'
+          ${{ github.event.release.body }}
+          EOM
+          )"
+          
+          echo "::set-output name=changelog::$CHANGELOG"
+
+      # Update Unreleased section with the current release note
+      - name: Patch Changelog
+        if: ${{ steps.properties.outputs.changelog != '' }}
+        run: |
+          ./gradlew patchChangelog --release-note "$(cat << 'EOM'
+          ${{ steps.properties.outputs.changelog }}
+          EOM
+          )"
+
+      - name: Publish Plugin
         env:
-          GRADLE_PUBLISH_KEY: ${{ secrets.gradle_publish_key }}
-          GRADLE_PUBLISH_SECRET: ${{ secrets.gradle_publish_secret }}
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
         run: ./gradlew publishPlugins -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET
 
-      - name: Patch Changelog
-        run: ./gradlew patchChangelog
+      # Upload artifact as a release asset
+      - name: Upload Release Asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ github.event.release.tag_name }} ./build/distributions/*
 
-      - name: Commit files
+      # Create pull request
+      - name: Create Pull Request
+        if: ${{ steps.properties.outputs.changelog != '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -m "Update changelog" -a
+          VERSION="${{ github.event.release.tag_name }}"
+          BRANCH="changelog-update-$VERSION"
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          branch: main
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+
+          git checkout -b $BRANCH
+          git commit -am "Changelog update - $VERSION"
+          git push --set-upstream origin $BRANCH
+
+          gh pr create \
+            --title "Changelog update - \`$VERSION\`" \
+            --body "Current pull request contains patched \`CHANGELOG.md\` file for the \`$VERSION\` version." \
+            --base main \
+            --head $BRANCH
