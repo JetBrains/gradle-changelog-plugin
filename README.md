@@ -34,12 +34,12 @@ A Gradle plugin that provides tasks and helper methods to simplify working with 
 
 ## Usage
 
-Kotlin:
+**build.gradle.kts** (Kotlin)
 ```kotlin
 import org.jetbrains.changelog.date
 
 plugins {
-    id("org.jetbrains.changelog") version "1.2.1"
+    id("org.jetbrains.changelog") version "1.3.1"
 }
 
 tasks {
@@ -61,12 +61,12 @@ changelog {
 }
 ```
 
-Groovy:
+**build.gradle** (Groovy)
 ```groovy
 import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
-    id 'org.jetbrains.changelog' version '1.2.1'
+    id 'org.jetbrains.changelog' version '1.3.1'
 }
 
 apply plugin: 'org.jetbrains.changelog'
