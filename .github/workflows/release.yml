@@ -1,19 +1,23 @@
 name: Release
 on:
   release:
-    types: [published]
+    types: [prereleased, released]
 
 jobs:
+
+  # Prepare and publish the Gradle Plugins repository
   release:
     name: Release to Gradle Plugins
     runs-on: ubuntu-latest
     steps:
 
+      # Check out current repository
       - name: Fetch Sources
         uses: actions/checkout@v2.4.0
         with:
           ref: ${{ github.event.release.tag_name }}
 
+      # Setup Java 8 environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
@@ -31,17 +35,21 @@ jobs:
           EOM
           )"
           
+          CHANGELOG="${CHANGELOG//'%'/'%25'}"
+          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
+          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+
           echo "::set-output name=changelog::$CHANGELOG"
 
       # Update Unreleased section with the current release note
       - name: Patch Changelog
         if: ${{ steps.properties.outputs.changelog != '' }}
+        env:
+          CHANGELOG: ${{ steps.properties.outputs.changelog }}
         run: |
-          ./gradlew patchChangelog --release-note "$(cat << 'EOM'
-          ${{ steps.properties.outputs.changelog }}
-          EOM
-          )"
+          ./gradlew patchChangelog --release-note="$CHANGELOG"
 
+      # Publish the plugin to the Gradle Plugins
       - name: Publish Plugin
         env:
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}

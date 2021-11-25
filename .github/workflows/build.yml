@@ -1,7 +1,9 @@
 name: Build
 on:
+  # Trigger the workflow on pushes to only the 'main' branch (this avoids duplicate checks being run e.g. for dependabot pull requests)
   push:
     branches: [main]
+  # Trigger the workflow on any pull request
   pull_request:
 
 jobs:
@@ -70,15 +72,15 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     outputs:
-      name: ${{ steps.properties.outputs.name }}
       version: ${{ steps.properties.outputs.version }}
       changelog: ${{ steps.properties.outputs.changelog }}
-      artifact: ${{ steps.properties.outputs.artifact }}
     steps:
 
+      # Check out current repository
       - name: Fetch Sources
         uses: actions/checkout@v2.4.0
 
+      # Setup Java 11 environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
@@ -86,75 +88,73 @@ jobs:
           java-version: 8
           cache: gradle
 
+      # Set environment variables
       - name: Export Properties
         id: properties
         shell: bash
         run: |
-          NAME=$(./gradlew properties --console=plain -q | grep "^name:" | awk '{printf $2}')
-          VERSION=$(./gradlew properties --console=plain -q | grep "^version:" | awk '{printf $2}')
+          PROPERTIES="$(./gradlew properties --console=plain -q)"
+          NAME="$(echo "$PROPERTIES" | grep "^name:" | cut -f2- -d ' ')"
+          VERSION="$(echo "$PROPERTIES" | grep "^version:" | cut -f2- -d ' ')"
           ARTIFACT="$NAME-$VERSION.jar"
-          CHANGELOG=$(./gradlew getChangelog --unreleased --no-header --console=plain -q)
+          CHANGELOG="$(./gradlew getChangelog --unreleased --no-header --console=plain -q)"
           CHANGELOG="${CHANGELOG//'%'/'%25'}"
           CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
           CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
 
           echo "::set-output name=version::$VERSION"
-          echo "::set-output name=name::$NAME"
           echo "::set-output name=artifact::$ARTIFACT"
           echo "::set-output name=changelog::$CHANGELOG"
 
       - name: Build Plugin
         run: ./gradlew build
 
+      # Collect Tests Result of failed tests
+      - name: Collect Tests Result
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: tests-result
+          path: ${{ github.workspace }}/build/reports/tests
+
+      # Store already-built plugin as an artifact for downloading
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: plugin-artifact
-          path: ./build/libs/${{ steps.properties.outputs.artifact }}
+          name: ${{ steps.properties.outputs.artifact }}
+          path: ./build/libs/${{ steps.properties.outputs.artifact }}.jar
 
+  # Prepare a draft release for GitHub Releases page for the manual verification
+  # If accepted and published, release workflow would be triggered
   releaseDraft:
     name: Release Draft
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     steps:
 
+      # Check out current repository
       - name: Fetch Sources
         uses: actions/checkout@v2.4.0
 
+      # Remove old release drafts by using the curl request for the available releases with draft flag
       - name: Remove Old Release Drafts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases \
-            | tr '\r\n' ' ' \
-            | jq '.[] | select(.draft == true) | .id' \
-            | xargs -I '{}' \
-          curl -X DELETE -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY/releases/{}
+          gh api repos/{owner}/{repo}/releases \
+            --jq '.[] | select(.draft == true) | .id' \
+            | xargs -I '{}' gh api -X DELETE repos/{owner}/{repo}/releases/{}
 
+      # Create new release draft - which is not publicly visible and requires manual acceptance
       - name: Create Release Draft
-        id: createDraft
-        uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ needs.build.outputs.version }}
-          release_name: v${{ needs.build.outputs.version }}
-          body: ${{ needs.build.outputs.changelog }}
-          draft: true
-
-      - name: Download Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: plugin-artifact
-
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.createDraft.outputs.upload_url }}
-          asset_path: ./${{ needs.build.outputs.artifact }}
-          asset_name: ${{ needs.build.outputs.artifact }}
-          asset_content_type: application/zip
+        run: |
+          gh release create v${{ needs.build.outputs.version }} \
+            --draft \
+            --title "v${{ needs.build.outputs.version }}" \
+            --notes "$(cat << 'EOM'
+          ${{ needs.build.outputs.changelog }}
+          EOM
+          )"
