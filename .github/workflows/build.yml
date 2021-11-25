@@ -110,14 +110,6 @@ jobs:
       - name: Build Plugin
         run: ./gradlew build
 
-      # Collect Tests Result of failed tests
-      - name: Collect Tests Result
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: tests-result
-          path: ${{ github.workspace }}/build/reports/tests
-
       # Store already-built plugin as an artifact for downloading
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.4
