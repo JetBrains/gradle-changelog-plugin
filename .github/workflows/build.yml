@@ -35,6 +35,7 @@ jobs:
     needs: gradleValidation
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         gradleVersion:
           - 6.6.1
