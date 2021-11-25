@@ -1,17 +1,6 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [1.3.1]
 ### Changed

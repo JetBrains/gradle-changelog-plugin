@@ -44,6 +44,7 @@ pluginBundle {
 
 changelog {
     version.set("${project.version}")
+    groups.set(emptyList())
 }
 
 tasks {
