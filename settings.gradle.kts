@@ -1,7 +1,7 @@
 rootProject.name = "gradle-changelog-plugin"
 
 plugins {
-    id("com.gradle.enterprise") version("3.6.3")
+    id("com.gradle.enterprise") version("3.8.1")
 }
 
 gradleEnterprise {
