@@ -63,7 +63,7 @@ jobs:
 
       - name: Collect Test Results
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: test-results-${{ matrix.gradleVersion }}-${{ runner.os }}
           path: ${{ github.workspace }}/build/reports/tests/test/
@@ -112,7 +112,7 @@ jobs:
 
       # Store already-built plugin as an artifact for downloading
       - name: Upload artifact
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.properties.outputs.artifact }}
           path: ./build/libs/${{ steps.properties.outputs.artifact }}.jar
