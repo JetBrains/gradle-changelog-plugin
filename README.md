@@ -65,6 +65,7 @@ changelog {
 
 **build.gradle** (Groovy)
 ```groovy
+import java.text.SimpleDateFormat
 import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
