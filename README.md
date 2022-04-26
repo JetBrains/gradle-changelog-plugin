@@ -34,6 +34,8 @@ A Gradle plugin that provides tasks and helper methods to simplify working with 
 
 ## Usage
 
+`patchPluginXml` task is defined in [gradle-intellij-plugin](https://github.com/JetBrains/gradle-intellij-plugin/#patching-dsl)
+
 **build.gradle.kts** (Kotlin)
 ```kotlin
 import org.jetbrains.changelog.date
