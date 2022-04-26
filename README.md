@@ -8,9 +8,9 @@
 
 **This project requires Gradle 6.6 or newer**
 
-> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 7.3`
+> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 7.4.2`
 
-A Gradle plugin that provides tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
+A Gradle plugin providing tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
 
 ## Table of contents
 
@@ -224,7 +224,7 @@ $ cat CHANGELOG.md
 All the methods are available via the `changelog` extension and allow for reading the changelog file within the Gradle tasks to provide the latest (or specific) change notes.
 
 > **Note:** Following methods depend on the `changelog` extension, which is set in the *Configuration* [build phase][build-phases].
-> To make it run properly, it's required to place the configuration before the fist usage of such a method.
+> To make it run properly, it's required to place the configuration before the first usage of such a method.
 > Alternatively, you can pass the Gradle closure to the task, which will postpone the method invocation.
 
 ### `get`
@@ -242,7 +242,7 @@ It is possible to specify the *unreleased* section with setting the `${changelog
 
 #### Examples
 
-Kotlin:
+**build.gradle.kts** (Kotlin)
 ```kotlin
 tasks {
     patchPluginXml {
@@ -251,7 +251,7 @@ tasks {
 }
 ```
 
-Groovy:
+**build.gradle** (Groovy)
 ```groovy
 tasks {
     patchPluginXml {
@@ -276,7 +276,7 @@ The method returns a `Changelog.Item` object for the *unreleased* version.
 
 #### Examples
 
-Kotlin:
+**build.gradle.kts** (Kotlin)
 ```kotlin
 tasks {
     patchPluginXml {
@@ -285,7 +285,7 @@ tasks {
 }
 ```
 
-Groovy:
+**build.gradle** (Groovy)
 ```groovy
 tasks {
     patchPluginXml {
@@ -300,7 +300,7 @@ The method returns the latest `Changelog.Item` object (first on the list).
 
 #### Examples
 
-Kotlin:
+**build.gradle.kts** (Kotlin)
 ```kotlin
 tasks {
     patchPluginXml {
@@ -309,7 +309,7 @@ tasks {
 }
 ```
 
-Groovy:
+**build.gradle** (Groovy)
 ```groovy
 tasks {
     patchPluginXml {
@@ -324,12 +324,12 @@ The method returns all available `Changelog.Item` objects.
 
 #### Examples
 
-Kotlin:
+**build.gradle.kts** (Kotlin)
 ```kotlin
 extension.getAll().values.map { it.toText() }
 ```
 
-Groovy:
+**build.gradle** (Groovy)
 ```groovy
 extension.getAll().values().each { it.toText() }
 ```
@@ -340,7 +340,7 @@ The method checks if the given version exists in the changelog.
 
 #### Examples
 
-Kotlin:
+**build.gradle.kts** (Kotlin)
 ```kotlin
 tasks {
     patchPluginXml {
@@ -349,7 +349,7 @@ tasks {
 }
 ```
 
-Groovy:
+**build.gradle** (Groovy)
 ```groovy
 tasks {
     patchPluginXml {
@@ -409,20 +409,20 @@ It provides a couple of properties and methods that allow altering the output fo
 
 ### Integration tests
 
-To perform integration tests with an existing project, bind the `gradle-changelog-plugin` sources in the Gradle settings file:
+To perform integration tests with an existing project, bind the `gradle-changelog-plugin` sources in the Gradle _settings_ file:
 
-`settings.gradle`:
+**settings.gradle.kts** (Kotlin)
 ```
-rootProject.name = "IntelliJ Platform Plugin Template"
-
-includeBuild '/Users/hsz/Projects/JetBrains/gradle-changelog-plugin'
-```
-
-`settings.gradle.kts`:
-```
-rootProject.name = "IntelliJ Platform Plugin Template"
+rootProject.name = "<Project Name>"
 
 includeBuild("/Users/hsz/Projects/JetBrains/gradle-changelog-plugin")
+```
+
+**settings.gradle** (Groovy)
+```
+rootProject.name = "<Project Name>"
+
+includeBuild '/Users/hsz/Projects/JetBrains/gradle-changelog-plugin'
 ```
 
 [gh:build]: https://github.com/JetBrains/gradle-changelog-plugin/actions?query=workflow%3ABuild
