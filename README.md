@@ -401,9 +401,8 @@ It provides a couple of properties and methods that allow altering the output fo
 
 ## Usage Examples
 
-- [Unity Support for ReSharper and Rider](https://github.com/JetBrains/resharper-unity)
 - [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
-- [Package Search](https://plugins.jetbrains.com/plugin/12507-package-search)
+- [Unity Support for ReSharper and Rider](https://github.com/JetBrains/resharper-unity)
 
 ## Contributing
 
