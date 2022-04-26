@@ -6,7 +6,7 @@ plugins {
     `kotlin-dsl`
     `maven-publish`
     id("org.jetbrains.changelog") version "1.3.1"
-    id("org.jetbrains.kotlin.jvm") version "1.6.10"
+    id("org.jetbrains.kotlin.jvm") version "1.6.21"
     id("com.gradle.plugin-publish") version "0.21.0"
 }
 
