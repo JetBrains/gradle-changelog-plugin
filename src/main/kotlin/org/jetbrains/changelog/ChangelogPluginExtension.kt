@@ -8,7 +8,6 @@ import java.io.File
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-@Suppress("UnstableApiUsage")
 open class ChangelogPluginExtension @Inject constructor(
     objectFactory: ObjectFactory,
 ) {

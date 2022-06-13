@@ -1,7 +1,6 @@
 package org.jetbrains.changelog.tasks
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
@@ -30,11 +29,11 @@ open class PatchChangelogTask @Inject constructor(
 
     @InputFile
     @Optional
-    val inputFile: RegularFileProperty = objectFactory.fileProperty()
+    val inputFile = objectFactory.fileProperty()
 
     @OutputFile
     @Optional
-    val outputFile: RegularFileProperty = objectFactory.fileProperty()
+    val outputFile = objectFactory.fileProperty()
 
     @Input
     @Optional
