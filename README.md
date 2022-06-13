@@ -36,12 +36,15 @@ A Gradle plugin providing tasks and helper methods to simplify working with a ch
 
 `patchPluginXml` task is defined in [gradle-intellij-plugin](https://github.com/JetBrains/gradle-intellij-plugin/#patching-dsl)
 
+The latest available version is:
+[![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
+
 **build.gradle.kts** (Kotlin)
 ```kotlin
 import org.jetbrains.changelog.date
 
 plugins {
-    id("org.jetbrains.changelog") version "1.3.1"
+    id("org.jetbrains.changelog") version "..."
 }
 
 tasks {
@@ -69,7 +72,7 @@ import java.text.SimpleDateFormat
 import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
-    id 'org.jetbrains.changelog' version '1.3.1'
+    id 'org.jetbrains.changelog' version '...'
 }
 
 apply plugin: 'org.jetbrains.changelog'
@@ -404,25 +407,18 @@ It provides a couple of properties and methods that allow altering the output fo
 - [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 - [Unity Support for ReSharper and Rider](https://github.com/JetBrains/resharper-unity)
 
+## Changelog
+All releases are available in the [Releases](https://github.com/JetBrains/gradle-intellij-plugin/releases) section.
+The latest available version is:
+
+[![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
+
 ## Contributing
+Please see [CONTRIBUTING](./CONTRIBUTING.md) on how to submit feedback and contribute to this project.
 
-### Integration tests
+## License
+Licensed under the Apache License, Version 2.0 (the "License"), see [LICENCE](./LICENSE).
 
-To perform integration tests with an existing project, bind the `gradle-changelog-plugin` sources in the Gradle _settings_ file:
-
-**settings.gradle.kts** (Kotlin)
-```
-rootProject.name = "<Project Name>"
-
-includeBuild("/Users/hsz/Projects/JetBrains/gradle-changelog-plugin")
-```
-
-**settings.gradle** (Groovy)
-```
-rootProject.name = "<Project Name>"
-
-includeBuild '/Users/hsz/Projects/JetBrains/gradle-changelog-plugin'
-```
 
 [gh:build]: https://github.com/JetBrains/gradle-changelog-plugin/actions?query=workflow%3ABuild
 [gh:gradle-intellij-plugin]: https://github.com/JetBrains/gradle-intellij-plugin
