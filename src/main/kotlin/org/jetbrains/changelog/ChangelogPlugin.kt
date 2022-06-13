@@ -2,6 +2,7 @@ package org.jetbrains.changelog
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.PluginInstantiationException
 import org.jetbrains.changelog.exceptions.VersionNotSpecifiedException
 import org.jetbrains.changelog.tasks.GetChangelogTask
 import org.jetbrains.changelog.tasks.InitializeChangelogTask
@@ -10,6 +11,8 @@ import org.jetbrains.changelog.tasks.PatchChangelogTask
 class ChangelogPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
+        checkGradleVersion(project)
+
         val extension = project.extensions.create(ChangelogPluginConstants.EXTENSION_NAME, ChangelogPluginExtension::class.java).apply {
             groups.convention(ChangelogPluginConstants.GROUPS)
             header.convention(project.provider {
@@ -74,6 +77,12 @@ class ChangelogPlugin : Plugin<Project> {
             }
             itemPrefix.set(extension.itemPrefix)
             unreleasedTerm.set(extension.unreleasedTerm)
+        }
+    }
+
+    private fun checkGradleVersion(project: Project) {
+        if (Version.parse(project.gradle.gradleVersion) < Version.parse("6.7.1")) {
+            throw PluginInstantiationException("Gradle Changelog Plugin requires Gradle 6.7.1 and higher")
         }
     }
 }
