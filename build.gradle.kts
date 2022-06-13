@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm") version "1.6.21"
     `kotlin-dsl`
     `maven-publish`
-    id("com.gradle.plugin-publish") version "1.0.0-rc-2"
+    id("com.gradle.plugin-publish") version "1.0.0-rc-3"
     id("org.jetbrains.changelog") version "1.3.1"
     id("org.jetbrains.dokka") version "1.6.21"
 }
