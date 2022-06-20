@@ -8,7 +8,7 @@ plugins {
     `maven-publish`
     id("com.gradle.plugin-publish") version "1.0.0-rc-3"
     id("org.jetbrains.changelog") version "1.3.1"
-    id("org.jetbrains.dokka") version "1.6.21"
+    id("org.jetbrains.dokka") version "1.7.0"
 }
 
 description = properties("description")
