@@ -83,7 +83,7 @@ class ChangelogPlugin : Plugin<Project> {
                             else -> "/compare/v$previousVersion...HEAD"
                         }
 
-                        previousVersion == null -> "/tag/v$currentVersion"
+                        previousVersion == null -> "/commits/v$currentVersion"
 
                         else -> "/compare/v$previousVersion...v$currentVersion"
                     }
