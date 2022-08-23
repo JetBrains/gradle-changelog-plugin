@@ -19,6 +19,7 @@ A Gradle plugin providing tasks and helper methods to simplify working with a ch
 - [Tasks](#tasks)
     - [`initializeChangelog`](#initializechangelog)
     - [`getChangelog`](#getchangelog)
+    - [`patchChangelog`](#patchchangelog)
 - [Extension Methods](#extension-methods)
     - [`get`](#get)
     - [`getOrNull`](#getornull)
