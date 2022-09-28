@@ -1,6 +1,6 @@
 # Gradle Changelog Plugin
 
-[![official JetBrains project](https://jb.gg/badges/official.svg)][jb:confluence-on-gh]
+[![official JetBrains project](https://jb.gg/badges/official.svg)][jb:github]
 [![Twitter Follow](https://img.shields.io/twitter/follow/JBPlatform?style=flat)][jb:twitter]
 [![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
 [![Build](https://github.com/JetBrains/gradle-changelog-plugin/workflows/Build/badge.svg)][gh:build]
@@ -424,7 +424,7 @@ Licensed under the Apache License, Version 2.0 (the "License"), see [LICENCE](./
 [gh:build]: https://github.com/JetBrains/gradle-changelog-plugin/actions?query=workflow%3ABuild
 [gh:gradle-intellij-plugin]: https://github.com/JetBrains/gradle-intellij-plugin
 
-[jb:confluence-on-gh]: https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub
+[jb:github]: https://github.com/JetBrains/.github/blob/main/profile/README.md
 [jb:slack]: https://plugins.jetbrains.com/slack
 [jb:twitter]: https://twitter.com/JBPlatform
 
