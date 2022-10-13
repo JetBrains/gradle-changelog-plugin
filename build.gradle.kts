@@ -5,17 +5,17 @@ import org.jetbrains.dokka.gradle.DokkaTask
 fun properties(key: String) = project.findProperty(key)?.toString()
 
 plugins {
-    kotlin("jvm") version "1.7.20"
     `kotlin-dsl`
     `maven-publish`
+    kotlin("jvm") version "1.7.20"
     id("com.gradle.plugin-publish") version "1.0.0"
     id("org.jetbrains.changelog") version "1.3.1"
     id("org.jetbrains.dokka") version "1.7.20"
 }
 
-description = properties("description")
-group = properties("projectGroup")!!
 version = properties("version")!!
+group = properties("group")!!
+description = properties("description")
 
 repositories {
     mavenCentral()
@@ -27,6 +27,10 @@ dependencies {
     }
     testImplementation(kotlin("test"))
     testImplementation(kotlin("test-junit"))
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 gradlePlugin {
@@ -67,12 +71,6 @@ changelog {
     groups.set(emptyList())
 }
 
-kotlin {
-    jvmToolchain {
-        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(8))
-    }
-}
-
 tasks {
     test {
         val testGradleHomePath = "$buildDir/testGradleHome"
@@ -82,6 +80,8 @@ tasks {
         systemProperties["test.gradle.home"] = testGradleHomePath
         systemProperties["test.gradle.default"] = properties("gradleVersion")
         systemProperties["test.gradle.version"] = properties("testGradleVersion")
+        systemProperties["test.gradle.arguments"] = properties("testGradleArguments")
+        outputs.dir(testGradleHomePath)
     }
 
     wrapper {
