@@ -1,4 +1,5 @@
 name: Release
+
 on:
   release:
     types: [prereleased, released]
@@ -17,13 +18,14 @@ jobs:
         with:
           ref: ${{ github.event.release.tag_name }}
 
-      # Setup Java 8 environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: zulu
-          java-version: 8
-          cache: gradle
+          java-version: 11
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       # Set environment variables
       - name: Export Properties

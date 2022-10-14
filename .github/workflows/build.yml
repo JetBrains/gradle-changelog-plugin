@@ -3,7 +3,13 @@ on:
   # Trigger the workflow on pushes to only the 'main' branch (this avoids duplicate checks being run e.g. for dependabot pull requests)
   push:
     branches: [main]
+    paths-ignore: ['**.md']
   pull_request:
+    paths-ignore: ['**.md']
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
 
 jobs:
   gradleValidation:
@@ -30,22 +36,32 @@ jobs:
         uses: JetBrains/qodana-action@v2022.2.2
 
   test:
-    name: Test
+    name: Gradle ${{ matrix.gradleVersion }} @ ${{ matrix.os }}
     needs: gradleValidation
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         gradleVersion:
-          - 6.7.1
-          - 6.9.1
-          - 7.4.2
+          - 6.8
+          - 6.9.2
+          - 7.5.1
         os:
           - windows-latest
           - ubuntu-latest
           - macos-latest
+        include:
+          - os: ubuntu-latest
+            script: |
+              sudo rm -rf /usr/share/dotnet
+              sudo rm -rf /usr/local/lib/android
+              sudo rm -rf /opt/ghc
 
     steps:
+
+      - name: Run OS-dedicated script
+        if: ${{ matrix.script }}
+        run: ${{ matrix.script }}
 
       - name: Fetch Sources
         uses: actions/checkout@v3
@@ -55,17 +71,29 @@ jobs:
         with:
           distribution: zulu
           java-version: 11
-          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Run Linters and Test
         run: ./gradlew check -PtestGradleVersion="${{ matrix.gradleVersion }}"
 
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: ${{ always() }}
+        with:
+          name: "Unit Tests Report: Gradle ${{ matrix.gradleVersion }} @ ${{ matrix.os }}"
+          path: "**/build/test-results/*/TEST-*.xml"
+          reporter: java-junit
+
       - name: Collect Test Results
-        if: ${{ failure() }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: test-results-${{ matrix.gradleVersion }}-${{ runner.os }}
-          path: ${{ github.workspace }}/build/reports/tests/test/
+          path: |
+            ${{ github.workspace }}/build/reports/tests
+            ${{ github.workspace }}/build/reports/configuration-cache
 
   build:
     name: Build
@@ -76,19 +104,18 @@ jobs:
       changelog: ${{ steps.properties.outputs.changelog }}
     steps:
 
-      # Check out current repository
       - name: Fetch Sources
         uses: actions/checkout@v3
 
-      # Setup Java 11 environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: zulu
           java-version: 11
-          cache: gradle
 
-      # Set environment variables
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Export Properties
         id: properties
         shell: bash
@@ -107,7 +134,7 @@ jobs:
           echo "::set-output name=changelog::$CHANGELOG"
 
       - name: Build Plugin
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
       # Store already-built plugin as an artifact for downloading
       - name: Upload artifact

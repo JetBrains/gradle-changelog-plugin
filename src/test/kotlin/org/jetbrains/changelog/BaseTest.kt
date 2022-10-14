@@ -3,6 +3,7 @@
 package org.jetbrains.changelog
 
 import org.gradle.api.internal.project.DefaultProject
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
@@ -17,6 +18,7 @@ open class BaseTest {
 
     private val gradleDefault = System.getProperty("test.gradle.default")
     private val gradleHome = System.getProperty("test.gradle.home")
+    private val gradleArguments = System.getProperty("test.gradle.arguments", "").split(' ').filter(String::isNotEmpty).toMutableList()
     private val gradleVersion = System.getProperty("test.gradle.version").takeIf(String::isNotEmpty) ?: gradleDefault
 
     protected var changelog: String = ""
@@ -52,7 +54,7 @@ open class BaseTest {
         project.version = "1.0.0"
         project.plugins.apply(ChangelogPlugin::class.java)
 
-        extension = project.extensions.getByType(ChangelogPluginExtension::class.java)
+        extension = project.extensions.getByType()
     }
 
     private fun prepareTask(taskName: String, vararg arguments: String) =
@@ -62,7 +64,14 @@ open class BaseTest {
             .forwardOutput()
             .withPluginClasspath()
             .withTestKitDir(File(gradleHome))
-            .withArguments(taskName, "--console=plain", "--stacktrace", "--configuration-cache", *arguments)
+            .withArguments(
+                taskName,
+                "--console=plain",
+                "--stacktrace",
+                "--configuration-cache",
+                *arguments,
+                *gradleArguments.toTypedArray()
+            )
 
     protected fun runTask(taskName: String, vararg arguments: String): BuildResult =
         prepareTask(taskName, *arguments).build()
