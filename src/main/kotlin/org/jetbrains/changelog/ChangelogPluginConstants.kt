@@ -5,6 +5,8 @@ package org.jetbrains.changelog
 object ChangelogPluginConstants {
     const val GROUP_NAME = "changelog"
     const val EXTENSION_NAME = "changelog"
+    const val PLUGIN_NAME = "Gradle Changelog Plugin"
+    const val MINIMAL_SUPPORTED_GRADLE_VERSION = "6.8"
 
     const val GET_CHANGELOG_TASK_NAME = "getChangelog"
     const val PATCH_CHANGELOG_TASK_NAME = "patchChangelog"

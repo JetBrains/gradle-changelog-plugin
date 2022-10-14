@@ -5,17 +5,27 @@ package org.jetbrains.changelog
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
+import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.register
+import org.jetbrains.changelog.ChangelogPluginConstants.EXTENSION_NAME
+import org.jetbrains.changelog.ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME
+import org.jetbrains.changelog.ChangelogPluginConstants.GROUP_NAME
+import org.jetbrains.changelog.ChangelogPluginConstants.INITIALIZE_CHANGELOG_TASK_NAME
+import org.jetbrains.changelog.ChangelogPluginConstants.MINIMAL_SUPPORTED_GRADLE_VERSION
+import org.jetbrains.changelog.ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAME
+import org.jetbrains.changelog.ChangelogPluginConstants.PLUGIN_NAME
 import org.jetbrains.changelog.exceptions.VersionNotSpecifiedException
 import org.jetbrains.changelog.tasks.GetChangelogTask
 import org.jetbrains.changelog.tasks.InitializeChangelogTask
 import org.jetbrains.changelog.tasks.PatchChangelogTask
+import java.io.File
 
 class ChangelogPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         checkGradleVersion(project)
 
-        val extension = project.extensions.create(ChangelogPluginConstants.EXTENSION_NAME, ChangelogPluginExtension::class.java).apply {
+        val extension = project.extensions.create<ChangelogPluginExtension>(EXTENSION_NAME).apply {
             groups.convention(ChangelogPluginConstants.GROUPS)
             header.convention(project.provider {
                 "[${version.get()}]"
@@ -35,48 +45,39 @@ class ChangelogPlugin : Plugin<Project> {
             )
         }
 
-        project.tasks.register(ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME, GetChangelogTask::class.java) {
-            group = ChangelogPluginConstants.GROUP_NAME
-            outputs.upToDateWhen { false }
+        val pathProvider = project.layout.file(extension.path.map { File(it) })
 
-            headerParserRegex.convention(project.provider {
-                extension.getHeaderParserRegex()
-            })
-            inputFile.convention {
-                project.file(extension.path.get())
-            }
+        project.tasks.register<GetChangelogTask>(GET_CHANGELOG_TASK_NAME) {
+            group = GROUP_NAME
+
+            headerParserRegex.convention(extension.getHeaderParserRegex)
+            inputFile.convention(pathProvider)
             itemPrefix.convention(extension.itemPrefix)
             unreleasedTerm.set(extension.unreleasedTerm)
             version.set(extension.version)
+
+            outputs.upToDateWhen { false }
         }
 
-        project.tasks.register(ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAME, PatchChangelogTask::class.java) {
-            group = ChangelogPluginConstants.GROUP_NAME
+        project.tasks.register<PatchChangelogTask>(PATCH_CHANGELOG_TASK_NAME) {
+            group = GROUP_NAME
 
             groups.set(extension.groups)
             header.set(extension.header)
-            headerParserRegex.convention(project.provider {
-                extension.getHeaderParserRegex()
-            })
-            inputFile.convention {
-                project.file(extension.path.get())
-            }
+            headerParserRegex.convention(extension.getHeaderParserRegex)
+            inputFile.convention(pathProvider)
             itemPrefix.convention(extension.itemPrefix)
             keepUnreleasedSection.set(extension.keepUnreleasedSection)
-            outputFile.convention {
-                project.file(extension.path.get())
-            }
+            outputFile.convention(pathProvider)
             patchEmpty.set(extension.patchEmpty)
             unreleasedTerm.set(extension.unreleasedTerm)
         }
 
-        project.tasks.register(ChangelogPluginConstants.INITIALIZE_CHANGELOG_TASK_NAME, InitializeChangelogTask::class.java) {
-            group = ChangelogPluginConstants.GROUP_NAME
+        project.tasks.register<InitializeChangelogTask>(INITIALIZE_CHANGELOG_TASK_NAME) {
+            group = GROUP_NAME
 
             groups.set(extension.groups)
-            outputFile.convention {
-                project.file(extension.path.get())
-            }
+            outputFile.convention(pathProvider)
             itemPrefix.set(extension.itemPrefix)
             unreleasedTerm.set(extension.unreleasedTerm)
         }
@@ -84,7 +85,7 @@ class ChangelogPlugin : Plugin<Project> {
 
     private fun checkGradleVersion(project: Project) {
         if (Version.parse(project.gradle.gradleVersion) < Version.parse("6.7.1")) {
-            throw PluginInstantiationException("Gradle Changelog Plugin requires Gradle 6.7.1 and higher")
+            throw PluginInstantiationException("$PLUGIN_NAME requires Gradle $MINIMAL_SUPPORTED_GRADLE_VERSION and higher")
         }
     }
 }

@@ -3,67 +3,59 @@
 package org.jetbrains.changelog.tasks
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.model.ObjectFactory
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.StopActionException
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
-import org.gradle.kotlin.dsl.listProperty
-import org.gradle.kotlin.dsl.property
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
 import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
 import org.jetbrains.changelog.exceptions.MissingReleaseNoteException
-import javax.inject.Inject
 
-open class PatchChangelogTask @Inject constructor(
-    objectFactory: ObjectFactory,
-) : DefaultTask() {
+abstract class PatchChangelogTask : DefaultTask() {
 
-    @Input
+    @get:Input
+    @get:Optional
     @Option(option = "release-note", description = "Custom release note content")
-    @Optional
     var releaseNote: String? = null
 
-    @InputFile
-    @Optional
-    val inputFile = objectFactory.fileProperty()
+    @get:InputFile
+    @get:Optional
+    abstract val inputFile: RegularFileProperty
 
-    @OutputFile
-    @Optional
-    val outputFile = objectFactory.fileProperty()
+    @get:OutputFile
+    @get:Optional
+    abstract val outputFile: RegularFileProperty
 
-    @Input
-    @Optional
-    val groups = objectFactory.listProperty<String>()
+    @get:Input
+    @get:Optional
+    abstract val groups: ListProperty<String>
 
-    @Input
-    @Optional
-    val header = objectFactory.property<String>()
+    @get:Input
+    @get:Optional
+    abstract val header: Property<String>
 
-    @Input
-    @Optional
-    val headerParserRegex = objectFactory.property<Regex>()
+    @get:Input
+    @get:Optional
+    abstract val headerParserRegex: Property<Regex>
 
-    @Input
-    @Optional
-    val itemPrefix = objectFactory.property<String>()
+    @get:Input
+    @get:Optional
+    abstract val itemPrefix: Property<String>
 
-    @Input
-    @Optional
-    val keepUnreleasedSection = objectFactory.property<Boolean>()
+    @get:Input
+    @get:Optional
+    abstract val keepUnreleasedSection: Property<Boolean>
 
-    @Input
-    @Optional
-    val patchEmpty = objectFactory.property<Boolean>()
+    @get:Input
+    @get:Optional
+    abstract val patchEmpty: Property<Boolean>
 
-    @Input
-    @Optional
-    val unreleasedTerm = objectFactory.property<String>()
+    @get:Input
+    @get:Optional
+    abstract val unreleasedTerm: Property<String>
 
     @TaskAction
     fun run() {

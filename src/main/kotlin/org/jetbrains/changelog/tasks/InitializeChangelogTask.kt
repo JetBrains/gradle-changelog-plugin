@@ -3,39 +3,36 @@
 package org.jetbrains.changelog.tasks
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.model.ObjectFactory
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import org.gradle.kotlin.dsl.listProperty
-import org.gradle.kotlin.dsl.property
 import org.jetbrains.changelog.ChangelogPluginConstants
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
 import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
-import javax.inject.Inject
 
-open class InitializeChangelogTask @Inject constructor(
-    objectFactory: ObjectFactory,
-) : DefaultTask() {
+abstract class InitializeChangelogTask : DefaultTask() {
 
-    @OutputFile
-    @Optional
-    val outputFile = objectFactory.fileProperty()
+    @get:OutputFile
+    @get:Optional
+    abstract val outputFile: RegularFileProperty
 
-    @Input
-    @Optional
-    val itemPrefix = objectFactory.property<String>()
+    @get:Input
+    @get:Optional
+    abstract val itemPrefix: Property<String>
 
-    @Input
-    @Optional
-    val groups = objectFactory.listProperty<String>()
+    @get:Input
+    @get:Optional
+    abstract val groups: ListProperty<String>
 
-    @Input
-    @Optional
-    val unreleasedTerm = objectFactory.property<String>()
+    @get:Input
+    @get:Optional
+    abstract val unreleasedTerm: Property<String>
 
     @TaskAction
     fun run() {

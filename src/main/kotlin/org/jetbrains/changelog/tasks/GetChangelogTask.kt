@@ -3,47 +3,44 @@
 package org.jetbrains.changelog.tasks
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.model.ObjectFactory
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
-import org.gradle.kotlin.dsl.property
 import org.jetbrains.changelog.Changelog
-import javax.inject.Inject
 
-open class GetChangelogTask @Inject constructor(
-    objectFactory: ObjectFactory,
-) : DefaultTask() {
+abstract class GetChangelogTask : DefaultTask() {
 
-    @Input
+    @get:Input
     @Option(option = "no-header", description = "Omits header version line")
     var noHeader = false
 
-    @Input
+    @get:Input
     @Option(option = "unreleased", description = "Returns Unreleased change notes")
     var unreleased = false
 
-    @InputFile
-    @Optional
-    val inputFile = objectFactory.fileProperty()
+    @get:InputFile
+    @get:Optional
+    abstract val inputFile: RegularFileProperty
 
-    @Input
-    @Optional
-    val headerParserRegex = objectFactory.property<Regex>()
+    @get:Input
+    @get:Optional
+    abstract val headerParserRegex: Property<Regex>
 
-    @Input
-    @Optional
-    val itemPrefix = objectFactory.property<String>()
+    @get:Input
+    @get:Optional
+    abstract val itemPrefix: Property<String>
 
-    @Input
-    @Optional
-    val unreleasedTerm = objectFactory.property<String>()
+    @get:Input
+    @get:Optional
+    abstract val unreleasedTerm: Property<String>
 
-    @Input
-    @Optional
-    val version = objectFactory.property<String>()
+    @get:Input
+    @get:Optional
+    abstract val version: Property<String>
 
     @TaskAction
     fun run() = logger.quiet(

@@ -2,52 +2,52 @@
 
 package org.jetbrains.changelog
 
-import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
-import org.gradle.kotlin.dsl.listProperty
-import org.gradle.kotlin.dsl.property
 import java.io.File
 import java.util.regex.Pattern
-import javax.inject.Inject
 
-open class ChangelogPluginExtension @Inject constructor(
-    objectFactory: ObjectFactory,
-) {
+abstract class ChangelogPluginExtension {
 
-    @Optional
-    val groups = objectFactory.listProperty<String>()
+    @get:Optional
+    abstract val groups: ListProperty<String>
 
-    @Optional
-    val header = objectFactory.property<String>()
+    @get:Optional
+    abstract val header: Property<String>
 
-    @Optional
-    val headerParserRegex = objectFactory.property<Any>()
+    @get:Optional
+    abstract val headerParserRegex: Property<Any>
 
-    internal fun getHeaderParserRegex() = when (val value = headerParserRegex.orNull) {
-        is Regex -> value
-        is String -> value.toRegex()
-        is Pattern -> value.toRegex()
-        null -> ChangelogPluginConstants.SEM_VER_REGEX
-        else -> throw IllegalArgumentException("Unsupported type of $value. Expected value types: Regex, String, Pattern.")
-    }
+    @get:Internal
+    @Suppress("LeakingThis")
+    val getHeaderParserRegex = headerParserRegex.map {
+        when (it) {
+            is Regex -> it
+            is String -> it.toRegex()
+            is Pattern -> it.toRegex()
+            else -> throw IllegalArgumentException("Unsupported type of $it. Expected value types: Regex, String, Pattern.")
+        }
+    }.orElse(ChangelogPluginConstants.SEM_VER_REGEX)
 
-    @Optional
-    val itemPrefix = objectFactory.property<String>()
+    @get:Optional
+    abstract val itemPrefix: Property<String>
 
-    @Optional
-    val keepUnreleasedSection = objectFactory.property<Boolean>()
+    @get:Optional
+    abstract val keepUnreleasedSection: Property<Boolean>
 
-    @Optional
-    val patchEmpty = objectFactory.property<Boolean>()
+    @get:Optional
+    abstract val patchEmpty: Property<Boolean>
 
-    @Optional
-    val path = objectFactory.property<String>()
+    @get:Optional
+    abstract val path: Property<String>
 
-    @Optional
-    val unreleasedTerm = objectFactory.property<String>()
+    @get:Optional
+    abstract val unreleasedTerm: Property<String>
 
-    @Optional
-    val version = objectFactory.property<String>()
+    @get:Optional
+    abstract val version: Property<String>
 
     fun get(version: String) = changelog.get(version)
 
@@ -65,7 +65,7 @@ open class ChangelogPluginExtension @Inject constructor(
         get() = Changelog(
             File(path.get()),
             unreleasedTerm.get(),
-            getHeaderParserRegex(),
+            getHeaderParserRegex.get(),
             itemPrefix.get(),
         )
 }
