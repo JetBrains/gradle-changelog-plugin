@@ -1,8 +1,11 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Added
+- Introduce changelog description and changelog section summary
+
 ### Changed
-- Upgrade minimal required Gradle version to `6.7.1`
+- Upgrade minimal required Gradle version to `6.8`
 
 ## [1.3.1]
 ### Changed
