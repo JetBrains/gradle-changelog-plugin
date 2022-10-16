@@ -6,9 +6,9 @@
 [![Build](https://github.com/JetBrains/gradle-changelog-plugin/workflows/Build/badge.svg)][gh:build]
 [![Slack](https://img.shields.io/badge/Slack-%23gradle--changelog--plugin-blue)][jb:slack]
 
-**This project requires Gradle 6.7.1 or newer**
+**This project requires Gradle 6.8 or newer**
 
-> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 7.4.2`
+> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 7.5.1`
 
 A Gradle plugin providing tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
 
