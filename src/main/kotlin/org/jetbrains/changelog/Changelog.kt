@@ -95,8 +95,8 @@ class Changelog(
                     section.value
                         .map { it.text().trim() }
                         .filterNot { it.startsWith(ATX_3) || it.isEmpty() }
-                        .joinToString("\n")
-                        .split("""(^|\n)${Regex.escape(itemPrefix)}\s*""".toRegex())
+                        .joinToString(NEW_LINE)
+                        .split("""(^|$NEW_LINE)${Regex.escape(itemPrefix)}\s*""".toRegex())
                         .mapNotNull {
                             "$itemPrefix $it".takeIf { _ ->
                                 it.isNotEmpty()

@@ -107,9 +107,9 @@ abstract class PatchChangelogTask : DefaultTask() {
             changelog.getAll()
                 .values
                 .drop(1)
-                .joinToString("$NEW_LINE$NEW_LINE") {
+                .joinToString(NEW_LINE + NEW_LINE) {
                     it.withHeader(true).toText().trim()
                 },
-        ).joinToString(NEW_LINE))
+        ).joinToString(NEW_LINE).trim() + NEW_LINE)
     }
 }

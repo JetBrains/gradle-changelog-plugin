@@ -3,9 +3,9 @@
 package org.jetbrains.changelog.tasks
 
 import org.jetbrains.changelog.BaseTest
+import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
 import org.jetbrains.changelog.ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAME
 import org.jetbrains.changelog.exceptions.MissingVersionException
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.test.*
@@ -338,8 +338,6 @@ class PatchChangelogTaskTest : BaseTest() {
             plugins {
                 id 'org.jetbrains.changelog'
             }
-            changelog {
-            }
             """
 
         project.evaluate()
@@ -349,7 +347,7 @@ class PatchChangelogTaskTest : BaseTest() {
         assertTrue(
             result.output.contains(
                 "org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Version is missing. " +
-                    "Please provide the project version to the `project` or `changelog.version` property explicitly."
+                        "Please provide the project version to the `project` or `changelog.version` property explicitly."
             )
         )
     }
@@ -404,9 +402,20 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ### Added
             - Buz
+            
             """.trimIndent(),
-            File(extension.path.get()).readText()
+            changelog,
         )
+
+        assertFalse(changelog.endsWith(NEW_LINE + NEW_LINE))
+        assertTrue(changelog.endsWith(NEW_LINE))
+    }
+
+    @Test
+    fun `patched changelog contains an empty line at the end`() {
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertTrue(changelog.endsWith(NEW_LINE))
     }
 
     @Test

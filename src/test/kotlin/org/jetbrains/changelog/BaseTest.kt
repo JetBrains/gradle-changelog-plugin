@@ -21,14 +21,18 @@ open class BaseTest {
     private val gradleArguments = System.getProperty("test.gradle.arguments", "").split(' ').filter(String::isNotEmpty).toMutableList()
     private val gradleVersion = System.getProperty("test.gradle.version").takeIf(String::isNotEmpty) ?: gradleDefault
 
+    protected val changelogFile
+        get() = File(extension.path.get())
+
     protected var changelog: String = ""
         set(value) {
             field = value
-            File(extension.path.get()).run {
+            changelogFile.run {
                 createNewFile()
                 writeText(value.trimIndent().trim())
             }
         }
+        get() = changelogFile.readText()
 
     protected var version: String
         get() = project.version.toString()

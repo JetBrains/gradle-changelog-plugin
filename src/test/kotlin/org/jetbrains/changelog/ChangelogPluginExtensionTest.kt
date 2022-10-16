@@ -4,7 +4,6 @@ package org.jetbrains.changelog
 
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
-import java.io.File
 import kotlin.test.*
 
 class ChangelogPluginExtensionTest : BaseTest() {
@@ -35,7 +34,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `throws MissingFileException when changelog file does not exist`() {
-        File(extension.path.get()).delete()
+        changelogFile.delete()
         assertFailsWith<MissingFileException> {
             extension.get(version)
         }
