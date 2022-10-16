@@ -90,6 +90,8 @@ abstract class PatchChangelogTask : DefaultTask() {
         outputFile.get().asFile.writeText(listOfNotNull(
             changelog.header + NEW_LINE,
 
+            changelog.description + NEW_LINE,
+
             item?.header.takeIf {
                 keepUnreleasedSection.get()
             },

@@ -4,6 +4,7 @@ package org.jetbrains.changelog
 
 import org.intellij.markdown.IElementType
 import org.intellij.markdown.MarkdownElementTypes
+import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.parser.MarkdownParser
@@ -32,7 +33,23 @@ class Changelog(
     private val flavour = ChangelogFlavourDescriptor()
     private val parser = MarkdownParser(flavour)
     private val tree = parser.buildMarkdownTreeFromString(content)
-    private val items = tree.children
+
+    private val headerNodes = tree.children
+        .takeWhile { it.type == MarkdownElementTypes.ATX_1 }
+    val header = headerNodes
+        .joinToString(NEW_LINE) { it.text() }
+        .trim()
+
+    private val descriptionNodes = tree.children
+        .dropWhile { it.type == MarkdownElementTypes.ATX_1 }
+        .takeWhile { it.type != MarkdownElementTypes.ATX_2 }
+    val description = descriptionNodes
+        .joinToString(NEW_LINE) { it.text() }
+        .trim()
+
+    private val itemsNodes = tree.children
+        .drop(headerNodes.size + descriptionNodes.size)
+    private val items = itemsNodes
         .groupByType(MarkdownElementTypes.ATX_2) {
             it.children.last().text().trim().run {
                 when (this) {
@@ -50,26 +67,46 @@ class Changelog(
             } ?: it.key
         }
         .mapValues { (key, value) ->
-            value
+            val header = value
+                .firstOrNull { it.type == MarkdownElementTypes.ATX_2 }?.text()
+                .orEmpty()
+                .trim()
+
+            val nodes = value
                 .drop(1)
+                .dropWhile { node -> node.type == MarkdownTokenTypes.EOL }
+
+            val isUnreleased = key == unreleasedTerm
+            val summaryNodes = nodes
+                .takeWhile { node ->
+                    node.type != MarkdownElementTypes.ATX_3 && !node.text().startsWith(itemPrefix)
+                }
+            val summary = summaryNodes
+                .joinToString(NEW_LINE) { it.text() }
+                .replace("""$NEW_LINE{3,}""".toRegex(), NEW_LINE + NEW_LINE)
+                .trim()
+
+            val items = nodes
+                .drop(summaryNodes.size)
                 .groupByType(MarkdownElementTypes.ATX_3) {
                     it.text().trimStart('#').trim()
                 }
-                .mapValues {
-                    it.value
-                        .joinToString("") { node -> node.text() }
-                        .split("""\n${Regex.escape(itemPrefix)}""".toRegex())
-                        .map { line -> itemPrefix + line.trim('\n') }
-                        .drop(1)
-                        .filterNot(String::isEmpty)
-                }.run {
-                    val isUnreleased = key == unreleasedTerm
-                    val header = retrieveHeader(value, MarkdownElementTypes.ATX_3)
-                    Item(key, header, this, isUnreleased)
-                }
-        }
+                .mapValues { section ->
+                    section.value
+                        .map { it.text().trim() }
+                        .filterNot { it.startsWith(ATX_3) || it.isEmpty() }
+                        .joinToString("\n")
+                        .split("""(^|\n)${Regex.escape(itemPrefix)}\s*""".toRegex())
+                        .mapNotNull {
+                            "$itemPrefix $it".takeIf { _ ->
+                                it.isNotEmpty()
+                            }
+                        }
 
-    val header = retrieveHeader(tree.children, MarkdownElementTypes.ATX_2)
+                }
+
+            Item(key, header, summary, items, isUnreleased)
+        }
 
     fun has(version: String) = items.containsKey(version)
 
@@ -82,15 +119,21 @@ class Changelog(
     inner class Item(
         val version: String,
         val header: String,
+        val summary: String,
         private val items: Map<String, List<String>>,
         private val isUnreleased: Boolean = false,
     ) {
 
         private var withHeader = false
+        private var withSummary = true
         private var filterCallback: ((String) -> Boolean)? = null
 
         fun withHeader(header: Boolean) = apply {
             withHeader = header
+        }
+
+        fun withSummary(summary: Boolean) = apply {
+            withSummary = summary
         }
 
         fun withFilter(filter: ((String) -> Boolean)?) = apply {
@@ -98,22 +141,44 @@ class Changelog(
         }
 
         fun getSections() = items
-            .mapValues {
-                it.value.filter { item -> filterCallback?.invoke(item) ?: true }
+            .mapValues { it.value.filter { item -> filterCallback?.invoke(item) ?: true } }
+            .filterNot { it.value.isEmpty() && !isUnreleased }
+
+        fun toText() = sequence {
+            val hasSummary = withSummary && summary.isNotEmpty()
+
+            if (withHeader) {
+                yield(header)
             }
-            .filterNot {
-                it.value.isEmpty() && !isUnreleased
+            if (hasSummary) {
+                yield(summary)
             }
 
-        fun toText() = getSections().entries
-            .joinToString("\n\n") { (key, value) ->
-                (listOfNotNull("$ATX_3 $key".takeIf { key.isNotEmpty() }) + value).joinToString(NEW_LINE)
-            }.trim().let {
-                when {
-                    withHeader -> "$header\n$it"
-                    else -> it
-                }
+            if (withHeader || hasSummary) {
+                yield(NEW_LINE)
             }
+
+            getSections()
+                .entries
+                .asSequence()
+                .iterator()
+                .run {
+                    while (hasNext()) {
+                        val (section, items) = next()
+                        if (section.isNotEmpty()) {
+                            yield("$ATX_3 $section")
+                        }
+                        yieldAll(items)
+
+                        if (hasNext()) {
+                            yield(NEW_LINE)
+                        }
+                    }
+                }
+        }
+            .joinToString(NEW_LINE)
+            .replace("""$NEW_LINE{3,}""".toRegex(), NEW_LINE + NEW_LINE)
+            .trim()
 
         fun toHTML() = markdownToHTML(toText())
 
@@ -136,8 +201,4 @@ class Changelog(
             key
         }
     }
-
-    private fun retrieveHeader(items: List<ASTNode>, type: IElementType) = items.run {
-        subList(0, indexOfFirst { it.type == type }.takeIf { it >= 0 } ?: 1)
-    }.joinToString("") { it.text() }.trim()
 }

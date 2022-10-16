@@ -17,8 +17,13 @@ class GetChangelogTaskTest : BaseTest() {
             """
             # Changelog
             ## [Unreleased]
+            Some unreleased changes.
+
             - bar
+
             ## [1.0.0]
+            That was a great release.
+            
             ### Added
             - foo
             """
@@ -43,6 +48,8 @@ class GetChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [1.0.0]
+            That was a great release.
+            
             ### Added
             - foo
             """.trimIndent(),
@@ -57,6 +64,8 @@ class GetChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [Unreleased]
+            Some unreleased changes.
+
             - bar
             """.trimIndent(),
             result.output.trim()
@@ -69,6 +78,39 @@ class GetChangelogTaskTest : BaseTest() {
 
         assertEquals(
             """
+            That was a great release.
+            
+            ### Added
+            - foo
+            """.trimIndent(),
+            result.output.trim()
+        )
+    }
+
+    @Test
+    fun `returns change notes without summary for the version specified with extension`() {
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--no-summary")
+
+        assertEquals(
+            """
+            ## [1.0.0]
+            
+            ### Added
+            - foo
+            """.trimIndent(),
+            result.output.trim()
+        )
+    }
+
+    @Test
+    fun `returns change notes with summary for the version specified with extension`() {
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
+
+        assertEquals(
+            """
+            ## [1.0.0]
+            That was a great release.
+            
             ### Added
             - foo
             """.trimIndent(),
@@ -155,8 +197,8 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `task loads from the configuration cache`() {
-        runTask(GET_CHANGELOG_TASK_NAME, "--configuration-cache")
-        val result = runTask(GET_CHANGELOG_TASK_NAME, "--configuration-cache")
+        runTask(GET_CHANGELOG_TASK_NAME)
+        val result = runTask(GET_CHANGELOG_TASK_NAME)
 
         assertTrue(result.output.contains("Reusing configuration cache."))
     }

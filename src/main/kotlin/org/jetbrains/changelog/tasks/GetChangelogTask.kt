@@ -19,6 +19,10 @@ abstract class GetChangelogTask : DefaultTask() {
     var noHeader = false
 
     @get:Input
+    @Option(option = "no-summary", description = "Omits summary section")
+    var noSummary = false
+
+    @get:Input
     @Option(option = "unreleased", description = "Returns Unreleased change notes")
     var unreleased = false
 
@@ -56,6 +60,7 @@ abstract class GetChangelogTask : DefaultTask() {
             }.get()
             get(version).run {
                 withHeader(!noHeader)
+                withSummary(!noSummary)
                 toText()
             }
         }

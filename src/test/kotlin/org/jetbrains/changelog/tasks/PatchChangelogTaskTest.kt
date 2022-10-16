@@ -7,12 +7,8 @@ import org.jetbrains.changelog.ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAM
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.Date
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
+import java.util.*
+import kotlin.test.*
 
 class PatchChangelogTaskTest : BaseTest() {
 
@@ -21,7 +17,11 @@ class PatchChangelogTaskTest : BaseTest() {
         changelog =
             """
             # Changelog
+            My project changelog.
+            
             ## [Unreleased]
+            Fancy release.
+            
             ### Added
             - foo
             """
@@ -44,6 +44,8 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertEquals(
             """
+            Fancy release.
+            
             ### Added
             - foo
             """.trimIndent(),
@@ -53,6 +55,7 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [Unreleased]
+            
             ### Added
             
             ### Changed
@@ -87,6 +90,8 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertEquals(
             """
+            Fancy release.
+            
             ### Added
             - foo
             """.trimIndent(),
@@ -193,6 +198,7 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [Unreleased]
+
             ### Added
             
             ### Changed
@@ -236,6 +242,7 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [1.0.0]
+
             ### Added
             - foo
             
@@ -265,6 +272,7 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [Unreleased]
+
             ### Aaaa
 
             ### Bbb
@@ -292,7 +300,6 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [Unreleased]
-            
             """.trimIndent(),
             extension.getUnreleased().withHeader(true).toText()
         )
@@ -385,6 +392,7 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             # My Changelog
+            
             Foo bar buz.
             
             ## [Unreleased]
@@ -393,6 +401,7 @@ class PatchChangelogTaskTest : BaseTest() {
             - asd
 
             ## [0.1.0]
+            
             ### Added
             - Buz
             """.trimIndent(),
@@ -402,8 +411,8 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `task loads from the configuration cache`() {
-        runTask(PATCH_CHANGELOG_TASK_NAME, "--configuration-cache")
-        val result = runTask(PATCH_CHANGELOG_TASK_NAME, "--configuration-cache")
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+        val result = runTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertTrue(result.output.contains("Reusing configuration cache."))
     }

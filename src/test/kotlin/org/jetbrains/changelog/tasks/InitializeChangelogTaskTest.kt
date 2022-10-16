@@ -5,12 +5,7 @@ package org.jetbrains.changelog.tasks
 import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.ChangelogPluginConstants.INITIALIZE_CHANGELOG_TASK_NAME
 import java.io.File
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class InitializeChangelogTaskTest : BaseTest() {
 
@@ -39,6 +34,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             assertEquals(
                 """
                 ## [Unreleased]
+                
                 ### Added
                 - Example item
 
@@ -72,6 +68,7 @@ class InitializeChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [Unreleased]
+
             ### Added
             - Example item
 
@@ -116,6 +113,7 @@ class InitializeChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## Upcoming version
+
             ### Added
             * Example item
             
@@ -146,8 +144,8 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @Test
     fun `task loads from the configuration cache`() {
-        runTask(INITIALIZE_CHANGELOG_TASK_NAME, "--configuration-cache")
-        val result = runTask(INITIALIZE_CHANGELOG_TASK_NAME, "--configuration-cache")
+        runTask(INITIALIZE_CHANGELOG_TASK_NAME)
+        val result = runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
         assertTrue(result.output.contains("Reusing configuration cache."))
     }

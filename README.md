@@ -142,12 +142,13 @@ Retrieves changelog for the specified version.
 | Option         | Description                                        |
 |----------------|----------------------------------------------------|
 | `--no-header`  | Skips the first version header line in the output. |
+| `--no-summary` | Skips the summary section in the output.           |
 | `--unreleased` | Returns Unreleased change notes.                   |
 
 #### Examples
 
 ```bash
-$ ./gradlew getChangelog --console=plain -q --no-header
+$ ./gradlew getChangelog --console=plain -q --no-header --no-summary
 
 ### Added
 - Initial project scaffold
@@ -376,15 +377,16 @@ It provides a couple of properties and methods that allow altering the output fo
 
 ### Methods
 
-| Name                | Description                    | Returned type |
-|---------------------|--------------------------------|---------------|
-| `noHeader()`        | Excludes header part.          | `this`        |
-| `noHeader(Boolean)` | Includes/excludes header part. | `this`        |
-| `getHeader()`       | Returns header text.           | `String`      |
-| `toText()`          | Generates Markdown output.     | `String`      |
-| `toPlainText()`     | Generates Plain Text output.   | `String`      |
-| `toString()`        | Generates Markdown output.     | `String`      |
-| `toHTML()`          | Generates HTML output.         | `String`      |
+| Name                   | Description                     | Returned type |
+|------------------------|---------------------------------|---------------|
+| `withHeader(Boolean)`  | Includes/excludes header part.  | `this`        |
+| `getHeader()`          | Returns header text.            | `String`      |
+| `withSummary(Boolean)` | Includes/excludes summary part. | `this`        |
+| `getSummary()`         | Returns summary text.           | `String`      |
+| `toText()`             | Generates Markdown output.      | `String`      |
+| `toPlainText()`        | Generates Plain Text output.    | `String`      |
+| `toString()`           | Generates Markdown output.      | `String`      |
+| `toHTML()`             | Generates HTML output.          | `String`      |
 
 ## Helper Methods
 

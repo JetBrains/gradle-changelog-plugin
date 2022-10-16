@@ -64,6 +64,7 @@ open class BaseTest {
             .forwardOutput()
             .withPluginClasspath()
             .withTestKitDir(File(gradleHome))
+            .withDebug(true)
             .withArguments(
                 taskName,
                 "--console=plain",
