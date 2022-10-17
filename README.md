@@ -8,7 +8,9 @@
 
 **This project requires Gradle 6.8 or newer**
 
-> **TIP:** Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 7.5.1`
+> **Note**
+> 
+> Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 7.5.1`
 
 A Gradle plugin providing tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
 
@@ -35,10 +37,12 @@ A Gradle plugin providing tasks and helper methods to simplify working with a ch
 
 ## Usage
 
-`patchPluginXml` task is defined in [gradle-intellij-plugin](https://github.com/JetBrains/gradle-intellij-plugin/#patching-dsl)
-
 The latest available version is:
 [![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
+
+> **Note**
+> 
+> `patchPluginXml` task is defined in [gradle-intellij-plugin](https://github.com/JetBrains/gradle-intellij-plugin/#patching-dsl)
 
 **build.gradle.kts** (Kotlin)
 ```kotlin
@@ -60,6 +64,16 @@ changelog {
     version.set("1.0.0")
     path.set("${project.projectDir}/CHANGELOG.md")
     header.set(provider { "[${version.get()}] - ${date()}" })
+    headerParserRegex.set("""(\d+\.\d+)""".toRegex())
+    introduction.set(
+        """
+        My awesome project that provides a lot of useful features, like:
+        
+        - Feature 1
+        - Feature 2
+        - and Feature 3
+        """.trimIndent()
+    )
     itemPrefix.set("-")
     keepUnreleasedSection.set(true)
     unreleasedTerm.set("[Unreleased]")
@@ -91,6 +105,13 @@ changelog {
     path = "${project.projectDir}/CHANGELOG.md"
     header = "[${-> version.get()}] - ${new SimpleDateFormat("yyyy-MM-dd").format(new Date())}"
     headerParserRegex = ~/(\d+\.\d+)/
+    introduction = """
+        My awesome project that provides a lot of useful features, like:
+        
+        - Feature 1
+        - Feature 2
+        - and Feature 3
+    """.stripIndent()
     itemPrefix = "-"
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
@@ -98,10 +119,12 @@ changelog {
 }
 ```
 
-> **Note:** All the extension and tasks properties are now lazy (see [Lazy Configuration][gradle-lazy-configuration]).
+> **Note**
+> 
+> All the extension and tasks properties are now lazy (see [Lazy Configuration][gradle-lazy-configuration]).
 > 
 > To set values in Kotlin DSL, use `.set(...)` method explicitly, like `changelog.version.set("1.0.0")`, in Groovy it is still possible to use `=` assignment.
->
+> 
 > To access property value, call `.get()`, like: `changelog.version.get()` in both variants.
 
 
@@ -115,13 +138,16 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | `groups`                | List of groups created with a new Unreleased section.                      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]`          |
 | `header`                | `String` or `Provider` that returns current header value.                  | `provider { "[${version.get()}]" }`                                           |
 | `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string. | `null`, fallbacks to [`ChangelogPluginConstants#SEM_VER_REGEX`][semver-regex] |
+| `introduction`          | An optional portion of text that appears after the main header.            | `null`                                                                        |
 | `itemPrefix`            | Single item's prefix, allows to customise the bullet sign.                 | `"-"`                                                                         |
 | `keepUnreleasedSection` | Add Unreleased empty section after patching.                               | `true`                                                                        |
 | `patchEmpty`            | Patches changelog even if no release note is provided.                     | `true`                                                                        |
 | `path`                  | Path to the changelog file.                                                | `"${project.projectDir}/CHANGELOG.md"`                                        |
 | `unreleasedTerm`        | Unreleased section text.                                                   | `"[Unreleased]"`                                                              |
 
-> **Note:** `header` closure has the delegate explicitly set to the extension's context for the sake of the [Configuration cache][configuration-cache] support.
+> **Note**
+> 
+> `header` closure has the delegate explicitly set to the extension's context for the sake of the [Configuration cache][configuration-cache] support.
 
 ## Tasks
 
@@ -228,7 +254,9 @@ $ cat CHANGELOG.md
 
 All the methods are available via the `changelog` extension and allow for reading the changelog file within the Gradle tasks to provide the latest (or specific) change notes.
 
-> **Note:** Following methods depend on the `changelog` extension, which is set in the *Configuration* [build phase][build-phases].
+> **Note**
+> 
+> Following methods depend on the `changelog` extension, which is set in the *Configuration* [build phase][build-phases].
 > To make it run properly, it's required to place the configuration before the first usage of such a method.
 > Alternatively, you can pass the Gradle closure to the task, which will postpone the method invocation.
 
@@ -396,7 +424,10 @@ It provides a couple of properties and methods that allow altering the output fo
 | `markdownToHTML(input: String)`        | Converts given Markdown content to HTML output.                | `String`      |
 | `markdownToPlainText(input: String)`   | Converts given Markdown content to Plain Text output.          | `String`      |
 
-> **Note:** To use package-level Kotlin functions in Groovy, you need to import the containing file as a class:
+> **Note**
+> 
+> To use package-level Kotlin functions in Groovy, you need to import the containing file as a class:
+> 
 > ```groovy
 > import org.jetbrains.changelog.ExtensionsKt
 > 
