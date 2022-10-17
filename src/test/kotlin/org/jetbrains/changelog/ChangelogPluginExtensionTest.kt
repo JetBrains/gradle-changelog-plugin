@@ -572,7 +572,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             - item 1
             - item 2
             """.trimIndent(),
-            extension.changelog.introduction
+            extension.instance.introduction
         )
     }
 
@@ -580,7 +580,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     fun `applies new changelog introduction`() {
         extension.introduction.set("New introduction")
 
-        assertEquals("New introduction", extension.changelog.introduction)
+        assertEquals("New introduction", extension.instance.introduction)
     }
 
 }

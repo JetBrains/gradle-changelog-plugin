@@ -52,19 +52,7 @@ abstract class ChangelogPluginExtension {
     @get:Optional
     abstract val version: Property<String>
 
-    fun get(version: String) = changelog.get(version)
-
-    fun getAll() = changelog.getAll()
-
-    fun getOrNull(version: String) = changelog.runCatching { get(version) }.getOrNull()
-
-    fun getLatest() = changelog.getLatest()
-
-    fun getUnreleased() = get(unreleasedTerm.get())
-
-    fun has(version: String) = changelog.has(version)
-
-    val changelog
+    val instance
         get() = Changelog(
             File(path.get()),
             introduction.orNull,
@@ -72,4 +60,16 @@ abstract class ChangelogPluginExtension {
             getHeaderParserRegex.get(),
             itemPrefix.get(),
         )
+
+    fun get(version: String) = instance.get(version)
+
+    fun getAll() = instance.getAll()
+
+    fun getOrNull(version: String) = instance.runCatching { get(version) }.getOrNull()
+
+    fun getLatest() = instance.getLatest()
+
+    fun getUnreleased() = get(unreleasedTerm.get())
+
+    fun has(version: String) = instance.has(version)
 }

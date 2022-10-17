@@ -14,6 +14,7 @@
 
 A Gradle plugin providing tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
 
+
 ## Table of contents
 
 - [Usage](#usage)
@@ -29,20 +30,22 @@ A Gradle plugin providing tasks and helper methods to simplify working with a ch
     - [`getLatest`](#getlatest)
     - [`getAll`](#getall)
     - [`has`](#has)
-- [`Changelog.Item`](#changelogitem)
+- [Extension Fields](#extension-fields)
+    - [`instance`](#instance)
+- [Classes](#classes)
+    - [`Changelog`](#changelog-object)
+    - [`Changelog.Item`](#changelogitem-object)
 - [Helper Methods](#helper-methods)
 - [Usage Examples](#usage-examples)
 - [Contributing](#contributing)
 
 
 ## Usage
-
-The latest available version is:
-[![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
+The latest available version is: [![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
 
 > **Note**
 > 
-> `patchPluginXml` task is defined in [gradle-intellij-plugin](https://github.com/JetBrains/gradle-intellij-plugin/#patching-dsl)
+> The `patchPluginXml` task is defined in [Gradle IntelliJ Plugin][gh:gradle-intellij-plugin]
 
 **build.gradle.kts** (Kotlin)
 ```kotlin
@@ -129,7 +132,6 @@ changelog {
 
 
 ## Configuration
-
 Plugin can be configured with the following properties set in the `changelog {}` closure:
 
 | Property                | Description                                                                | Default value                                                                 |
@@ -149,8 +151,8 @@ Plugin can be configured with the following properties set in the `changelog {}`
 > 
 > `header` closure has the delegate explicitly set to the extension's context for the sake of the [Configuration cache][configuration-cache] support.
 
-## Tasks
 
+## Tasks
 The plugin introduces the following tasks:
 
 | Task                                          | Description                                                                                                             |
@@ -162,18 +164,14 @@ The plugin introduces the following tasks:
 
 ### `getChangelog`
 Retrieves changelog for the specified version.
-
 #### Options
-
 | Option         | Description                                        |
 |----------------|----------------------------------------------------|
 | `--no-header`  | Skips the first version header line in the output. |
 | `--no-summary` | Skips the summary section in the output.           |
 | `--unreleased` | Returns Unreleased change notes.                   |
-
 #### Examples
-
-```bash
+```shell
 $ ./gradlew getChangelog --console=plain -q --no-header --no-summary
 
 ### Added
@@ -182,12 +180,11 @@ $ ./gradlew getChangelog --console=plain -q --no-header --no-summary
 - Kotlin support
 ```
 
+
 ### `initializeChangelog`
 Creates new changelog file with Unreleased section and empty groups.
-
 #### Examples
-
-```bash
+```shell
 $ ./gradlew initializeChangelog
 $ cat CHANGELOG.md
 
@@ -206,18 +203,18 @@ $ cat CHANGELOG.md
 ### Security
 ```
 
+
 ### `patchChangelog`
-Updates the unreleased section to the given version. Requires *unreleased* section to be present in the changelog file.
+Updates the unreleased section to the given version.
+Requires *unreleased* section to be present in the changelog file.
 
 #### Options
-
 | Option           | Description                                             |
 |------------------|---------------------------------------------------------|
 | `--release-note` | Adds custom release note to the latest changelog entry. |
 
 #### Examples
-
-```bash
+```shell
 $ cat CHANGELOG.md
 ## [Unreleased]
 ### Added
@@ -234,7 +231,7 @@ $ cat CHANGELOG.md
 - A based new feature
 ```
 
-```bash
+```shell
 $ cat CHANGELOG.md
 ## [Unreleased]
 ### Added
@@ -251,7 +248,6 @@ $ cat CHANGELOG.md
 
 
 ## Extension Methods
-
 All the methods are available via the `changelog` extension and allow for reading the changelog file within the Gradle tasks to provide the latest (or specific) change notes.
 
 > **Note**
@@ -260,21 +256,19 @@ All the methods are available via the `changelog` extension and allow for readin
 > To make it run properly, it's required to place the configuration before the first usage of such a method.
 > Alternatively, you can pass the Gradle closure to the task, which will postpone the method invocation.
 
-### `get`
 
+### `get`
 The method returns a `Changelog.Item` object for the specified version.
 Throws `MissingVersionException` if the version is not available.
 
 It is possible to specify the *unreleased* section with setting the `${changelog.unreleasedTerm}` value.
 
 #### Parameters
-
 | Parameter | Type     | Description          | Default value          |
 |-----------|----------|----------------------|------------------------|
 | `version` | `String` | Change note version. | `${changelog.version}` |
 
 #### Examples
-
 **build.gradle.kts** (Kotlin)
 ```kotlin
 tasks {
@@ -293,22 +287,20 @@ tasks {
 }
 ```
 
-### `getOrNull`
 
+### `getOrNull`
 Same as `get`, but returns `null` instead of throwing `MissingVersionException`.
 
 #### Parameters
-
 | Parameter | Type     | Description          | Default value          |
 |-----------|----------|----------------------|------------------------|
 | `version` | `String` | Change note version. | `${changelog.version}` |
 
-### `getUnreleased`
 
+### `getUnreleased`
 The method returns a `Changelog.Item` object for the *unreleased* version.
 
 #### Examples
-
 **build.gradle.kts** (Kotlin)
 ```kotlin
 tasks {
@@ -327,12 +319,11 @@ tasks {
 }
 ```
 
-### `getLatest`
 
+### `getLatest`
 The method returns the latest `Changelog.Item` object (first on the list).
 
 #### Examples
-
 **build.gradle.kts** (Kotlin)
 ```kotlin
 tasks {
@@ -351,12 +342,11 @@ tasks {
 }
 ```
 
-### `getAll`
 
+### `getAll`
 The method returns all available `Changelog.Item` objects.
 
 #### Examples
-
 **build.gradle.kts** (Kotlin)
 ```kotlin
 extension.getAll().values.map { it.toText() }
@@ -367,12 +357,11 @@ extension.getAll().values.map { it.toText() }
 extension.getAll().values().each { it.toText() }
 ```
 
-### `has`
 
+### `has`
 The method checks if the given version exists in the changelog.
 
 #### Examples
-
 **build.gradle.kts** (Kotlin)
 ```kotlin
 tasks {
@@ -391,20 +380,48 @@ tasks {
 }
 ```
 
-## `Changelog.Item`
 
+## Extension Fields
+All the fields available via the `changelog` extension and allow for the direct access to the `changelog` extension.
+
+
+### `instance`
+The field returns the current `Changelog` instance.
+
+
+## Classes
+
+
+### `Changalog` class
+The `Changelog` class is a wrapper for the `Changelog` file.
+It provides methods to read and write the changelog file.
+
+#### Properties
+| Name             | Type     | Description                                                                             |
+|------------------|----------|-----------------------------------------------------------------------------------------|
+| `header`         | `String` | Changelog header.                                                                       |
+| `introduction`   | `String` | Static leading text introduction placed after the header and before changelog sections. |
+
+#### Methods
+| Name                   | Description                     | Returned type                 |
+|------------------------|---------------------------------|-------------------------------|
+| `has(String)`          | Checks if the version exists.   | `Boolean`                     |
+| `get(version: String)` | Returns the change note object. | `Changelog.Item`              |
+| `getAll()`             | Returns all change notes.       | `Map<String, Changelog.Item>` |
+| `getLatest()`          | Returns the latest change note. | `Changelog.Item`              |
+
+
+### `Changelog.Item` class
 Methods described in the above section return `Changelog.Item` object, which is a representation of the single changelog section for the specific version.
 
 It provides a couple of properties and methods that allow altering the output form of the change notes:
 
-### Properties 
-
+#### Properties
 | Name      | Type     | Description          |
 |-----------|----------|----------------------|
 | `version` | `String` | Change note version. |
 
-### Methods
-
+#### Methods
 | Name                   | Description                     | Returned type |
 |------------------------|---------------------------------|---------------|
 | `withHeader(Boolean)`  | Includes/excludes header part.  | `this`        |
@@ -416,8 +433,8 @@ It provides a couple of properties and methods that allow altering the output fo
 | `toString()`           | Generates Markdown output.      | `String`      |
 | `toHTML()`             | Generates HTML output.          | `String`      |
 
-## Helper Methods
 
+## Helper Methods
 | Name                                   | Description                                                    | Returned type |
 |----------------------------------------|----------------------------------------------------------------|---------------|
 | `date(pattern: String = "yyyy-MM-dd")` | Shorthand for retrieving the current date in the given format. | `String`      |
@@ -436,10 +453,11 @@ It provides a couple of properties and methods that allow altering the output fo
 > }
 > ```
 
-## Usage Examples
 
+## Usage Examples
 - [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
 - [Unity Support for ReSharper and Rider](https://github.com/JetBrains/resharper-unity)
+
 
 ## Changelog
 All releases are available in the [Releases](https://github.com/JetBrains/gradle-intellij-plugin/releases) section.
@@ -447,8 +465,10 @@ The latest available version is:
 
 [![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
 
+
 ## Contributing
 Please see [CONTRIBUTING](./CONTRIBUTING.md) on how to submit feedback and contribute to this project.
+
 
 ## License
 Licensed under the Apache License, Version 2.0 (the "License"), see [LICENCE](./LICENSE).
