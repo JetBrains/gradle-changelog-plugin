@@ -62,16 +62,19 @@ class ChangelogPlugin : Plugin<Project> {
         project.tasks.register<PatchChangelogTask>(PATCH_CHANGELOG_TASK_NAME) {
             group = GROUP_NAME
 
-            groups.set(extension.groups)
-            header.set(extension.header)
+            groups.convention(extension.groups)
+            header.convention(extension.header)
+            preTitle.convention(extension.preTitle)
+            title.convention(extension.title)
             introduction.set(extension.introduction)
             headerParserRegex.convention(extension.getHeaderParserRegex)
             inputFile.convention(pathProvider)
             itemPrefix.convention(extension.itemPrefix)
-            keepUnreleasedSection.set(extension.keepUnreleasedSection)
+            keepUnreleasedSection.convention(extension.keepUnreleasedSection)
             outputFile.convention(pathProvider)
-            patchEmpty.set(extension.patchEmpty)
-            unreleasedTerm.set(extension.unreleasedTerm)
+            patchEmpty.convention(extension.patchEmpty)
+            unreleasedTerm.convention(extension.unreleasedTerm)
+            version.convention(extension.version)
         }
 
         project.tasks.register<InitializeChangelogTask>(INITIALIZE_CHANGELOG_TASK_NAME) {

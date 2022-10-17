@@ -15,6 +15,12 @@ abstract class ChangelogPluginExtension {
     abstract val groups: ListProperty<String>
 
     @get:Optional
+    abstract val preTitle: Property<String>
+
+    @get:Optional
+    abstract val title: Property<String>
+
+    @get:Optional
     abstract val header: Property<String>
 
     @get:Optional
@@ -55,6 +61,8 @@ abstract class ChangelogPluginExtension {
     val instance
         get() = Changelog(
             File(path.get()),
+            preTitle.orNull,
+            title.orNull,
             introduction.orNull,
             unreleasedTerm.get(),
             getHeaderParserRegex.get(),

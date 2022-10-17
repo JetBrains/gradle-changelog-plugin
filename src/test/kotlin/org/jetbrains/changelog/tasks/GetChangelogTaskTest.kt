@@ -78,6 +78,7 @@ class GetChangelogTaskTest : BaseTest() {
 
         assertEquals(
             """
+            ## [1.0.0]
             That was a great release.
             
             ### Added

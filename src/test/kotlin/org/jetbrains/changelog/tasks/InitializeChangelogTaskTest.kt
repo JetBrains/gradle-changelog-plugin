@@ -47,8 +47,9 @@ class InitializeChangelogTaskTest : BaseTest() {
                 ### Fixed
 
                 ### Security
+                
                 """.trimIndent(),
-                values.first().withHeader(true).toText()
+                values.first().toText()
             )
         }
 
@@ -81,8 +82,9 @@ class InitializeChangelogTaskTest : BaseTest() {
             ### Fixed
 
             ### Security
+            
             """.trimIndent(),
-            extension.getUnreleased().withHeader(true).toText()
+            extension.getUnreleased().toText()
         )
     }
 
@@ -118,8 +120,9 @@ class InitializeChangelogTaskTest : BaseTest() {
             * Example item
             
             ### Removed
+            
             """.trimIndent(),
-            extension.getUnreleased().withHeader(true).toText()
+            extension.getUnreleased().toText()
         )
     }
 

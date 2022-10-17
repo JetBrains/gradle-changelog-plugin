@@ -5,10 +5,12 @@
 - Allow for customizing the changelog introduction.
 - Make `changelog.instance` property public.
 - Introduce changelog description and changelog section summary [#127](../../issues/127)
+- Introduce changelog description and changelog section summary [#127](../../issues/127)
 - Ensure patched changelog ends with a newline [#126](../../issues/126)
 
 ### Changed
 - Upgrade minimal required Gradle version to `6.8`
+- Make `withHeader` property of the `Changelog.Item` object `true` by default
 
 ## [1.3.1]
 ### Changed

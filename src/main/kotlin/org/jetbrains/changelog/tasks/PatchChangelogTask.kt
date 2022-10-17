@@ -13,6 +13,7 @@ import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
 import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
 import org.jetbrains.changelog.exceptions.MissingReleaseNoteException
+import org.jetbrains.changelog.reformat
 
 abstract class PatchChangelogTask : DefaultTask() {
 
@@ -43,6 +44,14 @@ abstract class PatchChangelogTask : DefaultTask() {
 
     @get:Input
     @get:Optional
+    abstract val preTitle: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val title: Property<String>
+
+    @get:Input
+    @get:Optional
     abstract val introduction: Property<String>
 
     @get:Input
@@ -61,19 +70,31 @@ abstract class PatchChangelogTask : DefaultTask() {
     @get:Optional
     abstract val unreleasedTerm: Property<String>
 
+    @get:Input
+    @get:Optional
+    abstract val version: Property<String>
+
     @TaskAction
     fun run() {
         val unreleasedTermValue = unreleasedTerm.get()
-        val headerValue = header.get()
+
         val changelog = Changelog(
             inputFile.get().asFile,
+            preTitle.orNull,
+            title.orNull,
             introduction.orNull,
             unreleasedTerm.get(),
             headerParserRegex.get(),
             itemPrefix.get(),
         )
 
+        val preTitleValue = preTitle.orNull ?: changelog.preTitleValue
+        val titleValue = title.orNull ?: changelog.titleValue
+        val introductionValue = introduction.orNull ?: changelog.introductionValue
+        val headerValue = header.get()
+
         val item = changelog.runCatching { get(unreleasedTermValue) }.getOrNull()
+        val otherItems = changelog.getAll().filterNot { it.key == unreleasedTermValue }.values
         val noUnreleasedSection = item == null || item.getSections().isEmpty()
         val noReleaseNote = releaseNote.isNullOrBlank()
         val content = releaseNote ?: item?.withHeader(false)?.toText() ?: ""
@@ -83,38 +104,54 @@ abstract class PatchChangelogTask : DefaultTask() {
             throw StopActionException()
         }
 
-        if (noUnreleasedSection && noReleaseNote && content.isEmpty()) {
+        if (noUnreleasedSection && noReleaseNote && content.isBlank()) {
             throw MissingReleaseNoteException(
                 ":patchChangelog task requires release note to be provided. " +
-                    "Add '$ATX_2 $unreleasedTermValue' section header to your changelog file: " +
-                    "'${inputFile.get().asFile.canonicalPath}' " +
-                    "or provide it using '--release-note' CLI option."
+                        "Add '$ATX_2 $unreleasedTermValue' section header to your changelog file: " +
+                        "'${inputFile.get().asFile.canonicalPath}' or provide it using '--release-note' CLI option."
             )
         }
 
-        outputFile.get().asFile.writeText(listOfNotNull(
-            changelog.header + NEW_LINE,
+        sequence {
+            if (preTitleValue.isNotEmpty()) {
+                yield(preTitleValue)
+                yield(NEW_LINE)
+            }
+            if (titleValue.isNotEmpty()) {
+                yield(titleValue)
+                yield(NEW_LINE)
+            }
+            if (introductionValue.isNotEmpty()) {
+                yield(introductionValue)
+                yield(NEW_LINE)
+            }
 
-            changelog.introduction + NEW_LINE,
+            if (keepUnreleasedSection.get()) {
+                yield("$ATX_2 $unreleasedTermValue")
+                yield(NEW_LINE)
 
-            item?.header.takeIf {
-                keepUnreleasedSection.get()
-            },
+                groups.get()
+                    .map { "$ATX_3 $it" }
+                    .let { yieldAll(it) }
+            }
 
-            groups.get().joinToString(NEW_LINE) {
-                "$ATX_3 $it$NEW_LINE"
-            },
+            if (item != null) {
+                yield("$ATX_2 $headerValue")
 
-            "$ATX_2 $headerValue",
+                if (content.isNotBlank()) {
+                    yield(content)
+                } else {
+                    yield(item.withHeader(false))
+                }
+            }
 
-            content.trim() + NEW_LINE,
-
-            changelog.getAll()
-                .values
-                .drop(1)
-                .joinToString(NEW_LINE + NEW_LINE) {
-                    it.withHeader(true).toText().trim()
-                },
-        ).joinToString(NEW_LINE).trim() + NEW_LINE)
+            yield(NEW_LINE)
+            yieldAll(otherItems)
+        }
+            .joinToString(NEW_LINE)
+            .reformat()
+            .let {
+                outputFile.get().asFile.writeText(it)
+            }
     }
 }

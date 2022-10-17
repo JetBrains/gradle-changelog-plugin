@@ -134,18 +134,19 @@ changelog {
 ## Configuration
 Plugin can be configured with the following properties set in the `changelog {}` closure:
 
-| Property                | Description                                                                | Default value                                                                 |
-|-------------------------|----------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| **`version`**           | Current version. By default, global project's version is used.             | `project.version`                                                             |
-| `groups`                | List of groups created with a new Unreleased section.                      | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]`          |
-| `header`                | `String` or `Provider` that returns current header value.                  | `provider { "[${version.get()}]" }`                                           |
-| `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string. | `null`, fallbacks to [`ChangelogPluginConstants#SEM_VER_REGEX`][semver-regex] |
-| `introduction`          | An optional portion of text that appears after the main header.            | `null`                                                                        |
-| `itemPrefix`            | Single item's prefix, allows to customise the bullet sign.                 | `"-"`                                                                         |
-| `keepUnreleasedSection` | Add Unreleased empty section after patching.                               | `true`                                                                        |
-| `patchEmpty`            | Patches changelog even if no release note is provided.                     | `true`                                                                        |
-| `path`                  | Path to the changelog file.                                                | `"${project.projectDir}/CHANGELOG.md"`                                        |
-| `unreleasedTerm`        | Unreleased section text.                                                   | `"[Unreleased]"`                                                              |
+| Property                | Description                                                                     | Default value                                                                 |
+|-------------------------|---------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| **`version`**           | Current version. By default, global project's version is used.                  | `project.version`                                                             |
+| `groups`                | List of groups created with a new Unreleased section.                           | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]`          |
+| `preHeader`             | `String` or `Provider` that returns content placed before the changelog header. | `null`                                                                        |
+| `header`                | `String` or `Provider` that returns current header value.                       | `provider { "[${version.get()}]" }`                                           |
+| `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string.      | `null`, fallbacks to [`ChangelogPluginConstants#SEM_VER_REGEX`][semver-regex] |
+| `introduction`          | An optional portion of text that appears after the main header.                 | `null`                                                                        |
+| `itemPrefix`            | Single item's prefix, allows to customise the bullet sign.                      | `"-"`                                                                         |
+| `keepUnreleasedSection` | Add Unreleased empty section after patching.                                    | `true`                                                                        |
+| `patchEmpty`            | Patches changelog even if no release note is provided.                          | `true`                                                                        |
+| `path`                  | Path to the changelog file.                                                     | `"${project.projectDir}/CHANGELOG.md"`                                        |
+| `unreleasedTerm`        | Unreleased section text.                                                        | `"[Unreleased]"`                                                              |
 
 > **Note**
 > 
@@ -397,10 +398,11 @@ The `Changelog` class is a wrapper for the `Changelog` file.
 It provides methods to read and write the changelog file.
 
 #### Properties
-| Name             | Type     | Description                                                                             |
-|------------------|----------|-----------------------------------------------------------------------------------------|
-| `header`         | `String` | Changelog header.                                                                       |
-| `introduction`   | `String` | Static leading text introduction placed after the header and before changelog sections. |
+| Name           | Type     | Description                                                                             |
+|----------------|----------|-----------------------------------------------------------------------------------------|
+| `preHeader`    | `String` | Section that appears before the actual changelog header.                                |
+| `header`       | `String` | Changelog header.                                                                       |
+| `introduction` | `String` | Static leading text introduction placed after the header and before changelog sections. |
 
 #### Methods
 | Name                   | Description                     | Returned type                 |

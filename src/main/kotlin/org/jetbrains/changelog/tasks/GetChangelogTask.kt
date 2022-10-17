@@ -51,19 +51,22 @@ abstract class GetChangelogTask : DefaultTask() {
         Changelog(
             inputFile.get().asFile,
             null,
+            null,
+            null,
             unreleasedTerm.get(),
             headerParserRegex.get(),
             itemPrefix.get(),
-        ).run {
+        ).let {
             val version = when (unreleased) {
                 true -> unreleasedTerm
                 false -> version
             }.get()
-            get(version).run {
-                withHeader(!noHeader)
-                withSummary(!noSummary)
-                toText()
-            }
+
+            it
+                .get(version)
+                .withHeader(!noHeader)
+                .withSummary(!noSummary)
+                .toText()
         }
     )
 }

@@ -16,6 +16,8 @@ class PatchChangelogTaskTest : BaseTest() {
     fun localSetUp() {
         changelog =
             """
+            <!-- Foo bar -->
+            
             # Changelog
             My project changelog.
             
@@ -44,10 +46,12 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertEquals(
             """
+            ## [1.0.0]
             Fancy release.
             
             ### Added
             - foo
+            
             """.trimIndent(),
             extension.get(version).toText()
         )
@@ -67,8 +71,9 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Fixed
             
             ### Security
+            
             """.trimIndent(),
-            extension.getUnreleased().withHeader(true).toText()
+            extension.getUnreleased().toText()
         )
     }
 
@@ -80,7 +85,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 id 'org.jetbrains.changelog'
             }
             changelog {
-                version = "1.0.0"
+                version = "$version"
                 keepUnreleasedSection = false
             }
             """
@@ -90,10 +95,12 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertEquals(
             """
+            ## [$version]
             Fancy release.
             
             ### Added
             - foo
+            
             """.trimIndent(),
             extension.get(version).toText()
         )
@@ -111,7 +118,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 id 'org.jetbrains.changelog'
             }
             changelog {
-                version = "1.0.0"
+                version = "$version"
                 header = provider { "Foo ${'$'}{version.get()} bar" }
             }
             """
@@ -140,11 +147,13 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertEquals(
             """
+            <!-- Foo bar -->
+            
             # Changelog
-
             Foo bar
             
             ## [Unreleased]
+            
             ### Added
             
             ### Changed
@@ -246,18 +255,19 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [Unreleased]
 
             ### Added
-            
+
             ### Changed
-            
+
             ### Deprecated
-            
+
             ### Removed
-            
+
             ### Fixed
-            
+
             ### Security
+            
             """.trimIndent(),
-            extension.getUnreleased().withHeader(true).toText()
+            extension.getUnreleased().toText()
         )
     }
 
@@ -294,8 +304,9 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ### Removed
             - bar
+            
             """.trimIndent(),
-            extension.get(version).withHeader(true).toText()
+            extension.get(version).toText()
         )
     }
 
@@ -322,8 +333,9 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Aaaa
 
             ### Bbb
+            
             """.trimIndent(),
-            extension.getUnreleased().withHeader(true).toText()
+            extension.getUnreleased().toText()
         )
     }
 
@@ -346,8 +358,9 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [Unreleased]
+            
             """.trimIndent(),
-            extension.getUnreleased().withHeader(true).toText()
+            extension.getUnreleased().toText()
         )
     }
 
@@ -420,6 +433,7 @@ class PatchChangelogTaskTest : BaseTest() {
             - Bar
             
             ## [0.1.0]
+            
             ### Added
             - Buz
             """
@@ -429,7 +443,10 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertEquals(
             """
+            ## [1.0.0]
+
             - asd
+
             """.trimIndent(),
             extension.get("1.0.0").toText()
         )
