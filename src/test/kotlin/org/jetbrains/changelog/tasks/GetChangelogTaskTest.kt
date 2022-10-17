@@ -13,7 +13,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
-        changelog =
+        changelog = //language=markdown
             """
             # Changelog
             ## [Unreleased]
@@ -26,9 +26,9 @@ class GetChangelogTaskTest : BaseTest() {
             
             ### Added
             - foo
-            """
+            """.trimIndent()
 
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -36,7 +36,7 @@ class GetChangelogTaskTest : BaseTest() {
             changelog {
                 version = "1.0.0"
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
     }
@@ -45,6 +45,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns change notes for the version specified with extension`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
+        //language=markdown
         assertEquals(
             """
             ## [1.0.0]
@@ -61,6 +62,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns the Unreleased change notes`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--unreleased")
 
+        //language=markdown
         assertEquals(
             """
             ## [Unreleased]
@@ -76,6 +78,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns change notes without header for the version specified with extension`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--no-header")
 
+        //language=markdown
         assertEquals(
             """
             ## [1.0.0]
@@ -92,6 +95,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns change notes without summary for the version specified with extension`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--no-summary")
 
+        //language=markdown
         assertEquals(
             """
             ## [1.0.0]
@@ -107,6 +111,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns change notes with summary for the version specified with extension`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
+        //language=markdown
         assertEquals(
             """
             ## [1.0.0]
@@ -121,7 +126,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `returns change notes with Pattern set to headerParserRegex`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -130,7 +135,7 @@ class GetChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 headerParserRegex = ~/\d\.\d\.\d/
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
 
@@ -139,7 +144,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `returns change notes with String set to headerParserRegex`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -148,7 +153,7 @@ class GetChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 headerParserRegex = "\\d\\.\\d\\.\\d"
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
 
@@ -157,7 +162,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `fails with Integer set to headerParserRegex`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -166,7 +171,7 @@ class GetChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 headerParserRegex = 123
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
 
@@ -175,14 +180,14 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `throws VersionNotSpecifiedException when changelog extension has no version provided`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
             }
             changelog {
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
 
@@ -191,7 +196,7 @@ class GetChangelogTaskTest : BaseTest() {
         assertTrue(
             result.output.contains(
                 "org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Version is missing. " +
-                    "Please provide the project version to the `project` or `changelog.version` property explicitly."
+                        "Please provide the project version to the `project` or `changelog.version` property explicitly."
             )
         )
     }

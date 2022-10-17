@@ -45,7 +45,7 @@ open class BaseTest {
             field = value
             File("${project.projectDir}/build.gradle").run {
                 createNewFile()
-                writeText(value.trimIndent())
+                writeText(value)
             }
         }
 

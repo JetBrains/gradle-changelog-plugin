@@ -19,7 +19,7 @@ class ExtensionsTest {
 
     @Test
     fun markdownToHTMLTest() {
-        val content =
+        val content = //language=markdown
             """
             # Foo
             ## Bar
@@ -27,6 +27,7 @@ class ExtensionsTest {
             - [biz](https://jetbrains.com)
             """.trimIndent()
 
+        //language=html
         assertEquals(
             """
             <h1>Foo</h1>
@@ -39,7 +40,7 @@ class ExtensionsTest {
 
     @Test
     fun markdownToPlainTextTest() {
-        val content =
+        val content = //language=markdown
             """
             # Foo
             ## Bar
@@ -47,6 +48,7 @@ class ExtensionsTest {
             - [biz](https://jetbrains.com)
             """.trimIndent()
 
+        //language=markdown
         assertEquals(
             """
             Foo

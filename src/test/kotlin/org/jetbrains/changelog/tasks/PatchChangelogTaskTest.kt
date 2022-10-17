@@ -14,7 +14,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
-        changelog =
+        changelog = //language=markdown
             """
             <!-- Foo bar -->
             
@@ -26,9 +26,9 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ### Added
             - foo
-            """
+            """.trimIndent()
 
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -36,7 +36,7 @@ class PatchChangelogTaskTest : BaseTest() {
             changelog {
                 version = "1.0.0"
             }
-            """
+            """.trimIndent()
     }
 
     @Test
@@ -44,6 +44,7 @@ class PatchChangelogTaskTest : BaseTest() {
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
+        //language=markdown
         assertEquals(
             """
             ## [1.0.0]
@@ -56,6 +57,7 @@ class PatchChangelogTaskTest : BaseTest() {
             extension.get(version).toText()
         )
 
+        //language=markdown
         assertEquals(
             """
             ## [Unreleased]
@@ -79,7 +81,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `patches Unreleased version to the current one`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -88,11 +90,12 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "$version"
                 keepUnreleasedSection = false
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
+        //language=markdown
         assertEquals(
             """
             ## [$version]
@@ -112,7 +115,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `applies custom header patcher`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -121,7 +124,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "$version"
                 header = provider { "Foo ${'$'}{version.get()} bar" }
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
@@ -131,7 +134,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `applies custom introduction`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -140,11 +143,12 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 introduction = "Foo bar"
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
+        //language=markdown
         assertEquals(
             """
             <!-- Foo bar -->
@@ -179,7 +183,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `applies custom header with date`() {
-        changelog =
+        changelog = //language=markdown
             """
             # Changelog
             All notable changes to this project will be documented in this file.
@@ -192,8 +196,9 @@ class PatchChangelogTaskTest : BaseTest() {
 
             ### Added
             - Something added.
-            """
-        buildFile =
+            """.trimIndent()
+
+        buildFile = //language=Groovy
             """
             import java.text.SimpleDateFormat
             import java.util.Date
@@ -207,7 +212,7 @@ class PatchChangelogTaskTest : BaseTest() {
                     "[${'$'}{version.get()}] - ${'$'}{new SimpleDateFormat("yyyy-MM-dd").format(new Date())}"
                 }
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
@@ -218,12 +223,13 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `doesn't patch changelog if no change notes provided in Unreleased section`() {
-        changelog =
+        changelog = //language=markdown
             """
             # Changelog
             ## [Unreleased]
-            """
-        buildFile =
+            """.trimIndent()
+
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -232,7 +238,7 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 patchEmpty = false
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
 
@@ -250,6 +256,7 @@ class PatchChangelogTaskTest : BaseTest() {
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
+        //language=markdown
         assertEquals(
             """
             ## [Unreleased]
@@ -273,7 +280,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `remove empty groups for the new released section`() {
-        changelog =
+        changelog = //language=markdown
             """
             # Changelog
             ## [Unreleased]
@@ -290,11 +297,12 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Fixed
             
             ### Security
-            """
+            """.trimIndent()
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
+        //language=markdown
         assertEquals(
             """
             ## [1.0.0]
@@ -312,7 +320,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `create empty custom groups for the new Unreleased section`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -321,11 +329,12 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 groups = ["Aaaa", "Bbb"]
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
+        //language=markdown
         assertEquals(
             """
             ## [Unreleased]
@@ -341,7 +350,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `don't create groups for the new Unreleased section if empty array is provided`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -350,11 +359,12 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 groups = []
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
+        //language=markdown
         assertEquals(
             """
             ## [Unreleased]
@@ -367,7 +377,7 @@ class PatchChangelogTaskTest : BaseTest() {
     @Test
     fun `throws MissingReleaseNoteException when Unreleased section is not present`() {
         val unreleasedTerm = "Not released"
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -376,11 +386,12 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 unreleasedTerm = "$unreleasedTerm"
             }
-            """
-        changelog =
+            """.trimIndent()
+
+        changelog = //language=markdown
             """
             ## [1.0.0]
-            """
+            """.trimIndent()
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME, "--warn")
@@ -392,12 +403,12 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `throws VersionNotSpecifiedException when changelog extension has no version provided`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
 
@@ -413,7 +424,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `patch changelog with a custom release note`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -422,8 +433,9 @@ class PatchChangelogTaskTest : BaseTest() {
                 version = "1.0.0"
                 groups = []
             }
-            """
-        changelog =
+            """.trimIndent()
+
+        changelog = //language=markdown
             """
             # My Changelog
             Foo bar buz.
@@ -436,11 +448,13 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ### Added
             - Buz
-            """
+            """.trimIndent()
+
         project.evaluate()
 
         runTask(PATCH_CHANGELOG_TASK_NAME, "--release-note=- asd")
 
+        //language=markdown
         assertEquals(
             """
             ## [1.0.0]
@@ -450,6 +464,8 @@ class PatchChangelogTaskTest : BaseTest() {
             """.trimIndent(),
             extension.get("1.0.0").toText()
         )
+
+        //language=markdown
         assertEquals(
             """
             # My Changelog

@@ -31,6 +31,7 @@ class InitializeChangelogTaskTest : BaseTest() {
         extension.getAll().apply {
             assertEquals(1, keys.size)
             assertEquals("[Unreleased]", keys.first())
+            //language=markdown
             assertEquals(
                 """
                 ## [Unreleased]
@@ -58,14 +59,15 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @Test
     fun `overrides existing changelog file`() {
-        changelog =
+        changelog = //language=markdown
             """
             # Changelog
-            """
+            """.trimIndent()
         project.evaluate()
 
         runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
+        //language=markdown
         assertEquals(
             """
             ## [Unreleased]
@@ -90,7 +92,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @Test
     fun `creates customized changelog file`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -102,7 +104,7 @@ class InitializeChangelogTaskTest : BaseTest() {
                 unreleasedTerm = "Upcoming version"
                 groups = ["Added", "Removed"]
             }
-            """
+            """.trimIndent()
         extension.apply {
             path.set(File("${project.projectDir}/CHANGES.md").path)
             unreleasedTerm.set("Upcoming version")
@@ -112,6 +114,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
         runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
+        //language=markdown
         assertEquals(
             """
             ## Upcoming version
@@ -128,7 +131,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @Test
     fun `doesn't throw VersionNotSpecifiedException when changelog extension has no version provided`() {
-        buildFile =
+        buildFile = //language=Groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -136,7 +139,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             changelog {
                 version = "1.0.0"
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
 
