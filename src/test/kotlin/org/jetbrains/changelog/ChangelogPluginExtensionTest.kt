@@ -561,4 +561,26 @@ class ChangelogPluginExtensionTest : BaseTest() {
             )
         }
     }
+
+    @Test
+    fun `returns changelog description`() {
+        assertEquals(
+            """
+            Project description.
+            Multiline description:
+            
+            - item 1
+            - item 2
+            """.trimIndent(),
+            extension.changelog.introduction
+        )
+    }
+
+    @Test
+    fun `applies new changelog introduction`() {
+        extension.introduction.set("New introduction")
+
+        assertEquals("New introduction", extension.changelog.introduction)
+    }
+
 }

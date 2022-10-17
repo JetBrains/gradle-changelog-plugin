@@ -43,6 +43,10 @@ abstract class PatchChangelogTask : DefaultTask() {
 
     @get:Input
     @get:Optional
+    abstract val introduction: Property<String>
+
+    @get:Input
+    @get:Optional
     abstract val itemPrefix: Property<String>
 
     @get:Input
@@ -63,6 +67,7 @@ abstract class PatchChangelogTask : DefaultTask() {
         val headerValue = header.get()
         val changelog = Changelog(
             inputFile.get().asFile,
+            introduction.orNull,
             unreleasedTerm.get(),
             headerParserRegex.get(),
             itemPrefix.get(),
@@ -90,7 +95,7 @@ abstract class PatchChangelogTask : DefaultTask() {
         outputFile.get().asFile.writeText(listOfNotNull(
             changelog.header + NEW_LINE,
 
-            changelog.description + NEW_LINE,
+            changelog.introduction + NEW_LINE,
 
             item?.header.takeIf {
                 keepUnreleasedSection.get()

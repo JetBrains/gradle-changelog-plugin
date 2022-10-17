@@ -64,6 +64,7 @@ class ChangelogPlugin : Plugin<Project> {
 
             groups.set(extension.groups)
             header.set(extension.header)
+            introduction.set(extension.introduction)
             headerParserRegex.convention(extension.getHeaderParserRegex)
             inputFile.convention(pathProvider)
             itemPrefix.convention(extension.itemPrefix)

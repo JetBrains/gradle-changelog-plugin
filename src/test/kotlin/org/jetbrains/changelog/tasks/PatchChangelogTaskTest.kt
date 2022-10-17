@@ -123,6 +123,52 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
+    fun `applies custom introduction`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                introduction = "Foo bar"
+            }
+            """
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertEquals(
+            """
+            # Changelog
+
+            Foo bar
+            
+            ## [Unreleased]
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            ## [1.0.0]
+            Fancy release.
+            
+            ### Added
+            - foo
+
+            """.trimIndent(),
+            changelog,
+        )
+    }
+
+    @Test
     fun `applies custom header with date`() {
         changelog =
             """

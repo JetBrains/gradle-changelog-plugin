@@ -20,6 +20,9 @@ abstract class ChangelogPluginExtension {
     @get:Optional
     abstract val headerParserRegex: Property<Any>
 
+    @get:Optional
+    abstract val introduction: Property<String>
+
     @get:Internal
     @Suppress("LeakingThis")
     val getHeaderParserRegex = headerParserRegex.map {
@@ -61,9 +64,10 @@ abstract class ChangelogPluginExtension {
 
     fun has(version: String) = changelog.has(version)
 
-    private val changelog
+    val changelog
         get() = Changelog(
             File(path.get()),
+            introduction.orNull,
             unreleasedTerm.get(),
             getHeaderParserRegex.get(),
             itemPrefix.get(),

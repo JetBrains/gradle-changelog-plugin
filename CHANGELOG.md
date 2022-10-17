@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 ### Added
+- Allow for customizing the changelog introduction
 - Introduce changelog description and changelog section summary [#127](../../issues/127)
 - Ensure patched changelog ends with a newline [#126](../../issues/126)
 

@@ -18,6 +18,7 @@ import java.io.File
 
 class Changelog(
     file: File,
+    introduction: String?,
     unreleasedTerm: String,
     headerParserRegex: Regex,
     itemPrefix: String,
@@ -40,15 +41,16 @@ class Changelog(
         .joinToString(NEW_LINE) { it.text() }
         .trim()
 
-    private val descriptionNodes = tree.children
+    private val introductionNodes = tree.children
         .dropWhile { it.type == MarkdownElementTypes.ATX_1 }
         .takeWhile { it.type != MarkdownElementTypes.ATX_2 }
-    val description = descriptionNodes
+    val introduction = introduction ?: introductionNodes
         .joinToString(NEW_LINE) { it.text() }
+        .replace("""$NEW_LINE{3,}""".toRegex(), NEW_LINE + NEW_LINE)
         .trim()
 
     private val itemsNodes = tree.children
-        .drop(headerNodes.size + descriptionNodes.size)
+        .drop(headerNodes.size + introductionNodes.size)
     private val items = itemsNodes
         .groupByType(MarkdownElementTypes.ATX_2) {
             it.children.last().text().trim().run {

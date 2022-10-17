@@ -50,6 +50,7 @@ abstract class GetChangelogTask : DefaultTask() {
     fun run() = logger.quiet(
         Changelog(
             inputFile.get().asFile,
+            null,
             unreleasedTerm.get(),
             headerParserRegex.get(),
             itemPrefix.get(),
