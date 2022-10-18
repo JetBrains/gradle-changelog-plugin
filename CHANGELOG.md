@@ -4,7 +4,7 @@
 ### Added
 - Allow for customizing the changelog introduction.
 - Make `changelog.instance` property public.
-- Introduce changelog `description` and changelog section summary [#127](../../issues/127)
+- Introduce changelog `summary` and changelog property [#127](../../issues/127)
 - Introduce changelog `preTitle` and `title` changelog properties
 - Ensure patched changelog ends with a newline [#126](../../issues/126)
 - Added the `--version=...` CLI parameter for the `getChangelog` task [#83](../../issues/83)
