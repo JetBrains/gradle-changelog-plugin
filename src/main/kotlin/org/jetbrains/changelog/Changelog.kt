@@ -29,7 +29,7 @@ data class Changelog(
     private val flavour = ChangelogFlavourDescriptor()
     private val parser = MarkdownParser(flavour)
 
-    private val content
+    val content
         get() = file.run {
             if (!exists()) {
                 throw MissingFileException(canonicalPath)

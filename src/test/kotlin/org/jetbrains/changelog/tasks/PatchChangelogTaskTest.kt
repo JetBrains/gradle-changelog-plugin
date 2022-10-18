@@ -468,7 +468,7 @@ class PatchChangelogTaskTest : BaseTest() {
         //language=markdown
         assertEquals(
             """
-            # My Changelog
+            # Changelog
             
             Foo bar buz.
             

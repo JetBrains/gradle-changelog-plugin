@@ -43,6 +43,7 @@ class ChangelogPlugin : Plugin<Project> {
                         ?: throw VersionNotSpecifiedException()
                 }
             )
+            title.convention(ChangelogPluginConstants.DEFAULT_TITLE)
         }
 
         val pathProvider = project.layout.file(extension.path.map { File(it) })
@@ -79,6 +80,10 @@ class ChangelogPlugin : Plugin<Project> {
 
         project.tasks.register<InitializeChangelogTask>(INITIALIZE_CHANGELOG_TASK_NAME) {
             group = GROUP_NAME
+
+            preTitle.convention(extension.preTitle)
+            title.convention(extension.title)
+            introduction.convention(extension.introduction)
 
             groups.set(extension.groups)
             outputFile.convention(pathProvider)

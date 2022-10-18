@@ -9,6 +9,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
 import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
@@ -89,7 +90,7 @@ abstract class PatchChangelogTask : DefaultTask() {
         )
 
         val preTitleValue = preTitle.orNull ?: changelog.preTitleValue
-        val titleValue = title.orNull ?: changelog.titleValue
+        val titleValue = title.orNull?.let { "$ATX_1 $it" } ?: changelog.titleValue
         val introductionValue = introduction.orNull ?: changelog.introductionValue
         val headerValue = header.get()
 

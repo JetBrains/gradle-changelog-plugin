@@ -10,17 +10,29 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import org.jetbrains.changelog.ChangelogPluginConstants
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
 import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
+import org.jetbrains.changelog.reformat
 
 abstract class InitializeChangelogTask : DefaultTask() {
 
     @get:OutputFile
     @get:Optional
     abstract val outputFile: RegularFileProperty
+
+    @get:Input
+    @get:Optional
+    abstract val preTitle: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val title: Property<String>
+
+    @get:Input
+    @get:Optional
+    abstract val introduction: Property<String>
 
     @get:Input
     @get:Optional
@@ -36,21 +48,36 @@ abstract class InitializeChangelogTask : DefaultTask() {
 
     @TaskAction
     fun run() {
-        val groups = groups.get()
-        outputFile.get().asFile.apply {
-            if (!exists()) {
-                createNewFile()
+        sequence {
+            if (preTitle.isPresent) {
+                yield(preTitle.get())
+                yield(NEW_LINE)
             }
-        }.writeText(
-            """
-                $ATX_1 ${ChangelogPluginConstants.INITIALIZE_HEADER}
-                
-                $ATX_2 ${unreleasedTerm.get()}
-                ${groups.firstOrNull()?.let { "$ATX_3 $it" } ?: ""}
-                ${itemPrefix.get()} ${ChangelogPluginConstants.INITIALIZE_EXAMPLE_ITEM}
-                
-                
-            """.trimIndent() + groups.drop(1).joinToString(NEW_LINE) { "$ATX_3 $it$NEW_LINE" }
-        )
+            if (title.isPresent) {
+                yield("$ATX_1 ${title.get()}")
+                yield(NEW_LINE)
+            }
+            if (introduction.isPresent) {
+                yield(introduction.get())
+                yield(NEW_LINE)
+            }
+
+            yield("$ATX_2 ${unreleasedTerm.get()}")
+
+            groups.get()
+                .map { "$ATX_3 $it" }
+                .let { yieldAll(it) }
+        }
+            .joinToString(NEW_LINE)
+            .reformat()
+            .let {
+                outputFile.get()
+                    .asFile
+                    .apply {
+                        if (!exists()) {
+                            createNewFile()
+                        }
+                    }.writeText(it)
+            }
     }
 }

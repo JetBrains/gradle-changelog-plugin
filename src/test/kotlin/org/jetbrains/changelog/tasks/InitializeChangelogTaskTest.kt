@@ -11,7 +11,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
-        buildFile =
+        buildFile = //language=groovy
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -37,7 +37,6 @@ class InitializeChangelogTaskTest : BaseTest() {
                 ## [Unreleased]
                 
                 ### Added
-                - Example item
 
                 ### Changed
 
@@ -73,7 +72,6 @@ class InitializeChangelogTaskTest : BaseTest() {
             ## [Unreleased]
 
             ### Added
-            - Example item
 
             ### Changed
 
@@ -103,6 +101,9 @@ class InitializeChangelogTaskTest : BaseTest() {
                 itemPrefix = "*"
                 unreleasedTerm = "Upcoming version"
                 groups = ["Added", "Removed"]
+                title = "My Title"
+                preTitle = "Foo"
+                introduction = "Introduction"
             }
             """.trimIndent()
         extension.apply {
@@ -117,15 +118,19 @@ class InitializeChangelogTaskTest : BaseTest() {
         //language=markdown
         assertEquals(
             """
-            ## Upcoming version
+            Foo
 
+            # My Title
+            Introduction
+            
+            ## Upcoming version
+            
             ### Added
-            * Example item
             
             ### Removed
             
             """.trimIndent(),
-            extension.getUnreleased().toText()
+            extension.instance.content
         )
     }
 
