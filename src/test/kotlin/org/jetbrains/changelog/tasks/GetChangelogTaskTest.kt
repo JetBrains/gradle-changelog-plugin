@@ -21,6 +21,12 @@ class GetChangelogTaskTest : BaseTest() {
 
             - bar
 
+            ## [1.0.1]
+            Release with bugfix.
+            
+            ### Fixed
+            - bar
+            
             ## [1.0.0]
             That was a great release.
             
@@ -68,6 +74,23 @@ class GetChangelogTaskTest : BaseTest() {
             ## [Unreleased]
             Some unreleased changes.
 
+            - bar
+            """.trimIndent(),
+            result.output.trim()
+        )
+    }
+
+    @Test
+    fun `returns change notes for the version specified with CLI`() {
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--version=1.0.1")
+
+        //language=markdown
+        assertEquals(
+            """
+            ## [1.0.1]
+            Release with bugfix.
+            
+            ### Fixed
             - bar
             """.trimIndent(),
             result.output.trim()

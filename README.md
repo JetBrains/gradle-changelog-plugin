@@ -165,12 +165,15 @@ The plugin introduces the following tasks:
 
 ### `getChangelog`
 Retrieves changelog for the specified version.
+
 #### Options
-| Option         | Description                                        |
-|----------------|----------------------------------------------------|
-| `--no-header`  | Skips the first version header line in the output. |
-| `--no-summary` | Skips the summary section in the output.           |
-| `--unreleased` | Returns Unreleased change notes.                   |
+| Option         | Type      | Description                                        |
+|----------------|-----------|----------------------------------------------------|
+| `--no-header`  | `Boolean` | Skips the first version header line in the output. |
+| `--no-summary` | `Boolean` | Skips the summary section in the output.           |
+| `--unreleased` | `Boolean` | Returns Unreleased change notes.                   |
+| `--version`    | `String`  | Returns change notes for the specified version.    |
+
 #### Examples
 ```shell
 $ ./gradlew getChangelog --console=plain -q --no-header --no-summary
@@ -184,6 +187,7 @@ $ ./gradlew getChangelog --console=plain -q --no-header --no-summary
 
 ### `initializeChangelog`
 Creates new changelog file with Unreleased section and empty groups.
+
 #### Examples
 ```shell
 $ ./gradlew initializeChangelog

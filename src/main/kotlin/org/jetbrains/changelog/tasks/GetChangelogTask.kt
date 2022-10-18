@@ -23,6 +23,11 @@ abstract class GetChangelogTask : DefaultTask() {
     var noSummary = false
 
     @get:Input
+    @get:Optional
+    @Option(option = "version", description = "Returns change notes for the specified version")
+    var cliVersion = null as String?
+
+    @get:Input
     @Option(option = "unreleased", description = "Returns Unreleased change notes")
     var unreleased = false
 
@@ -57,7 +62,7 @@ abstract class GetChangelogTask : DefaultTask() {
             headerParserRegex.get(),
             itemPrefix.get(),
         ).let {
-            val version = when (unreleased) {
+            val version = cliVersion ?: when (unreleased) {
                 true -> unreleasedTerm
                 false -> version
             }.get()
