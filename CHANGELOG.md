@@ -13,6 +13,7 @@
 ### Changed
 - Upgrade minimal required Gradle version to `6.8`
 - Make `withHeader` property of the `Changelog.Item` object `true` by default
+- Updated the `HeaderParseException` message [#84](../../issues/84)
 
 ## [1.3.1]
 ### Changed
