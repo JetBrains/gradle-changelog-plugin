@@ -3,6 +3,7 @@
 package org.jetbrains.changelog.tasks
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -48,6 +49,18 @@ abstract class InitializeChangelogTask : DefaultTask() {
 
     @TaskAction
     fun run() {
+        val file = outputFile.get()
+            .asFile
+            .apply {
+                if (!exists()) {
+                    createNewFile()
+                }
+            }
+
+        if (file.readText().isNotEmpty()) {
+            throw GradleException("Changelog file is not empty: ${file.absolutePath}")
+        }
+
         sequence {
             if (preTitle.isPresent) {
                 yield(preTitle.get())
@@ -71,13 +84,7 @@ abstract class InitializeChangelogTask : DefaultTask() {
             .joinToString(NEW_LINE)
             .reformat()
             .let {
-                outputFile.get()
-                    .asFile
-                    .apply {
-                        if (!exists()) {
-                            createNewFile()
-                        }
-                    }.writeText(it)
+                file.writeText(it)
             }
     }
 }

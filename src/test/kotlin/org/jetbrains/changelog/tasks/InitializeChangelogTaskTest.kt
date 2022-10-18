@@ -64,28 +64,9 @@ class InitializeChangelogTaskTest : BaseTest() {
             """.trimIndent()
         project.evaluate()
 
-        runTask(INITIALIZE_CHANGELOG_TASK_NAME)
+        val result = runFailingTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
-        //language=markdown
-        assertEquals(
-            """
-            ## [Unreleased]
-
-            ### Added
-
-            ### Changed
-
-            ### Deprecated
-
-            ### Removed
-
-            ### Fixed
-
-            ### Security
-            
-            """.trimIndent(),
-            extension.getUnreleased().toText()
-        )
+        assertTrue(result.output.contains("org.gradle.api.GradleException: Changelog file is not empty: ${changelogFile.absolutePath}"))
     }
 
     @Test

@@ -8,6 +8,7 @@
 - Introduce changelog `preTitle` and `title` changelog properties
 - Ensure patched changelog ends with a newline [#126](../../issues/126)
 - Added the `--version=...` CLI parameter for the `getChangelog` task [#83](../../issues/83)
+- Throw an exception when `initializeChangelog` task works on non-empty file [#82](../../issues/82)
 
 ### Changed
 - Upgrade minimal required Gradle version to `6.8`
