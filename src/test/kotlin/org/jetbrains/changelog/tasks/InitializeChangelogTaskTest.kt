@@ -11,7 +11,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
-        buildFile = //language=groovy
+        buildFile =
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -31,8 +31,7 @@ class InitializeChangelogTaskTest : BaseTest() {
         extension.getAll().apply {
             assertEquals(1, keys.size)
             assertEquals("[Unreleased]", keys.first())
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 ## [Unreleased]
                 
@@ -58,7 +57,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @Test
     fun `overrides existing changelog file`() {
-        changelog = //language=markdown
+        changelog =
             """
             # Changelog
             """.trimIndent()
@@ -71,7 +70,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @Test
     fun `creates customized changelog file`() {
-        buildFile = //language=Groovy
+        buildFile =
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -96,8 +95,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
         runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
-        //language=markdown
-        assertEquals(
+        assertMarkdown(
             """
             Foo
             
@@ -117,7 +115,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @Test
     fun `doesn't throw VersionNotSpecifiedException when changelog extension has no version provided`() {
-        buildFile = //language=Groovy
+        buildFile =
             """
             plugins {
                 id 'org.jetbrains.changelog'

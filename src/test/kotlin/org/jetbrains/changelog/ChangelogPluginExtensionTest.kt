@@ -10,7 +10,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
-        changelog = //language=markdown
+        changelog =
             """
             # Changelog
             Project description.
@@ -52,8 +52,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         extension.get(version).apply {
             assertEquals(project.version, version)
 
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 ## [1.0.0]
                 First release.
@@ -65,8 +64,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 toText()
             )
 
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 ## [1.0.0]
                 First release.
@@ -78,8 +76,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 toString()
             )
 
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 <h2>[1.0.0]</h2>
                 <p>First release.</p>
@@ -106,8 +103,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     fun `getUnreleased() returns Unreleased section`() {
         extension.getUnreleased().apply {
             assertEquals("[Unreleased]", version)
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 ## [Unreleased]
                 Not yet released version.
@@ -127,8 +123,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         extension.unreleasedTerm.set("[Upcoming]")
         extension.getUnreleased().withSummary(true).apply {
             assertEquals("[Upcoming]", version)
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 ## [Upcoming]
                 Not yet released version.
@@ -145,7 +140,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     @Suppress("LongMethod", "MaxLineLength")
     fun `parses changelog into structured sections`() {
-        changelog = //language=markdown
+        changelog =
             """
             # Changelog
             My project description.
@@ -174,8 +169,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         extension.get(version).apply {
             assertEquals(this@ChangelogPluginExtensionTest.version, version)
             assertEquals("## [1.0.0]", header)
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 First release.
                 
@@ -193,8 +187,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 assertTrue(containsKey("Removed"))
                 assertEquals(1, get("Removed")?.size)
             }
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 ## [1.0.0]
                 First release.
@@ -219,7 +212,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 toText()
             )
-            //language=html
             assertEquals(
                 """
                 <h2>[1.0.0]</h2>
@@ -239,8 +231,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 toHTML()
             )
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 [1.0.0]
                 First release.
@@ -270,7 +261,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `filters out entries from the change notes for the given version`() {
-        changelog = //language=markdown
+        changelog =
             """
             # Changelog
             
@@ -306,8 +297,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                     assertFalse(containsKey("Removed"))
                 }
 
-                //language=markdown
-                assertEquals(
+                assertMarkdown(
                     """
                     ## [1.0.0]
                     
@@ -323,7 +313,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
                     toText()
                 )
 
-                //language=html
                 assertEquals(
                     """
                     <h2>[1.0.0]</h2>
@@ -346,8 +335,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         extension.getLatest().apply {
             assertEquals("[Unreleased]", version)
             assertEquals("## [Unreleased]", header)
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 Not yet released version.
                 
@@ -366,7 +354,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `parses header with custom format containing version and date`() {
-        changelog = //language=markdown
+        changelog =
             """
             # Changelog
             ## NEW VERSION
@@ -384,7 +372,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `returns change notes without group sections if not present`() {
-        changelog = //language=markdown
+        changelog =
             """
             # Changelog
             ## [1.0.0]
@@ -399,8 +387,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 assertTrue(containsKey(""))
                 assertEquals(1, get("")?.size)
             }
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 ## [1.0.0]
                 - Foo
@@ -408,7 +395,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 toText()
             )
-            //language=html
             assertEquals(
                 """
                 <h2>[1.0.0]</h2>
@@ -422,7 +408,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `splits change notes into a list by the given itemPrefix`() {
-        changelog = //language=markdown
+        changelog =
             """
             # Changelog
             ## [1.0.0]
@@ -436,8 +422,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertEquals(1, getSections().keys.size)
             getSections().values.first().apply {
                 assertEquals(2, size)
-                //language=markdown
-                assertEquals(
+                assertMarkdown(
                     """
                     - Foo - bar
                     * Foo2
@@ -458,8 +443,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertEquals("1.0.0", keys.last())
             assertEquals("## [Unreleased]", values.first().header)
             assertEquals("## [1.0.0]", values.last().header)
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 ## [Unreleased]
                 Not yet released version.
@@ -470,8 +454,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 values.first().toText()
             )
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 ## [Unreleased]
                 Not yet released version.
@@ -482,8 +465,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 values.first().toText()
             )
-             //language=markdown
-            assertEquals(
+             assertMarkdown(
                 """
                 ## [1.0.0]
                 First release.
@@ -494,8 +476,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 values.last().toText()
             )
-             //language=markdown
-            assertEquals(
+             assertMarkdown(
                 """
                 ## [1.0.0]
                 First release.
@@ -513,7 +494,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     fun `returns Changelog items for change note without category`() {
         extension.itemPrefix.set("*")
         extension.unreleasedTerm.set("Unreleased")
-        changelog = //language=markdown
+        changelog =
             """
             # My Changelog
             
@@ -524,7 +505,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
             """.trimIndent()
 
         assertNotNull(extension.getLatest())
-        //language=html
         assertEquals(
             """
             <h2>Unreleased</h2>
@@ -537,7 +517,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `allows to customize the header parser regex to match version in different format than semver`() {
-        changelog = //language=markdown
+        changelog =
             """
             # My Changelog
             
@@ -563,7 +543,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `return null for non-existent version`() {
-        changelog = //language=markdown
+        changelog =
             """
             # My Changelog
             
@@ -577,7 +557,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `return change notes for version with custom headerParserRegex`() {
-        changelog = //language=markdown
+        changelog =
             """
             # My Changelog
             
@@ -594,7 +574,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `return change notes without summary`() {
-        changelog = //language=markdown
+        changelog =
             """
             # My Changelog
             
@@ -607,8 +587,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
         extension.get("1.0.0").apply {
             assertEquals("1.0.0", version)
-            //language=markdown
-            assertEquals(
+            assertMarkdown(
                 """
                 ## [1.0.0]
                 First release.
@@ -623,8 +602,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `returns changelog description`() {
-        //language=markdown
-        assertEquals(
+        assertMarkdown(
             """
             Project description.
             Multiline description:

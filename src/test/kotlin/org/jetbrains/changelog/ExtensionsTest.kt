@@ -2,6 +2,7 @@
 
 package org.jetbrains.changelog
 
+import org.intellij.lang.annotations.Language
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.test.Test
@@ -21,7 +22,8 @@ class ExtensionsTest {
 
     @Test
     fun markdownToHTMLTest() {
-        val content = //language=markdown
+        @Language("Markdown")
+        val content =
             """
             # Foo
             ## Bar
@@ -29,20 +31,21 @@ class ExtensionsTest {
             - [biz](https://jetbrains.com)
             """.trimIndent()
 
-        //language=html
-        assertEquals(
+        @Language("HTML")
+        val html =
             """
             <h1>Foo</h1>
             <h2>Bar</h2>
             <ul><li>buz</li><li><a href="https://jetbrains.com">biz</a></li></ul>
-            """.trimIndent(),
-            markdownToHTML(content)
-        )
+            """.trimIndent()
+
+        assertEquals(html, markdownToHTML(content))
     }
 
     @Test
     fun markdownToPlainTextTest() {
-        val content = //language=markdown
+        @Language("Markdown")
+        val content =
             """
             # Foo
             ## Bar
@@ -50,7 +53,6 @@ class ExtensionsTest {
             - [biz](https://jetbrains.com)
             """.trimIndent()
 
-        //language=markdown
         assertEquals(
             """
             Foo
@@ -64,7 +66,6 @@ class ExtensionsTest {
 
     @Test
     fun `reformat changelog`() {
-        //language=markdown
         assertEquals(
             """
             Pre title content.
@@ -96,7 +97,6 @@ class ExtensionsTest {
             """.trimIndent().reformat(lineSeparator)
         )
 
-        //language=markdown
         assertEquals(
             """
             Foo

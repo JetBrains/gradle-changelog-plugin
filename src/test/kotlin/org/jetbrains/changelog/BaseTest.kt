@@ -7,9 +7,11 @@ import org.gradle.kotlin.dsl.getByType
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
+import org.intellij.lang.annotations.Language
 import java.io.File
 import java.nio.file.Files.createTempDirectory
 import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
 
 open class BaseTest {
 
@@ -26,6 +28,7 @@ open class BaseTest {
     protected val changelogFile
         get() = File(extension.path.get())
 
+    @Language("Markdown")
     protected var changelog: String = ""
         set(value) {
             field = value
@@ -42,6 +45,7 @@ open class BaseTest {
             project.version = value
         }
 
+    @Language("Groovy")
     protected var buildFile = ""
         set(value) {
             field = value
@@ -85,4 +89,8 @@ open class BaseTest {
 
     protected fun runFailingTask(taskName: String, vararg arguments: String): BuildResult =
         prepareTask(taskName, *arguments).buildAndFail()
+
+    protected fun assertMarkdown(@Language("Markdown") expected: String, @Language("Markdown") actual: String) {
+        assertEquals(expected.trim(), actual.trim())
+    }
 }

@@ -6,14 +6,13 @@ import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class GetChangelogTaskTest : BaseTest() {
 
     @BeforeTest
     fun localSetUp() {
-        changelog = //language=markdown
+        changelog =
             """
             # Changelog
             ## [Unreleased]
@@ -34,7 +33,7 @@ class GetChangelogTaskTest : BaseTest() {
             - foo
             """.trimIndent()
 
-        buildFile = //language=Groovy
+        buildFile =
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -51,8 +50,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns change notes for the version specified with extension`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
-        //language=markdown
-        assertEquals(
+        assertMarkdown(
             """
             ## [1.0.0]
             That was a great release.
@@ -68,8 +66,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns the Unreleased change notes`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--unreleased")
 
-        //language=markdown
-        assertEquals(
+        assertMarkdown(
             """
             ## [Unreleased]
             Some unreleased changes.
@@ -84,8 +81,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns change notes for the version specified with CLI`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--version=1.0.1")
 
-        //language=markdown
-        assertEquals(
+        assertMarkdown(
             """
             ## [1.0.1]
             Release with bugfix.
@@ -101,8 +97,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns change notes without header for the version specified with extension`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--no-header")
 
-        //language=markdown
-        assertEquals(
+        assertMarkdown(
             """
             That was a great release.
             
@@ -117,8 +112,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns change notes without summary for the version specified with extension`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--no-summary")
 
-        //language=markdown
-        assertEquals(
+        assertMarkdown(
             """
             ## [1.0.0]
             
@@ -133,8 +127,7 @@ class GetChangelogTaskTest : BaseTest() {
     fun `returns change notes with summary for the version specified with extension`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
-        //language=markdown
-        assertEquals(
+        assertMarkdown(
             """
             ## [1.0.0]
             That was a great release.
@@ -148,7 +141,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `returns change notes with Pattern set to headerParserRegex`() {
-        buildFile = //language=Groovy
+        buildFile =
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -166,7 +159,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `returns change notes with String set to headerParserRegex`() {
-        buildFile = //language=Groovy
+        buildFile =
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -184,7 +177,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `fails with Integer set to headerParserRegex`() {
-        buildFile = //language=Groovy
+        buildFile =
             """
             plugins {
                 id 'org.jetbrains.changelog'
@@ -202,7 +195,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `throws VersionNotSpecifiedException when changelog extension has no version provided`() {
-        buildFile = //language=Groovy
+        buildFile =
             """
             plugins {
                 id 'org.jetbrains.changelog'
