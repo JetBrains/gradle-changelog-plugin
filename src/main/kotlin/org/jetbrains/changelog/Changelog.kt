@@ -159,7 +159,6 @@ data class Changelog(
 
             if (withSummary && summary.isNotEmpty()) {
                 yield(summary)
-                yield(lineSeparator)
             }
 
             getSections()
@@ -175,10 +174,6 @@ data class Changelog(
                         }
 
                         yieldAll(entries)
-
-                        if (hasNext()) {
-                            yield(lineSeparator)
-                        }
                     }
                 }
         }

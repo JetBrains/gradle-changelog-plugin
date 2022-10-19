@@ -50,15 +50,12 @@ internal fun compose(
 ) = sequence {
     if (!preTitle.isNullOrBlank()) {
         yield(preTitle)
-        yield(lineSeparator)
     }
     if (!title.isNullOrBlank()) {
         yield("$ATX_1 ${title.trim()}")
-        yield(lineSeparator)
     }
     if (!introduction.isNullOrBlank()) {
         yield(introduction)
-        yield(lineSeparator)
     }
 
     if (!unreleasedTerm.isNullOrBlank()) {
