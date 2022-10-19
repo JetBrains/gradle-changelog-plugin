@@ -9,15 +9,14 @@ import org.intellij.markdown.flavours.gfm.GFMFlavourDescriptor
 import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.html.OpenCloseGeneratingProvider
 import org.intellij.markdown.parser.LinkMap
-import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
 import java.net.URI
 
-class PlainTextFlavourDescriptor : GFMFlavourDescriptor() {
+class PlainTextFlavourDescriptor(private val lineSeparator: String) : GFMFlavourDescriptor() {
 
     override fun createHtmlGeneratingProviders(linkMap: LinkMap, baseURI: URI?) =
         super.createHtmlGeneratingProviders(linkMap, baseURI) + hashMapOf(
             MarkdownElementTypes.LIST_ITEM to CustomProvider("- "),
-            MarkdownTokenTypes.EOL to CustomProvider("", NEW_LINE)
+            MarkdownTokenTypes.EOL to CustomProvider("", lineSeparator)
         )
 
     private class CustomProvider(private val openTagName: String = "", private val closeTagName: String = "") :

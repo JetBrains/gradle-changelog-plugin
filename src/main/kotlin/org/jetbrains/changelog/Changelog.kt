@@ -9,7 +9,6 @@ import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.parser.MarkdownParser
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
-import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
 import org.jetbrains.changelog.exceptions.HeaderParseException
 import org.jetbrains.changelog.exceptions.MissingFileException
 import org.jetbrains.changelog.exceptions.MissingVersionException
@@ -24,6 +23,7 @@ data class Changelog(
     val unreleasedTerm: String,
     val headerParserRegex: Regex,
     val itemPrefix: String,
+    val lineSeparator: String,
 ) {
 
     private val flavour = ChangelogFlavourDescriptor()
@@ -40,14 +40,14 @@ data class Changelog(
     private val preTitleNodes = tree.children
         .takeWhile { it.type != MarkdownElementTypes.ATX_1 }
     val preTitleValue = preTitle ?: preTitleNodes
-        .joinToString(NEW_LINE) { it.text() }
+        .joinToString(lineSeparator) { it.text() }
         .trim()
 
     private val titleNodes = tree.children
         .dropWhile { it.type != MarkdownElementTypes.ATX_1 }
         .takeWhile { it.type == MarkdownElementTypes.ATX_1 }
     val titleValue = title ?: titleNodes
-        .joinToString(NEW_LINE) { it.text() }
+        .joinToString(lineSeparator) { it.text() }
         .trim()
 
     private val introductionNodes = tree.children
@@ -55,8 +55,8 @@ data class Changelog(
         .dropWhile { it.type == MarkdownElementTypes.ATX_1 }
         .takeWhile { it.type != MarkdownElementTypes.ATX_2 }
     val introductionValue = introduction ?: introductionNodes
-        .joinToString(NEW_LINE) { it.text() }
-        .reformat()
+        .joinToString(lineSeparator) { it.text() }
+        .reformat(lineSeparator)
 
     private val itemsNodes = tree.children
         .dropWhile { it.type != MarkdownElementTypes.ATX_2 }
@@ -93,8 +93,8 @@ data class Changelog(
                     node.type != MarkdownElementTypes.ATX_3 && !node.text().startsWith(itemPrefix)
                 }
             val summary = summaryNodes
-                .joinToString(NEW_LINE) { it.text() }
-                .reformat()
+                .joinToString(lineSeparator) { it.text() }
+                .reformat(lineSeparator)
 
             val items = nodes
                 .drop(summaryNodes.size)
@@ -105,8 +105,8 @@ data class Changelog(
                     section.value
                         .map { it.text().trim() }
                         .filterNot { it.startsWith(ATX_3) || it.isEmpty() }
-                        .joinToString(NEW_LINE)
-                        .split("""(^|$NEW_LINE)${Regex.escape(itemPrefix)}\s*""".toRegex())
+                        .joinToString(lineSeparator)
+                        .split("""(^|$lineSeparator)${Regex.escape(itemPrefix)}\s*""".toRegex())
                         .mapNotNull {
                             "$itemPrefix $it".takeIf { _ ->
                                 it.isNotEmpty()
@@ -115,7 +115,7 @@ data class Changelog(
 
                 }
 
-            Item(key, header, summary, items, isUnreleased)
+            Item(key, header, summary, items, isUnreleased, lineSeparator)
         }
 
     fun has(version: String) = items.containsKey(version)
@@ -132,6 +132,7 @@ data class Changelog(
         val summary: String,
         private val items: Map<String, List<String>>,
         private val isUnreleased: Boolean = false,
+        private val lineSeparator: String,
     ) {
 
         private var withHeader = true
@@ -161,7 +162,7 @@ data class Changelog(
 
             if (withSummary && summary.isNotEmpty()) {
                 yield(summary)
-                yield(NEW_LINE)
+                yield(lineSeparator)
             }
 
             getSections()
@@ -183,17 +184,17 @@ data class Changelog(
                         }
 
                         if (hasNext()) {
-                            yield(NEW_LINE)
+                            yield(lineSeparator)
                         }
                     }
                 }
         }
-            .joinToString(NEW_LINE)
-            .reformat()
+            .joinToString(lineSeparator)
+            .reformat(lineSeparator)
 
         fun toHTML() = markdownToHTML(toText())
 
-        fun toPlainText() = markdownToPlainText(toText())
+        fun toPlainText() = markdownToPlainText(toText(), lineSeparator)
 
         override fun toString() = toText()
     }

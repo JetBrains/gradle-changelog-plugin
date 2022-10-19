@@ -15,6 +15,8 @@ open class BaseTest {
 
     protected lateinit var project: DefaultProject
     protected lateinit var extension: ChangelogPluginExtension
+    protected val lineSeparator
+        get() = extension.lineSeparator.get()
 
     private val gradleDefault = System.getProperty("test.gradle.default")
     private val gradleHome = System.getProperty("test.gradle.home")

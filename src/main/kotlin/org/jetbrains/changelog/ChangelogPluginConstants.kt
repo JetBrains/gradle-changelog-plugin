@@ -17,7 +17,6 @@ object ChangelogPluginConstants {
     const val ITEM_PREFIX = "-"
     const val DEFAULT_TITLE = "Changelog"
     const val UNRELEASED_TERM = "[Unreleased]"
-    const val NEW_LINE = "\n"
     const val ATX_1 = "#"
     const val ATX_2 = "##"
     const val ATX_3 = "###"

@@ -7,6 +7,7 @@
 - Introduce changelog `summary` and changelog property [#127](../../issues/127)
 - Introduce changelog `preTitle` and `title` changelog properties
 - Ensure patched changelog ends with a newline [#126](../../issues/126)
+- Added the `changelog.lineSeparator` property to allow for customizing the line separator used in the changelog. [#104](../../issues/104)
 - Added the `--version=...` CLI parameter for the `getChangelog` task [#83](../../issues/83)
 - Throw an exception when `initializeChangelog` task works on non-empty file [#82](../../issues/82)
 

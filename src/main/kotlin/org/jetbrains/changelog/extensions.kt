@@ -7,7 +7,6 @@ import org.intellij.markdown.parser.MarkdownParser
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
-import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
 import org.jetbrains.changelog.flavours.ChangelogFlavourDescriptor
 import org.jetbrains.changelog.flavours.PlainTextFlavourDescriptor
 import java.text.SimpleDateFormat
@@ -20,25 +19,24 @@ fun markdownToHTML(input: String) = ChangelogFlavourDescriptor().run {
         .generateHtml()
 }
 
-fun markdownToPlainText(input: String) = PlainTextFlavourDescriptor().run {
+fun markdownToPlainText(input: String, lineSeparator: String) = PlainTextFlavourDescriptor(lineSeparator).run {
     HtmlGenerator(input, MarkdownParser(this).buildMarkdownTreeFromString(input), this, false)
         .generateHtml(PlainTextTagRenderer())
 }
 
-fun String.reformat(): String {
+fun String.reformat(lineSeparator: String): String {
     val result = listOf(
-        """(?:^|\n)+(#+ [^\n]*)\n*""".toRegex() to "\n\n$1\n",
-        """((?:^|\n)#+ .*?)\n(#+ )""".toRegex() to "$1\n\n$2",
-        """\n{3,}""".toRegex() to "\n\n",
+        """(?:^|$lineSeparator)+(#+ [^$lineSeparator]*)(?:$lineSeparator)*""".toRegex() to "$lineSeparator$lineSeparator$1$lineSeparator",
+        """((?:^|$lineSeparator)#+ .*?)$lineSeparator(#+ )""".toRegex() to "$1$lineSeparator$lineSeparator$2",
+        """($lineSeparator){3,}""".toRegex() to "$lineSeparator$lineSeparator",
     ).fold(this) { acc, (pattern, replacement) ->
         acc.replace(pattern, replacement)
-    }.trim() + NEW_LINE
+    }.trim() + lineSeparator
 
     return when (result) {
         this -> result
-        else -> result.reformat()
+        else -> result.reformat(lineSeparator)
     }
-
 }
 
 internal fun compose(
@@ -47,19 +45,20 @@ internal fun compose(
     introduction: String?,
     unreleasedTerm: String?,
     groups: List<String>,
+    lineSeparator: String,
     function: suspend SequenceScope<String>.() -> Unit = {},
 ) = sequence {
     if (!preTitle.isNullOrBlank()) {
         yield(preTitle)
-        yield(NEW_LINE)
+        yield(lineSeparator)
     }
     if (!title.isNullOrBlank()) {
         yield("$ATX_1 ${title.trim()}")
-        yield(NEW_LINE)
+        yield(lineSeparator)
     }
     if (!introduction.isNullOrBlank()) {
         yield(introduction)
-        yield(NEW_LINE)
+        yield(lineSeparator)
     }
 
     if (!unreleasedTerm.isNullOrBlank()) {
@@ -72,5 +71,5 @@ internal fun compose(
 
     function()
 }
-    .joinToString(NEW_LINE)
-    .reformat()
+    .joinToString(lineSeparator)
+    .reformat(lineSeparator)

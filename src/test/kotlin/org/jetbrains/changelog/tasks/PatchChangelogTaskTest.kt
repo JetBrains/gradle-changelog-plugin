@@ -3,7 +3,6 @@
 package org.jetbrains.changelog.tasks
 
 import org.jetbrains.changelog.BaseTest
-import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
 import org.jetbrains.changelog.ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAME
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.text.SimpleDateFormat
@@ -484,15 +483,15 @@ class PatchChangelogTaskTest : BaseTest() {
             changelog,
         )
 
-        assertFalse(changelog.endsWith(NEW_LINE + NEW_LINE))
-        assertTrue(changelog.endsWith(NEW_LINE))
+        assertFalse(changelog.endsWith(lineSeparator + lineSeparator))
+        assertTrue(changelog.endsWith(lineSeparator))
     }
 
     @Test
     fun `patched changelog contains an empty line at the end`() {
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
-        assertTrue(changelog.endsWith(NEW_LINE))
+        assertTrue(changelog.endsWith(lineSeparator))
     }
 
     @Test

@@ -72,18 +72,22 @@ abstract class PatchChangelogTask : DefaultTask() {
     @get:Optional
     abstract val version: Property<String>
 
+    @get:Internal
+    abstract val lineSeparator: Property<String>
+
     @TaskAction
     fun run() {
         val unreleasedTermValue = unreleasedTerm.get()
 
         val changelog = Changelog(
-            inputFile.get().asFile,
-            preTitle.orNull,
-            title.orNull,
-            introduction.orNull,
-            unreleasedTerm.get(),
-            headerParserRegex.get(),
-            itemPrefix.get(),
+            file = inputFile.get().asFile,
+            preTitle = preTitle.orNull,
+            title = title.orNull,
+            introduction = introduction.orNull,
+            unreleasedTerm = unreleasedTerm.get(),
+            headerParserRegex = headerParserRegex.get(),
+            itemPrefix = itemPrefix.get(),
+            lineSeparator = lineSeparator.get(),
         )
 
         val preTitleValue = preTitle.orNull ?: changelog.preTitleValue
@@ -111,11 +115,12 @@ abstract class PatchChangelogTask : DefaultTask() {
         }
 
         val patchedContent = compose(
-            preTitleValue,
-            titleValue,
-            introductionValue,
-            unreleasedTermValue.takeIf { keepUnreleasedSection.get() },
-            groups.get(),
+            preTitle = preTitleValue,
+            title = titleValue,
+            introduction = introductionValue,
+            unreleasedTerm = unreleasedTermValue.takeIf { keepUnreleasedSection.get() },
+            groups = groups.get(),
+            lineSeparator = lineSeparator.get(),
         ) {
             if (item != null) {
                 yield("$ATX_2 $headerValue")

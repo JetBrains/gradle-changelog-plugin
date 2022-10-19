@@ -58,15 +58,19 @@ abstract class ChangelogPluginExtension {
     @get:Optional
     abstract val version: Property<String>
 
+    @get:Optional
+    abstract val lineSeparator: Property<String>
+
     val instance
         get() = Changelog(
-            File(path.get()),
-            preTitle.orNull,
-            title.orNull,
-            introduction.orNull,
-            unreleasedTerm.get(),
-            getHeaderParserRegex.get(),
-            itemPrefix.get(),
+            file = File(path.get()),
+            preTitle = preTitle.orNull,
+            title = title.orNull,
+            introduction = introduction.orNull,
+            unreleasedTerm = unreleasedTerm.get(),
+            headerParserRegex = getHeaderParserRegex.get(),
+            itemPrefix = itemPrefix.get(),
+            lineSeparator = lineSeparator.get(),
         )
 
     fun get(version: String) = instance.get(version)

@@ -9,6 +9,8 @@ import kotlin.test.assertEquals
 
 class ExtensionsTest {
 
+    private val lineSeparator = "\n"
+
     @Test
     fun dateTest() {
         assertEquals(SimpleDateFormat("yyyy-MM-dd").format(Date()), date())
@@ -56,7 +58,7 @@ class ExtensionsTest {
             - buz
             - biz
             """.trimIndent(),
-            markdownToPlainText(content)
+            markdownToPlainText(content, lineSeparator)
         )
     }
 
@@ -90,7 +92,7 @@ class ExtensionsTest {
                 ## [0.1.0]
                 ### Added
                 - Buz
-            """.trimIndent().reformat()
+            """.trimIndent().reformat(lineSeparator)
         )
 
         assertEquals(
@@ -114,7 +116,7 @@ class ExtensionsTest {
                 ## Upcoming version
                 ### Added
                 ### Removed
-            """.trimIndent().reformat()
+            """.trimIndent().reformat(lineSeparator)
         )
     }
 }

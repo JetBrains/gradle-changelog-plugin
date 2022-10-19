@@ -7,10 +7,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 import org.jetbrains.changelog.compose
 
 abstract class InitializeChangelogTask : DefaultTask() {
@@ -43,6 +40,9 @@ abstract class InitializeChangelogTask : DefaultTask() {
     @get:Optional
     abstract val unreleasedTerm: Property<String>
 
+    @get:Internal
+    abstract val lineSeparator: Property<String>
+
     @TaskAction
     fun run() {
         val file = outputFile.get()
@@ -58,11 +58,12 @@ abstract class InitializeChangelogTask : DefaultTask() {
         }
 
         val content = compose(
-            preTitle.orNull,
-            title.orNull,
-            introduction.orNull,
-            unreleasedTerm.get(),
-            groups.get(),
+            preTitle = preTitle.orNull,
+            title = title.orNull,
+            introduction = introduction.orNull,
+            unreleasedTerm = unreleasedTerm.get(),
+            groups = groups.get(),
+            lineSeparator = lineSeparator.get(),
         )
         file.writeText(content)
     }

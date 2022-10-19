@@ -19,10 +19,10 @@ import org.jetbrains.changelog.tasks.GetChangelogTask
 import org.jetbrains.changelog.tasks.InitializeChangelogTask
 import org.jetbrains.changelog.tasks.PatchChangelogTask
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
 class ChangelogPlugin : Plugin<Project> {
-
-    private val field: Long? = null //End-Of-Line Comments
 
     override fun apply(project: Project) {
         checkGradleVersion(project)
@@ -46,6 +46,23 @@ class ChangelogPlugin : Plugin<Project> {
                 }
             )
             title.convention(ChangelogPluginConstants.DEFAULT_TITLE)
+            lineSeparator.convention(path.map { path ->
+                val content = Path.of(path)
+                    .takeIf { Files.exists(it) }
+                    ?.let { Files.readString(it) }
+                    ?: return@map "\n"
+                val rnless = content.replace("\r\n", "")
+
+                val rn = (content.length - rnless.length) / 2
+                val r = rnless.count { it == '\r' }
+                val n = rnless.count { it == '\n' }
+
+                when {
+                    rn > r && rn > n -> "\r\n"
+                    r > n -> "\r"
+                    else -> "\n"
+                }
+            })
         }
 
         val pathProvider = project.layout.file(extension.path.map { File(it) })
@@ -58,6 +75,7 @@ class ChangelogPlugin : Plugin<Project> {
             itemPrefix.convention(extension.itemPrefix)
             unreleasedTerm.set(extension.unreleasedTerm)
             version.set(extension.version)
+            lineSeparator.convention(extension.lineSeparator)
 
             outputs.upToDateWhen { false }
         }
@@ -78,6 +96,7 @@ class ChangelogPlugin : Plugin<Project> {
             patchEmpty.convention(extension.patchEmpty)
             unreleasedTerm.convention(extension.unreleasedTerm)
             version.convention(extension.version)
+            lineSeparator.convention(extension.lineSeparator)
         }
 
         project.tasks.register<InitializeChangelogTask>(INITIALIZE_CHANGELOG_TASK_NAME) {
@@ -91,6 +110,7 @@ class ChangelogPlugin : Plugin<Project> {
             outputFile.convention(pathProvider)
             itemPrefix.set(extension.itemPrefix)
             unreleasedTerm.set(extension.unreleasedTerm)
+            lineSeparator.convention(extension.lineSeparator)
         }
     }
 
