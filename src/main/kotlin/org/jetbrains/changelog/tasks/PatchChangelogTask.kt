@@ -9,12 +9,9 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
-import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
-import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
-import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
+import org.jetbrains.changelog.compose
 import org.jetbrains.changelog.exceptions.MissingReleaseNoteException
-import org.jetbrains.changelog.reformat
 
 abstract class PatchChangelogTask : DefaultTask() {
 
@@ -90,7 +87,7 @@ abstract class PatchChangelogTask : DefaultTask() {
         )
 
         val preTitleValue = preTitle.orNull ?: changelog.preTitleValue
-        val titleValue = title.orNull?.let { "$ATX_1 $it" } ?: changelog.titleValue
+        val titleValue = title.orNull ?: changelog.titleValue
         val introductionValue = introduction.orNull ?: changelog.introductionValue
         val headerValue = header.get()
 
@@ -113,46 +110,30 @@ abstract class PatchChangelogTask : DefaultTask() {
             )
         }
 
-        sequence {
-            if (preTitleValue.isNotEmpty()) {
-                yield(preTitleValue)
-                yield(NEW_LINE)
-            }
-            if (titleValue.isNotEmpty()) {
-                yield(titleValue)
-                yield(NEW_LINE)
-            }
-            if (introductionValue.isNotEmpty()) {
-                yield(introductionValue)
-                yield(NEW_LINE)
-            }
-
-            if (keepUnreleasedSection.get()) {
-                yield("$ATX_2 $unreleasedTermValue")
-                yield(NEW_LINE)
-
-                groups.get()
-                    .map { "$ATX_3 $it" }
-                    .let { yieldAll(it) }
-            }
-
+        val patchedContent = compose(
+            preTitleValue,
+            titleValue,
+            introductionValue,
+            unreleasedTermValue.takeIf { keepUnreleasedSection.get() },
+            groups.get(),
+        ) {
             if (item != null) {
                 yield("$ATX_2 $headerValue")
 
                 if (content.isNotBlank()) {
                     yield(content)
                 } else {
-                    yield(item.withHeader(false))
+                    yield(item.withHeader(false).toString())
                 }
             }
 
-            yield(NEW_LINE)
-            yieldAll(otherItems)
-        }
-            .joinToString(NEW_LINE)
-            .reformat()
-            .let {
-                outputFile.get().asFile.writeText(it)
+            otherItems.forEach {
+                yield(it.toString())
             }
+        }
+
+        outputFile.get()
+            .asFile
+            .writeText(patchedContent)
     }
 }

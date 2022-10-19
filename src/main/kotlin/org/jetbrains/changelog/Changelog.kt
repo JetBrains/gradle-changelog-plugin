@@ -29,104 +29,94 @@ data class Changelog(
     private val flavour = ChangelogFlavourDescriptor()
     private val parser = MarkdownParser(flavour)
 
-    val content
-        get() = file.run {
-            if (!exists()) {
-                throw MissingFileException(canonicalPath)
-            }
-            readText()
+    val content = file.run {
+        if (!exists()) {
+            throw MissingFileException(canonicalPath)
         }
-    private val tree
-        get() = parser.buildMarkdownTreeFromString(content)
+        readText()
+    }
+    private val tree = parser.buildMarkdownTreeFromString(content)
 
-    private val preTitleNodes
-        get() = tree.children
-            .takeWhile { it.type != MarkdownElementTypes.ATX_1 }
-    val preTitleValue
-        get() = preTitle ?: preTitleNodes
-            .joinToString(NEW_LINE) { it.text() }
-            .trim()
+    private val preTitleNodes = tree.children
+        .takeWhile { it.type != MarkdownElementTypes.ATX_1 }
+    val preTitleValue = preTitle ?: preTitleNodes
+        .joinToString(NEW_LINE) { it.text() }
+        .trim()
 
-    private val titleNodes
-        get() = tree.children
-            .dropWhile { it.type != MarkdownElementTypes.ATX_1 }
-            .takeWhile { it.type == MarkdownElementTypes.ATX_1 }
-    val titleValue
-        get() = title ?: titleNodes
-            .joinToString(NEW_LINE) { it.text() }
-            .trim()
+    private val titleNodes = tree.children
+        .dropWhile { it.type != MarkdownElementTypes.ATX_1 }
+        .takeWhile { it.type == MarkdownElementTypes.ATX_1 }
+    val titleValue = title ?: titleNodes
+        .joinToString(NEW_LINE) { it.text() }
+        .trim()
 
-    private val introductionNodes
-        get() = tree.children
-            .dropWhile { it.type != MarkdownElementTypes.ATX_1 }
-            .dropWhile { it.type == MarkdownElementTypes.ATX_1 }
-            .takeWhile { it.type != MarkdownElementTypes.ATX_2 }
-    val introductionValue
-        get() = introduction ?: introductionNodes
-            .joinToString(NEW_LINE) { it.text() }
-            .reformat()
+    private val introductionNodes = tree.children
+        .dropWhile { it.type != MarkdownElementTypes.ATX_1 }
+        .dropWhile { it.type == MarkdownElementTypes.ATX_1 }
+        .takeWhile { it.type != MarkdownElementTypes.ATX_2 }
+    val introductionValue = introduction ?: introductionNodes
+        .joinToString(NEW_LINE) { it.text() }
+        .reformat()
 
-    private val itemsNodes
-        get() = tree.children
-            .dropWhile { it.type != MarkdownElementTypes.ATX_2 }
-    private val items
-        get() = itemsNodes
-            .groupByType(MarkdownElementTypes.ATX_2) {
-                it.children.last().text().trim().run {
-                    when (this) {
-                        unreleasedTerm -> this
-                        else -> split("""[^-+.0-9a-zA-Z]+""".toRegex()).firstOrNull(
-                            headerParserRegex::matches
-                        ) ?: throw HeaderParseException(this, unreleasedTerm)
-                    }
+    private val itemsNodes = tree.children
+        .dropWhile { it.type != MarkdownElementTypes.ATX_2 }
+    private val items = itemsNodes
+        .groupByType(MarkdownElementTypes.ATX_2) {
+            it.children.last().text().trim().run {
+                when (this) {
+                    unreleasedTerm -> this
+                    else -> split("""[^-+.0-9a-zA-Z]+""".toRegex()).firstOrNull(
+                        headerParserRegex::matches
+                    ) ?: throw HeaderParseException(this, unreleasedTerm)
                 }
             }
-            .filterKeys(String::isNotEmpty)
-            .mapKeys {
-                headerParserRegex.matchEntire(it.key)?.run {
-                    groupValues.drop(1).firstOrNull()
-                } ?: it.key
-            }
-            .mapValues { (key, value) ->
-                val header = value
-                    .firstOrNull { it.type == MarkdownElementTypes.ATX_2 }?.text()
-                    .orEmpty()
-                    .trim()
+        }
+        .filterKeys(String::isNotEmpty)
+        .mapKeys {
+            headerParserRegex.matchEntire(it.key)?.run {
+                groupValues.drop(1).firstOrNull()
+            } ?: it.key
+        }
+        .mapValues { (key, value) ->
+            val header = value
+                .firstOrNull { it.type == MarkdownElementTypes.ATX_2 }?.text()
+                .orEmpty()
+                .trim()
 
-                val nodes = value
-                    .drop(1)
-                    .dropWhile { node -> node.type == MarkdownTokenTypes.EOL }
+            val nodes = value
+                .drop(1)
+                .dropWhile { node -> node.type == MarkdownTokenTypes.EOL }
 
-                val isUnreleased = key == unreleasedTerm
-                val summaryNodes = nodes
-                    .takeWhile { node ->
-                        node.type != MarkdownElementTypes.ATX_3 && !node.text().startsWith(itemPrefix)
-                    }
-                val summary = summaryNodes
-                    .joinToString(NEW_LINE) { it.text() }
-                    .reformat()
+            val isUnreleased = key == unreleasedTerm
+            val summaryNodes = nodes
+                .takeWhile { node ->
+                    node.type != MarkdownElementTypes.ATX_3 && !node.text().startsWith(itemPrefix)
+                }
+            val summary = summaryNodes
+                .joinToString(NEW_LINE) { it.text() }
+                .reformat()
 
-                val items = nodes
-                    .drop(summaryNodes.size)
-                    .groupByType(MarkdownElementTypes.ATX_3) {
-                        it.text().trimStart('#').trim()
-                    }
-                    .mapValues { section ->
-                        section.value
-                            .map { it.text().trim() }
-                            .filterNot { it.startsWith(ATX_3) || it.isEmpty() }
-                            .joinToString(NEW_LINE)
-                            .split("""(^|$NEW_LINE)${Regex.escape(itemPrefix)}\s*""".toRegex())
-                            .mapNotNull {
-                                "$itemPrefix $it".takeIf { _ ->
-                                    it.isNotEmpty()
-                                }
+            val items = nodes
+                .drop(summaryNodes.size)
+                .groupByType(MarkdownElementTypes.ATX_3) {
+                    it.text().trimStart('#').trim()
+                }
+                .mapValues { section ->
+                    section.value
+                        .map { it.text().trim() }
+                        .filterNot { it.startsWith(ATX_3) || it.isEmpty() }
+                        .joinToString(NEW_LINE)
+                        .split("""(^|$NEW_LINE)${Regex.escape(itemPrefix)}\s*""".toRegex())
+                        .mapNotNull {
+                            "$itemPrefix $it".takeIf { _ ->
+                                it.isNotEmpty()
                             }
+                        }
 
-                    }
+                }
 
-                Item(key, header, summary, items, isUnreleased)
-            }
+            Item(key, header, summary, items, isUnreleased)
+        }
 
     fun has(version: String) = items.containsKey(version)
 

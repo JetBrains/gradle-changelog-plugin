@@ -3,7 +3,7 @@
 package org.jetbrains.changelog
 
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -57,6 +57,64 @@ class ExtensionsTest {
             - biz
             """.trimIndent(),
             markdownToPlainText(content)
+        )
+    }
+
+    @Test
+    fun `reformat changelog`() {
+        assertEquals(
+            """
+                Pre title content.
+                
+                # Title
+                Summary
+                
+                ## [Unreleased]
+                
+                ## [1.0.0]
+                - asd
+                
+                ## [0.1.0]
+                
+                ### Added
+                - Buz
+                
+            """.trimIndent(),
+            """
+                Pre title content.
+                # Title
+                Summary
+                ## [Unreleased]
+                ## [1.0.0]
+                - asd
+                ## [0.1.0]
+                ### Added
+                - Buz
+            """.trimIndent().reformat()
+        )
+
+        assertEquals(
+            """
+            Foo
+            
+            # My Title
+            Introduction
+            
+            ## Upcoming version
+            
+            ### Added
+            
+            ### Removed
+            
+            """.trimIndent(),
+            """
+                Foo
+                # My Title
+                Introduction
+                ## Upcoming version
+                ### Added
+                ### Removed
+            """.trimIndent().reformat()
         )
     }
 }

@@ -403,7 +403,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertEquals(
                 """
                 ## [1.0.0]
-                
                 - Foo
                 
                 """.trimIndent(),
@@ -413,7 +412,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertEquals(
                 """
                 <h2>[1.0.0]</h2>
-                
                 <ul><li>Foo</li></ul>
                 
                 """.trimIndent(),
@@ -530,7 +528,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
         assertEquals(
             """
             <h2>Unreleased</h2>
-            
             <ul><li>Foo</li></ul>
             
             """.trimIndent(),

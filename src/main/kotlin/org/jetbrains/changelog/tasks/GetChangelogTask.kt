@@ -54,7 +54,7 @@ abstract class GetChangelogTask : DefaultTask() {
     @TaskAction
     fun run() = logger.quiet(
         Changelog(
-            inputFile.get().asFile,
+            inputFile.map { it.asFile }.get(),
             null,
             null,
             null,

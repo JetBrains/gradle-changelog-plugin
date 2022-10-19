@@ -11,11 +11,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
-import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
-import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
-import org.jetbrains.changelog.ChangelogPluginConstants.NEW_LINE
-import org.jetbrains.changelog.reformat
+import org.jetbrains.changelog.compose
 
 abstract class InitializeChangelogTask : DefaultTask() {
 
@@ -61,30 +57,13 @@ abstract class InitializeChangelogTask : DefaultTask() {
             throw GradleException("Changelog file is not empty: ${file.absolutePath}")
         }
 
-        sequence {
-            if (preTitle.isPresent) {
-                yield(preTitle.get())
-                yield(NEW_LINE)
-            }
-            if (title.isPresent) {
-                yield("$ATX_1 ${title.get()}")
-                yield(NEW_LINE)
-            }
-            if (introduction.isPresent) {
-                yield(introduction.get())
-                yield(NEW_LINE)
-            }
-
-            yield("$ATX_2 ${unreleasedTerm.get()}")
-
-            groups.get()
-                .map { "$ATX_3 $it" }
-                .let { yieldAll(it) }
-        }
-            .joinToString(NEW_LINE)
-            .reformat()
-            .let {
-                file.writeText(it)
-            }
+        val content = compose(
+            preTitle.orNull,
+            title.orNull,
+            introduction.orNull,
+            unreleasedTerm.get(),
+            groups.get(),
+        )
+        file.writeText(content)
     }
 }

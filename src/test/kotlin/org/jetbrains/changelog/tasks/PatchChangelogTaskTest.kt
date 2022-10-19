@@ -458,7 +458,6 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [1.0.0]
-
             - asd
 
             """.trimIndent(),
@@ -469,7 +468,6 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             # Changelog
-            
             Foo bar buz.
             
             ## [Unreleased]

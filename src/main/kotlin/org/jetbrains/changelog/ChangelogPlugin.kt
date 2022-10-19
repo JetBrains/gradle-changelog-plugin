@@ -22,6 +22,8 @@ import java.io.File
 
 class ChangelogPlugin : Plugin<Project> {
 
+    private val field: Long? = null //End-Of-Line Comments
+
     override fun apply(project: Project) {
         checkGradleVersion(project)
 
