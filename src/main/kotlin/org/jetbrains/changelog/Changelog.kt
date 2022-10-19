@@ -137,23 +137,20 @@ data class Changelog(
 
         private var withHeader = true
         private var withSummary = true
+        private var withEmptySections = isUnreleased
         private var filterCallback: ((String) -> Boolean)? = null
 
-        fun withHeader(header: Boolean) = copy().apply {
-            withHeader = header
-        }
+        fun withHeader(header: Boolean) = copy(withHeader = header)
 
-        fun withSummary(summary: Boolean) = copy().apply {
-            withSummary = summary
-        }
+        fun withSummary(summary: Boolean) = copy(withSummary = summary)
 
-        fun withFilter(filter: ((String) -> Boolean)?) = copy().apply {
-            filterCallback = filter
-        }
+        fun withEmptySections(emptySections: Boolean) = copy(withEmptySections = emptySections)
+
+        fun withFilter(filter: ((String) -> Boolean)?) = copy(filterCallback = filter)
 
         fun getSections() = items
             .mapValues { it.value.filter { item -> filterCallback?.invoke(item) ?: true } }
-            .filterNot { it.value.isEmpty() && !isUnreleased }
+            .filter { it.value.isNotEmpty() || withEmptySections }
 
         fun toText() = sequence {
             if (withHeader) {
@@ -177,11 +174,7 @@ data class Changelog(
                             yield("$ATX_3 $section")
                         }
 
-                        entries.forEach {
-                            if (filterCallback?.invoke(it) != false) {
-                                yield(it)
-                            }
-                        }
+                        yieldAll(entries)
 
                         if (hasNext()) {
                             yield(lineSeparator)
@@ -197,6 +190,25 @@ data class Changelog(
         fun toPlainText() = markdownToPlainText(toText(), lineSeparator)
 
         override fun toString() = toText()
+
+        private fun copy(
+            withHeader: Boolean = this.withHeader,
+            withSummary: Boolean = this.withSummary,
+            withEmptySections: Boolean = this.withEmptySections,
+            filterCallback: ((String) -> Boolean)? = this.filterCallback,
+        ) = Item(
+            version,
+            header,
+            summary,
+            items,
+            isUnreleased,
+            lineSeparator,
+        ).also {
+            it.withHeader = withHeader
+            it.withSummary = withSummary
+            it.withEmptySections = withEmptySections
+            it.filterCallback = filterCallback
+        }
     }
 
     private fun ASTNode.text() = getTextInNode(content).toString()

@@ -37,15 +37,15 @@ class InitializeChangelogTaskTest : BaseTest() {
                 ## [Unreleased]
                 
                 ### Added
-
+                
                 ### Changed
-
+                
                 ### Deprecated
-
+                
                 ### Removed
-
+                
                 ### Fixed
-
+                
                 ### Security
                 
                 """.trimIndent(),
@@ -100,7 +100,7 @@ class InitializeChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             Foo
-
+            
             # My Title
             Introduction
             

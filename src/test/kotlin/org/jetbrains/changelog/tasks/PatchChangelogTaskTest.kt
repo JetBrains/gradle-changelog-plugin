@@ -186,13 +186,13 @@ class PatchChangelogTaskTest : BaseTest() {
             """
             # Changelog
             All notable changes to this project will be documented in this file.
-
+            
             ## [Unreleased]
             ### Added
             - Some other thing added.
-
+            
             ## [1.0.0] - 2020-07-02
-
+            
             ### Added
             - Something added.
             """.trimIndent()
@@ -201,7 +201,7 @@ class PatchChangelogTaskTest : BaseTest() {
             """
             import java.text.SimpleDateFormat
             import java.util.Date
-
+            
             plugins {
                 id 'org.jetbrains.changelog'
             }
@@ -259,17 +259,17 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [Unreleased]
-
+            
             ### Added
-
+            
             ### Changed
-
+            
             ### Deprecated
-
+            
             ### Removed
-
+            
             ### Fixed
-
+            
             ### Security
             
             """.trimIndent(),
@@ -305,7 +305,7 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [1.0.0]
-
+            
             ### Added
             - foo
             
@@ -337,9 +337,9 @@ class PatchChangelogTaskTest : BaseTest() {
         assertEquals(
             """
             ## [Unreleased]
-
+            
             ### Aaaa
-
+            
             ### Bbb
             
             """.trimIndent(),
@@ -492,6 +492,75 @@ class PatchChangelogTaskTest : BaseTest() {
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertTrue(changelog.endsWith(lineSeparator))
+    }
+
+    @Test
+    fun `removes empty groups`() {
+        changelog = //language=markdown
+            """
+            # Changelog
+            
+            ## [Unreleased]
+            
+            ### Changed
+            
+            - Update some feature
+            
+            ### Removed
+            
+            ### Fixed
+            ## [0.0.1]
+            
+            ### Added
+            
+            - `RunBlocking` function
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Updated
+            """.trimIndent()
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        //language=markdown
+        assertEquals(
+            """
+            # Changelog
+            
+            ## [Unreleased]
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            ## [1.0.0]
+            
+            ### Changed
+            - Update some feature
+            
+            ## [0.0.1]
+            
+            ### Added
+            - `RunBlocking` function
+            
+            """.trimIndent(),
+            extension.instance.content
+        )
     }
 
     @Test

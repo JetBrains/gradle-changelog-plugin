@@ -99,7 +99,12 @@ abstract class PatchChangelogTask : DefaultTask() {
         val otherItems = changelog.getAll().filterNot { it.key == unreleasedTermValue }.values
         val noUnreleasedSection = item == null || item.getSections().isEmpty()
         val noReleaseNote = releaseNote.isNullOrBlank()
-        val content = releaseNote ?: item?.withHeader(false)?.toText() ?: ""
+        val content = releaseNote
+            ?: item
+                ?.withEmptySections(false)
+                ?.withHeader(false)
+                ?.toText()
+            ?: ""
 
         if (patchEmpty.get() && content.isEmpty()) {
             logger.info(":patchChangelog task skipped due to the missing release note in the '$unreleasedTerm'.")

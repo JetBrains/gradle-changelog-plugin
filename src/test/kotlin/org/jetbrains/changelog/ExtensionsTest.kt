@@ -64,37 +64,39 @@ class ExtensionsTest {
 
     @Test
     fun `reformat changelog`() {
+        //language=markdown
         assertEquals(
             """
-                Pre title content.
-                
-                # Title
-                Summary
-                
-                ## [Unreleased]
-                
-                ## [1.0.0]
-                - asd
-                
-                ## [0.1.0]
-                
-                ### Added
-                - Buz
-                
+            Pre title content.
+            
+            # Title
+            Summary
+            
+            ## [Unreleased]
+            
+            ## [1.0.0]
+            - asd
+            
+            ## [0.1.0]
+            
+            ### Added
+            - Buz
+            
             """.trimIndent(),
             """
-                Pre title content.
-                # Title
-                Summary
-                ## [Unreleased]
-                ## [1.0.0]
-                - asd
-                ## [0.1.0]
-                ### Added
-                - Buz
+            Pre title content.
+            # Title
+            Summary
+            ## [Unreleased]
+            ## [1.0.0]
+            - asd
+            ## [0.1.0]
+            ### Added
+            - Buz
             """.trimIndent().reformat(lineSeparator)
         )
 
+        //language=markdown
         assertEquals(
             """
             Foo
@@ -110,12 +112,12 @@ class ExtensionsTest {
             
             """.trimIndent(),
             """
-                Foo
-                # My Title
-                Introduction
-                ## Upcoming version
-                ### Added
-                ### Removed
+            Foo
+            # My Title
+            Introduction
+            ## Upcoming version
+            ### Added
+            ### Removed
             """.trimIndent().reformat(lineSeparator)
         )
     }

@@ -18,9 +18,9 @@ class GetChangelogTaskTest : BaseTest() {
             # Changelog
             ## [Unreleased]
             Some unreleased changes.
-
+            
             - bar
-
+            
             ## [1.0.1]
             Release with bugfix.
             
@@ -73,7 +73,7 @@ class GetChangelogTaskTest : BaseTest() {
             """
             ## [Unreleased]
             Some unreleased changes.
-
+            
             - bar
             """.trimIndent(),
             result.output.trim()
@@ -104,7 +104,6 @@ class GetChangelogTaskTest : BaseTest() {
         //language=markdown
         assertEquals(
             """
-            ## [1.0.0]
             That was a great release.
             
             ### Added

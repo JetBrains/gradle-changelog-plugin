@@ -83,7 +83,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """
                 <h2>[1.0.0]</h2>
                 <p>First release.</p>
-
+                
                 <h3>Removed</h3>
                 <ul><li>Bar</li></ul>
                 
@@ -200,7 +200,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 First release.
                 
                 But a great one.
-
+                
                 ### Added
                 - Foo *FOO* foo
                 - Bar **BAR** bar
@@ -208,11 +208,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 - Code `block` code
                 - Bravo
                 - Alpha
-
+                
                 ### Fixed
                 - Hello
                 - World
-
+                
                 ### Removed
                 - Hola
                 
@@ -224,7 +224,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """
                 <h2>[1.0.0]</h2>
                 <p>First release.</p>
-
+                
                 <p>But a great one.</p>
                 
                 <h3>Added</h3>
@@ -244,7 +244,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """
                 [1.0.0]
                 First release.
-
+                
                 But a great one.
                 
                 Added
@@ -315,7 +315,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                     - Foo
                     - Buz
                     - Alpha
-
+                    
                     ### Fixed
                     - World
                     
@@ -330,7 +330,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                     
                     <h3>Added</h3>
                     <ul><li>Foo</li><li>Buz</li><li>Alpha</li></ul>
-
+                    
                     <h3>Fixed</h3>
                     <ul><li>World</li></ul>
                     
@@ -516,7 +516,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog = //language=markdown
             """
             # My Changelog
-
+            
             ## Unreleased
             
             * Foo
@@ -540,7 +540,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog = //language=markdown
             """
             # My Changelog
-
+            
             ## 2020.1
             
             * Foo
@@ -566,7 +566,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog = //language=markdown
             """
             # My Changelog
-
+            
             ## 1.0.0
             
             * Foo
@@ -580,7 +580,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog = //language=markdown
             """
             # My Changelog
-
+            
             ## [v1.0.0]
             
             * Foo
@@ -597,7 +597,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog = //language=markdown
             """
             # My Changelog
-
+            
             ## [1.0.0]
             First release.
             
