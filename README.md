@@ -81,6 +81,8 @@ changelog {
     keepUnreleasedSection.set(true)
     unreleasedTerm.set("[Unreleased]")
     groups.set(listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"))
+    lineSeparator.set("\n")
+    combinePreReleases.set(true)
 }
 ```
 
@@ -120,6 +122,8 @@ changelog {
     keepUnreleasedSection = true
     unreleasedTerm = "[Unreleased]"
     groups = ["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]
+    lineSeparator = "\n"
+    combinePreReleases = true
 }
 ```
 
@@ -148,6 +152,8 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | `patchEmpty`            | Patches changelog even if no release note is provided.                          | `true`                                                                        |
 | `path`                  | Path to the changelog file.                                                     | `"${project.projectDir}/CHANGELOG.md"`                                        |
 | `unreleasedTerm`        | Unreleased section text.                                                        | `"[Unreleased]"`                                                              |
+| `lineSeparator`         | Line separator used for generating changelog content.                           | `"\n"` or determined from the existing file                                   |
+| `combinePreReleases`    | Combines pre-releases into the final release note when patching.                | `true`                                                                        |
 
 > **Note**
 >

@@ -61,6 +61,9 @@ abstract class ChangelogPluginExtension {
     @get:Optional
     abstract val lineSeparator: Property<String>
 
+    @get:Optional
+    abstract val combinePreReleases: Property<Boolean>
+
     val instance
         get() = Changelog(
             file = File(path.get()),

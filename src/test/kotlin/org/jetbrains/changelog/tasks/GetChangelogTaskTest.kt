@@ -70,7 +70,6 @@ class GetChangelogTaskTest : BaseTest() {
             """
             ## [Unreleased]
             Some unreleased changes.
-            
             - bar
             """.trimIndent(),
             result.output.trim()

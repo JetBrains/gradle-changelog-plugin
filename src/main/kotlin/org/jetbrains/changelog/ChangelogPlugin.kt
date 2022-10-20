@@ -45,7 +45,7 @@ class ChangelogPlugin : Plugin<Project> {
                         ?: throw VersionNotSpecifiedException()
                 }
             )
-            title.convention(ChangelogPluginConstants.DEFAULT_TITLE)
+//            title.convention(ChangelogPluginConstants.DEFAULT_TITLE)
             lineSeparator.convention(path.map { path ->
                 val content = Path.of(path)
                     .takeIf { Files.exists(it) }
@@ -63,6 +63,7 @@ class ChangelogPlugin : Plugin<Project> {
                     else -> "\n"
                 }
             })
+            combinePreReleases.convention(true)
         }
 
         val pathProvider = project.layout.file(extension.path.map { File(it) })
@@ -97,6 +98,7 @@ class ChangelogPlugin : Plugin<Project> {
             unreleasedTerm.convention(extension.unreleasedTerm)
             version.convention(extension.version)
             lineSeparator.convention(extension.lineSeparator)
+            combinePreReleases.convention(extension.combinePreReleases)
         }
 
         project.tasks.register<InitializeChangelogTask>(INITIALIZE_CHANGELOG_TASK_NAME) {

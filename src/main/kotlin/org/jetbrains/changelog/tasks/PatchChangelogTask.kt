@@ -9,7 +9,9 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
+import org.jetbrains.changelog.Version
 import org.jetbrains.changelog.compose
 import org.jetbrains.changelog.exceptions.MissingReleaseNoteException
 
@@ -75,6 +77,9 @@ abstract class PatchChangelogTask : DefaultTask() {
     @get:Internal
     abstract val lineSeparator: Property<String>
 
+    @get:Internal
+    abstract val combinePreReleases: Property<Boolean>
+
     @TaskAction
     fun run() {
         val unreleasedTermValue = unreleasedTerm.get()
@@ -91,27 +96,39 @@ abstract class PatchChangelogTask : DefaultTask() {
         )
 
         val preTitleValue = preTitle.orNull ?: changelog.preTitleValue
-        val titleValue = title.orNull ?: changelog.titleValue
+        val titleValue = title.orNull ?: changelog.titleValue.removePrefix("$ATX_1 ")
         val introductionValue = introduction.orNull ?: changelog.introductionValue
-        val headerValue = header.get()
 
-        val item = changelog.runCatching { get(unreleasedTermValue) }.getOrNull()
-        val otherItems = changelog.getAll().filterNot { it.key == unreleasedTermValue }.values
-        val noUnreleasedSection = item == null || item.getSections().isEmpty()
-        val noReleaseNote = releaseNote.isNullOrBlank()
-        val content = releaseNote
-            ?: item
-                ?.withEmptySections(false)
-                ?.withHeader(false)
-                ?.toText()
-            ?: ""
+        val releasedItems = changelog.getAll().filterNot { it.key == unreleasedTermValue }.values
+        val preReleaseItems = releasedItems
+            .filter {
+                val current = Version.parse(version.get())
+                with(Version.parse(it.version)) {
+                    current.major == major && current.minor == minor && current.patch == patch
+                }
+            }
+            .takeIf { combinePreReleases.get() }
+            .orEmpty()
+
+        val item = Changelog.Item(
+            version = version.get(),
+            header = header.get(),
+            summary = "",
+            isUnreleased = true,
+            lineSeparator = lineSeparator.get(),
+        ) + changelog.runCatching { get(unreleasedTermValue) }.getOrNull() + preReleaseItems
+
+        val content = releaseNote ?: item
+            .withEmptySections(false)
+            .withHeader(false)
+            .toText()
 
         if (patchEmpty.get() && content.isEmpty()) {
             logger.info(":patchChangelog task skipped due to the missing release note in the '$unreleasedTerm'.")
             throw StopActionException()
         }
 
-        if (noUnreleasedSection && noReleaseNote && content.isBlank()) {
+        if (item.getSections().isEmpty() && content.isBlank()) {
             throw MissingReleaseNoteException(
                 ":patchChangelog task requires release note to be provided. " +
                         "Add '$ATX_2 $unreleasedTermValue' section header to your changelog file: " +
@@ -127,17 +144,15 @@ abstract class PatchChangelogTask : DefaultTask() {
             groups = groups.get(),
             lineSeparator = lineSeparator.get(),
         ) {
-            if (item != null) {
-                yield("$ATX_2 $headerValue")
+            yield("$ATX_2 ${item.header}")
 
-                if (content.isNotBlank()) {
-                    yield(content)
-                } else {
-                    yield(item.withHeader(false).toString())
-                }
+            if (content.isNotBlank()) {
+                yield(content)
+            } else {
+                yield(item.withHeader(false).toString())
             }
 
-            otherItems.forEach {
+            releasedItems.forEach {
                 yield(it.toString())
             }
         }

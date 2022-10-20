@@ -125,7 +125,7 @@ class PatchChangelogTaskTest : BaseTest() {
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
-        assertEquals("## Foo 1.0.0 bar", extension.get(version).header)
+        assertEquals("Foo 1.0.0 bar", extension.get(version).header)
     }
 
     @Test
@@ -213,7 +213,7 @@ class PatchChangelogTaskTest : BaseTest() {
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
         val date = SimpleDateFormat("yyyy-MM-dd").format(Date())
-        assertEquals("## [1.0.0] - $date", extension.get(version).header)
+        assertEquals("[1.0.0] - $date", extension.get(version).header)
     }
 
     @Test
@@ -368,6 +368,7 @@ class PatchChangelogTaskTest : BaseTest() {
     @Test
     fun `throws MissingReleaseNoteException when Unreleased section is not present`() {
         val unreleasedTerm = "Not released"
+
         buildFile =
             """
             plugins {
@@ -376,12 +377,14 @@ class PatchChangelogTaskTest : BaseTest() {
             changelog {
                 version = "1.0.0"
                 unreleasedTerm = "$unreleasedTerm"
+                keepUnreleasedSection = false
             }
             """.trimIndent()
 
         changelog =
             """
-            ## [1.0.0]
+            ## $unreleasedTerm
+            - foo
             """.trimIndent()
 
         project.evaluate()
@@ -456,14 +459,14 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertMarkdown(
             """
-            # Changelog
+            # My Changelog
             Foo bar buz.
             
             ## [Unreleased]
             
             ## [1.0.0]
             - asd
-
+            
             ## [0.1.0]
             
             ### Added
@@ -546,6 +549,318 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ### Added
             - `RunBlocking` function
+            
+            """.trimIndent(),
+            extension.instance.content
+        )
+    }
+
+    @Test
+    fun `keep an existing changelog title`() {
+        changelog =
+            """
+            # My Changelog
+            
+            ## [Unreleased]
+            - Fixed stuff
+            """.trimIndent()
+
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                keepUnreleasedSection = false
+            }
+            """.trimIndent()
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            # My Changelog
+            
+            ## [1.0.0]
+            - Fixed stuff
+
+            """.trimIndent(),
+            extension.instance.content
+        )
+    }
+
+    @Test
+    fun `update changelog title`() {
+        changelog =
+            """
+            # My Changelog
+            
+            ## [Unreleased]
+            - Fixed stuff
+            """.trimIndent()
+
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                keepUnreleasedSection = false
+                title = "Project Changelog"
+            }
+            """.trimIndent()
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            # Project Changelog
+            
+            ## [1.0.0]
+            - Fixed stuff
+
+            """.trimIndent(),
+            extension.instance.content
+        )
+    }
+
+    @Test
+    fun `combine pre-releases`() {
+        changelog =
+            """
+            # My Changelog
+            
+            ## [Unreleased]
+            
+            ### Added
+            - New feature
+            
+            ### Changed
+            - Changes
+            
+            ## [1.0.0-beta]
+            A really awesome release.
+            
+            ### Added
+            - Feature
+            
+            ### Fixed
+            - Another bug
+            
+            ### Removed
+            - Unnecessary file
+            
+            ## [1.0.0-alpha.2]
+            An awesome release.
+            
+            ### Fixed
+            - Bug fix
+            
+            ## [1.0.0-alpha.1]
+            An awesome release.
+            
+            ### Fixed
+            - Bug fix
+            
+            ## [1.9.0]
+            An old release
+            
+            ### Added
+            - Some additional feature
+            
+            """.trimIndent()
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            # My Changelog
+            
+            ## [Unreleased]
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            ## [1.0.0]
+            A really awesome release.
+            
+            ### Added
+            - New feature
+            - Feature
+            
+            ### Changed
+            - Changes
+            
+            ### Fixed
+            - Another bug
+            - Bug fix
+            
+            ### Removed
+            - Unnecessary file
+            
+            ## [1.0.0-beta]
+            A really awesome release.
+            
+            ### Added
+            - Feature
+            
+            ### Fixed
+            - Another bug
+            
+            ### Removed
+            - Unnecessary file
+            
+            ## [1.0.0-alpha.2]
+            An awesome release.
+            
+            ### Fixed
+            - Bug fix
+            
+            ## [1.0.0-alpha.1]
+            An awesome release.
+            
+            ### Fixed
+            - Bug fix
+            
+            ## [1.9.0]
+            An old release
+            
+            ### Added
+            - Some additional feature
+            
+            """.trimIndent(),
+            extension.instance.content
+        )
+    }
+
+    @Test
+    fun `do not combine pre-releases`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                combinePreReleases = false
+            }
+            """.trimIndent()
+        changelog =
+            """
+            # My Changelog
+            
+            ## [Unreleased]
+            
+            ### Added
+            - New feature
+            
+            ### Changed
+            - Changes
+            
+            ## [1.0.0-beta]
+            A really awesome release.
+            
+            ### Added
+            - Feature
+            
+            ### Fixed
+            - Another bug
+            
+            ### Removed
+            - Unnecessary file
+            
+            ## [1.0.0-alpha.2]
+            An awesome release.
+            
+            ### Fixed
+            - Bug fix
+            
+            ## [1.0.0-alpha.1]
+            An awesome release.
+            
+            ### Fixed
+            - Bug fix
+            
+            ## [1.9.0]
+            An old release
+            
+            ### Added
+            - Some additional feature
+            
+            """.trimIndent()
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            # My Changelog
+            
+            ## [Unreleased]
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            ## [1.0.0]
+            
+            ### Added
+            - New feature
+            
+            ### Changed
+            - Changes
+            
+            ## [1.0.0-beta]
+            A really awesome release.
+            
+            ### Added
+            - Feature
+            
+            ### Fixed
+            - Another bug
+            
+            ### Removed
+            - Unnecessary file
+            
+            ## [1.0.0-alpha.2]
+            An awesome release.
+            
+            ### Fixed
+            - Bug fix
+            
+            ## [1.0.0-alpha.1]
+            An awesome release.
+            
+            ### Fixed
+            - Bug fix
+            
+            ## [1.9.0]
+            An old release
+            
+            ### Added
+            - Some additional feature
             
             """.trimIndent(),
             extension.instance.content

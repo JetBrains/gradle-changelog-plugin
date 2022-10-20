@@ -168,7 +168,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
         extension.get(version).apply {
             assertEquals(this@ChangelogPluginExtensionTest.version, version)
-            assertEquals("## [1.0.0]", header)
+            assertEquals("[1.0.0]", header)
             assertMarkdown(
                 """
                 First release.
@@ -283,7 +283,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
         extension.get(version).apply {
             assertEquals(this@ChangelogPluginExtensionTest.version, version)
-            assertEquals("## [1.0.0]", header)
+            assertEquals("[1.0.0]", header)
             withFilter {
                 !it.endsWith('x')
             }.apply {
@@ -334,7 +334,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     fun `returns latest change note`() {
         extension.getLatest().apply {
             assertEquals("[Unreleased]", version)
-            assertEquals("## [Unreleased]", header)
+            assertEquals("[Unreleased]", header)
             assertMarkdown(
                 """
                 Not yet released version.
@@ -441,8 +441,8 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertEquals(2, keys.size)
             assertEquals("[Unreleased]", keys.first())
             assertEquals("1.0.0", keys.last())
-            assertEquals("## [Unreleased]", values.first().header)
-            assertEquals("## [1.0.0]", values.last().header)
+            assertEquals("[Unreleased]", values.first().header)
+            assertEquals("[1.0.0]", values.last().header)
             assertMarkdown(
                 """
                 ## [Unreleased]

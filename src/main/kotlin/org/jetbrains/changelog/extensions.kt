@@ -52,7 +52,7 @@ internal fun compose(
         yield(preTitle)
     }
     if (!title.isNullOrBlank()) {
-        yield("$ATX_1 ${title.trim()}")
+        yield("$ATX_1 $title")
     }
     if (!introduction.isNullOrBlank()) {
         yield(introduction)

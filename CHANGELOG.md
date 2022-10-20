@@ -11,6 +11,7 @@
 - Added the `--version=...` CLI parameter for the `getChangelog` task [#83](../../issues/83)
 - Throw an exception when `initializeChangelog` task works on non-empty file [#82](../../issues/82)
 - Remove empty sections from the changelog while patching [#28](../../issues/28)
+- Added the `changelog.combinePreReleases` property to allow for combining pre-releases into a single section [#50](../../issues/50)
 
 ### Changed
 - Upgrade minimal required Gradle version to `6.8`

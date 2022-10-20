@@ -8,6 +8,7 @@ import org.intellij.markdown.MarkdownTokenTypes
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.getTextInNode
 import org.intellij.markdown.parser.MarkdownParser
+import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
 import org.jetbrains.changelog.ChangelogPluginConstants.ATX_3
 import org.jetbrains.changelog.exceptions.HeaderParseException
 import org.jetbrains.changelog.exceptions.MissingFileException
@@ -39,6 +40,8 @@ data class Changelog(
 
     private val preTitleNodes = tree.children
         .takeWhile { it.type != MarkdownElementTypes.ATX_1 }
+        .takeIf { tree.children.any { it.type == MarkdownElementTypes.ATX_1 } }
+        .orEmpty()
     val preTitleValue = preTitle ?: preTitleNodes
         .joinToString(lineSeparator) { it.text() }
         .trim()
@@ -57,6 +60,7 @@ data class Changelog(
     val introductionValue = introduction ?: introductionNodes
         .joinToString(lineSeparator) { it.text() }
         .reformat(lineSeparator)
+        .trim()
 
     private val itemsNodes = tree.children
         .dropWhile { it.type != MarkdownElementTypes.ATX_2 }
@@ -81,6 +85,7 @@ data class Changelog(
             val header = value
                 .firstOrNull { it.type == MarkdownElementTypes.ATX_2 }?.text()
                 .orEmpty()
+                .removePrefix("$ATX_2 ")
                 .trim()
 
             val nodes = value
@@ -95,6 +100,7 @@ data class Changelog(
             val summary = summaryNodes
                 .joinToString(lineSeparator) { it.text() }
                 .reformat(lineSeparator)
+                .trim()
 
             val items = nodes
                 .drop(summaryNodes.size)
@@ -112,6 +118,7 @@ data class Changelog(
                                 it.isNotEmpty()
                             }
                         }
+                        .toSet()
 
                 }
 
@@ -130,7 +137,7 @@ data class Changelog(
         var version: String,
         val header: String,
         val summary: String,
-        private val items: Map<String, List<String>>,
+        private val items: Map<String, Set<String>> = emptyMap(),
         private val isUnreleased: Boolean = false,
         private val lineSeparator: String,
     ) {
@@ -154,7 +161,7 @@ data class Changelog(
 
         fun toText() = sequence {
             if (withHeader) {
-                yield(header)
+                yield("$ATX_2 $header")
             }
 
             if (withSummary && summary.isNotEmpty()) {
@@ -187,6 +194,7 @@ data class Changelog(
         override fun toString() = toText()
 
         private fun copy(
+            summary: String = this.summary,
             withHeader: Boolean = this.withHeader,
             withSummary: Boolean = this.withSummary,
             withEmptySections: Boolean = this.withEmptySections,
@@ -204,6 +212,28 @@ data class Changelog(
             it.withEmptySections = withEmptySections
             it.filterCallback = filterCallback
         }
+
+        operator fun plus(item: Item?): Item {
+            if (item == null) {
+                return copy()
+            }
+
+            return copy(
+                summary = summary.ifEmpty { item.summary },
+                items = items + item.items,
+            )
+        }
+
+        operator fun Map<String, Set<String>>.plus(other: Map<String, Set<String>>): Map<String, Set<String>> {
+
+            return this.mapValues { (key, value) ->
+                value + other[key].orEmpty()
+            }.toMutableMap().also { map ->
+                map.putAll(other.filterKeys { !this.containsKey(it) })
+            }
+        }
+
+        operator fun plus(items: List<Item>) = items.fold(this) { acc, item -> acc + item }
     }
 
     private fun ASTNode.text() = getTextInNode(content).toString()
