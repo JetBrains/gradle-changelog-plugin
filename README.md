@@ -229,6 +229,10 @@ Requires *unreleased* section to be present in the changelog file.
 |------------------|---------------------------------------------------------|
 | `--release-note` | Adds custom release note to the latest changelog entry. |
 
+> **Warning**
+> 
+> Content provided with the `--release-note` option will override the existing release note for the latest "unreleased" entry.
+
 #### Examples
 
 ```shell
