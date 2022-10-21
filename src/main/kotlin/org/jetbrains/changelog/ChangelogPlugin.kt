@@ -30,7 +30,7 @@ class ChangelogPlugin : Plugin<Project> {
         val extension = project.extensions.create<ChangelogPluginExtension>(EXTENSION_NAME).apply {
             groups.convention(ChangelogPluginConstants.GROUPS)
             header.convention(project.provider {
-                "[${version.get()}]"
+                "[${version.get()}] - ${date()}"
             })
             keepUnreleasedSection.convention(true)
             itemPrefix.convention(ChangelogPluginConstants.ITEM_PREFIX)

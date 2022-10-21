@@ -17,6 +17,7 @@
 - Upgrade minimal required Gradle version to `6.8`
 - Make `withHeader` property of the `Changelog.Item` object `true` by default
 - Updated the `HeaderParseException` message [#84](../../issues/84)
+- Use `"[${project.version}] - ${date()}"` as the default value for the `changelog.header` property [#18](../../issues/18)
 
 ## [1.3.1]
 ### Changed

@@ -45,7 +45,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertMarkdown(
             """
-            ## [1.0.0]
+            ## [1.0.0] - $date
             Fancy release.
             
             ### Added
@@ -94,7 +94,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertMarkdown(
             """
-            ## [$version]
+            ## [$version] - $date
             Fancy release.
             
             ### Added
@@ -165,7 +165,7 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ### Security
             
-            ## [1.0.0]
+            ## [1.0.0] - $date
             Fancy release.
             
             ### Added
@@ -298,7 +298,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertMarkdown(
             """
-            ## [1.0.0]
+            ## [1.0.0] - $date
             
             ### Added
             - foo
@@ -438,7 +438,7 @@ class PatchChangelogTaskTest : BaseTest() {
             - Foo
             - Bar
             
-            ## [0.1.0]
+            ## [0.1.0] - 2022-10-10
             
             ### Added
             - Buz
@@ -450,7 +450,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertMarkdown(
             """
-            ## [1.0.0]
+            ## [1.0.0] - $date
             - asd
 
             """.trimIndent(),
@@ -464,10 +464,10 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ## [Unreleased]
             
-            ## [1.0.0]
+            ## [1.0.0] - $date
             - asd
             
-            ## [0.1.0]
+            ## [0.1.0] - 2022-10-10
             
             ### Added
             - Buz
@@ -502,7 +502,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Removed
             
             ### Fixed
-            ## [0.0.1]
+            ## [0.0.1] - 2022-10-10
             
             ### Added
             
@@ -540,12 +540,12 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ### Security
             
-            ## [1.0.0]
+            ## [1.0.0] - $date
             
             ### Changed
             - Update some feature
             
-            ## [0.0.1]
+            ## [0.0.1] - 2022-10-10
             
             ### Added
             - `RunBlocking` function
@@ -583,7 +583,7 @@ class PatchChangelogTaskTest : BaseTest() {
             """
             # My Changelog
             
-            ## [1.0.0]
+            ## [1.0.0] - $date
             - Fixed stuff
 
             """.trimIndent(),
@@ -620,7 +620,7 @@ class PatchChangelogTaskTest : BaseTest() {
             """
             # Project Changelog
             
-            ## [1.0.0]
+            ## [1.0.0] - $date
             - Fixed stuff
 
             """.trimIndent(),
@@ -642,7 +642,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Changed
             - Changes
             
-            ## [1.0.0-beta]
+            ## [1.0.0-beta] - 2022-10-13
             A really awesome release.
             
             ### Added
@@ -654,19 +654,19 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Removed
             - Unnecessary file
             
-            ## [1.0.0-alpha.2]
+            ## [1.0.0-alpha.2] - 2022-10-12
             An awesome release.
             
             ### Fixed
             - Bug fix
             
-            ## [1.0.0-alpha.1]
+            ## [1.0.0-alpha.1] - 2022-10-11
             An awesome release.
             
             ### Fixed
             - Bug fix
             
-            ## [1.9.0]
+            ## [0.9.0] - 2022-10-10
             An old release
             
             ### Added
@@ -695,7 +695,7 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ### Security
             
-            ## [1.0.0]
+            ## [1.0.0] - $date
             A really awesome release.
             
             ### Added
@@ -712,7 +712,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Removed
             - Unnecessary file
             
-            ## [1.0.0-beta]
+            ## [1.0.0-beta] - 2022-10-13
             A really awesome release.
             
             ### Added
@@ -724,19 +724,19 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Removed
             - Unnecessary file
             
-            ## [1.0.0-alpha.2]
+            ## [1.0.0-alpha.2] - 2022-10-12
             An awesome release.
             
             ### Fixed
             - Bug fix
             
-            ## [1.0.0-alpha.1]
+            ## [1.0.0-alpha.1] - 2022-10-11
             An awesome release.
             
             ### Fixed
             - Bug fix
             
-            ## [1.9.0]
+            ## [0.9.0] - 2022-10-10
             An old release
             
             ### Added
@@ -771,7 +771,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Changed
             - Changes
             
-            ## [1.0.0-beta]
+            ## [1.0.0-beta] - 2022-10-13
             A really awesome release.
             
             ### Added
@@ -783,19 +783,19 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Removed
             - Unnecessary file
             
-            ## [1.0.0-alpha.2]
+            ## [1.0.0-alpha.2] - 2022-10-12
             An awesome release.
             
             ### Fixed
             - Bug fix
             
-            ## [1.0.0-alpha.1]
+            ## [1.0.0-alpha.1] - 2022-10-11
             An awesome release.
             
             ### Fixed
             - Bug fix
             
-            ## [1.9.0]
+            ## [0.9.0] - 2022-10-10
             An old release
             
             ### Added
@@ -824,7 +824,7 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ### Security
             
-            ## [1.0.0]
+            ## [1.0.0] - $date
             
             ### Added
             - New feature
@@ -832,7 +832,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Changed
             - Changes
             
-            ## [1.0.0-beta]
+            ## [1.0.0-beta] - 2022-10-13
             A really awesome release.
             
             ### Added
@@ -844,19 +844,19 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Removed
             - Unnecessary file
             
-            ## [1.0.0-alpha.2]
+            ## [1.0.0-alpha.2] - 2022-10-12
             An awesome release.
             
             ### Fixed
             - Bug fix
             
-            ## [1.0.0-alpha.1]
+            ## [1.0.0-alpha.1] - 2022-10-11
             An awesome release.
             
             ### Fixed
             - Bug fix
             
-            ## [1.9.0]
+            ## [0.9.0] - 2022-10-10
             An old release
             
             ### Added

@@ -20,13 +20,13 @@ class GetChangelogTaskTest : BaseTest() {
             
             - bar
             
-            ## [1.0.1]
+            ## [1.0.1] - 2022-10-17
             Release with bugfix.
             
             ### Fixed
             - bar
             
-            ## [1.0.0]
+            ## [1.0.0] - 2022-10-10
             That was a great release.
             
             ### Added
@@ -52,7 +52,7 @@ class GetChangelogTaskTest : BaseTest() {
 
         assertMarkdown(
             """
-            ## [1.0.0]
+            ## [1.0.0] - 2022-10-10
             That was a great release.
             
             ### Added
@@ -82,7 +82,7 @@ class GetChangelogTaskTest : BaseTest() {
 
         assertMarkdown(
             """
-            ## [1.0.1]
+            ## [1.0.1] - 2022-10-17
             Release with bugfix.
             
             ### Fixed
@@ -113,7 +113,7 @@ class GetChangelogTaskTest : BaseTest() {
 
         assertMarkdown(
             """
-            ## [1.0.0]
+            ## [1.0.0] - 2022-10-10
             
             ### Added
             - foo
@@ -128,7 +128,7 @@ class GetChangelogTaskTest : BaseTest() {
 
         assertMarkdown(
             """
-            ## [1.0.0]
+            ## [1.0.0] - 2022-10-10
             That was a great release.
             
             ### Added
