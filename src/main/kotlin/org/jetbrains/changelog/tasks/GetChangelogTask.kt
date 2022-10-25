@@ -4,6 +4,7 @@ package org.jetbrains.changelog.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
@@ -49,18 +50,27 @@ abstract class GetChangelogTask : DefaultTask() {
     abstract val version: Property<String>
 
     @get:Internal
+    abstract val groups: ListProperty<String>
+
+    @get:Internal
     abstract val lineSeparator: Property<String>
+
+    @get:Internal
+    abstract val repositoryUrl: Property<String>
 
     @TaskAction
     fun run() = logger.quiet(
         Changelog(
             file = inputFile.map { it.asFile }.get(),
-            preTitle = null,
-            title = null,
-            introduction = null,
+            defaultPreTitle = null,
+            defaultTitle = null,
+            defaultIntroduction = null,
             unreleasedTerm = unreleasedTerm.get(),
+            groups = emptyList(),
             headerParserRegex = headerParserRegex.get(),
             itemPrefix = itemPrefix.get(),
+            repositoryUrl = repositoryUrl.orNull,
+            sectionUrlBuilder = sectionUrlBuilder.get(),
             lineSeparator = lineSeparator.get(),
         ).let {
             val version = cliVersion ?: when (unreleased) {

@@ -6,6 +6,7 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
+import org.jetbrains.changelog.ChangelogPluginConstants.SEM_VER_REGEX
 import java.io.File
 import java.util.regex.Pattern
 
@@ -38,7 +39,7 @@ abstract class ChangelogPluginExtension {
             is Pattern -> it.toRegex()
             else -> throw IllegalArgumentException("Unsupported type of $it. Expected value types: Regex, String, Pattern.")
         }
-    }.orElse(ChangelogPluginConstants.SEM_VER_REGEX)
+    }.orElse(SEM_VER_REGEX)
 
     @get:Optional
     abstract val itemPrefix: Property<String>
@@ -64,15 +65,24 @@ abstract class ChangelogPluginExtension {
     @get:Optional
     abstract val combinePreReleases: Property<Boolean>
 
+    @get:Optional
+    abstract val repositoryUrl: Property<String>
+
+    @get:Optional
+    abstract val sectionUrlBuilder: Property<ChangelogSectionUrlBuilder>
+
     val instance
         get() = Changelog(
             file = File(path.get()),
-            preTitle = preTitle.orNull,
-            title = title.orNull,
-            introduction = introduction.orNull,
+            defaultPreTitle = preTitle.orNull,
+            defaultTitle = title.orNull,
+            defaultIntroduction = introduction.orNull,
             unreleasedTerm = unreleasedTerm.get(),
+            groups = groups.get(),
             headerParserRegex = getHeaderParserRegex.get(),
             itemPrefix = itemPrefix.get(),
+            repositoryUrl = repositoryUrl.orNull,
+            sectionUrlBuilder = sectionUrlBuilder.get(),
             lineSeparator = lineSeparator.get(),
         )
 

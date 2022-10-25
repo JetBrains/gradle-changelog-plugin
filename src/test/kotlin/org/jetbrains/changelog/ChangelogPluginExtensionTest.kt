@@ -102,7 +102,8 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `getUnreleased() returns Unreleased section`() {
         extension.getUnreleased().apply {
-            assertEquals("[Unreleased]", version)
+            assertEquals("Unreleased", version)
+            assertEquals("[Unreleased]", header)
             assertMarkdown(
                 """
                 ## [Unreleased]
@@ -111,6 +112,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 ### Added
                 - Foo
                 
+                [Unreleased]: https://github.com
                 """.trimIndent(),
                 toText()
             )
@@ -178,7 +180,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 summary,
             )
-            withHeader(true).withSummary(true).getSections().apply {
+            withHeader(true).withSummary(true).sections.apply {
                 assertEquals(3, size)
                 assertTrue(containsKey("Added"))
                 assertEquals(6, get("Added")?.size)
@@ -288,7 +290,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 !it.endsWith('x')
             }.apply {
 
-                with (getSections()) {
+                with (sections) {
                     assertEquals(2, size)
                     assertTrue(containsKey("Added"))
                     assertEquals(3, get("Added")?.size)
@@ -347,7 +349,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `checks if the given version exists in the changelog`() {
-        assertTrue(extension.has("[Unreleased]"))
+        assertTrue(extension.has("Unreleased"))
         assertTrue(extension.has("1.0.0"))
         assertFalse(extension.has("2.0.0"))
     }
@@ -382,7 +384,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         extension.get("1.0.0").apply {
             assertEquals("1.0.0", version)
 
-            withHeader(true).getSections().apply {
+            withHeader(true).sections.apply {
                 assertEquals(1, size)
                 assertTrue(containsKey(""))
                 assertEquals(1, get("")?.size)
@@ -419,17 +421,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
         extension.get("1.0.0").apply {
             assertEquals("1.0.0", version)
-            assertEquals(1, getSections().keys.size)
-            getSections().values.first().apply {
-                assertEquals(2, size)
-                assertMarkdown(
-                    """
-                    - Foo - bar
-                    * Foo2
-                    """.trimIndent(),
-                    first()
-                )
-                assertEquals("- Bar", last())
+            assertEquals(1, sections.keys.size)
+            sections.values.first().apply {
+                assertEquals(3, size)
+                assertMarkdown("Foo - bar", first())
+                assertEquals("Bar", last())
             }
         }
     }
@@ -439,7 +435,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         extension.getAll().apply {
             assertNotNull(this)
             assertEquals(2, keys.size)
-            assertEquals("[Unreleased]", keys.first())
+            assertEquals("Unreleased", keys.first())
             assertEquals("1.0.0", keys.last())
             assertEquals("[Unreleased]", values.first().header)
             assertEquals("[1.0.0]", values.last().header)
@@ -451,17 +447,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 ### Added
                 - Foo
                 
-                """.trimIndent(),
-                values.first().toText()
-            )
-            assertMarkdown(
-                """
-                ## [Unreleased]
-                Not yet released version.
-                
-                ### Added
-                - Foo
-                
+                [Unreleased]: ...
                 """.trimIndent(),
                 values.first().toText()
             )
@@ -473,17 +459,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 ### Removed
                 - Bar
                 
-                """.trimIndent(),
-                values.last().toText()
-            )
-             assertMarkdown(
-                """
-                ## [1.0.0]
-                First release.
-                
-                ### Removed
-                - Bar
-                
+                [1.0.0]: ...
                 """.trimIndent(),
                 values.last().toText()
             )
@@ -592,7 +568,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 ## [1.0.0]
                 First release.
                 
-                * Foo
+                - Foo
                 
                 """.trimIndent(),
                 toText()
@@ -606,7 +582,6 @@ class ChangelogPluginExtensionTest : BaseTest() {
             """
             Project description.
             Multiline description:
-            
             - item 1
             - item 2
             

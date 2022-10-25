@@ -8,6 +8,8 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
+import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.compose
 
 abstract class InitializeChangelogTask : DefaultTask() {
@@ -43,6 +45,12 @@ abstract class InitializeChangelogTask : DefaultTask() {
     @get:Internal
     abstract val lineSeparator: Property<String>
 
+    @get:Internal
+    abstract val repositoryUrl: Property<String>
+
+    @get:Internal
+    abstract val sectionUrlBuilder: Property<ChangelogSectionUrlBuilder>
+
     @TaskAction
     fun run() {
         val file = outputFile.get()
@@ -57,12 +65,24 @@ abstract class InitializeChangelogTask : DefaultTask() {
             throw GradleException("Changelog file is not empty: ${file.absolutePath}")
         }
 
+        val unreleasedItem = Changelog.Item(
+            version = unreleasedTerm.get(),
+            header = unreleasedTerm.get(),
+            items = groups.get().associateWith { emptySet() },
+            itemPrefix = itemPrefix.get(),
+            lineSeparator = lineSeparator.get(),
+        )
+            .withEmptySections(true)
+            .withLinks(false)
+
         val content = compose(
             preTitle = preTitle.orNull,
             title = title.orNull,
             introduction = introduction.orNull,
-            unreleasedTerm = unreleasedTerm.get(),
-            groups = groups.get(),
+            unreleasedItem = unreleasedItem,
+            items = emptyList(),
+            repositoryUrl = repositoryUrl.orNull,
+            sectionUrlBuilder = sectionUrlBuilder.get(),
             lineSeparator = lineSeparator.get(),
         )
         file.writeText(content)

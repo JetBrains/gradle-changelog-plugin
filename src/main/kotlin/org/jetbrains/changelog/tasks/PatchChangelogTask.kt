@@ -9,11 +9,8 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
-import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
-import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
+import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.Version
-import org.jetbrains.changelog.compose
-import org.jetbrains.changelog.exceptions.MissingReleaseNoteException
 
 abstract class PatchChangelogTask : DefaultTask() {
 
@@ -80,26 +77,35 @@ abstract class PatchChangelogTask : DefaultTask() {
     @get:Internal
     abstract val combinePreReleases: Property<Boolean>
 
+    @get:Internal
+    abstract val repositoryUrl: Property<String>
+
+    @get:Internal
+    abstract val sectionUrlBuilder: Property<ChangelogSectionUrlBuilder>
+
     @TaskAction
     fun run() {
         val unreleasedTermValue = unreleasedTerm.get()
 
         val changelog = Changelog(
             file = inputFile.get().asFile,
-            preTitle = preTitle.orNull,
-            title = title.orNull,
-            introduction = introduction.orNull,
+            defaultPreTitle = preTitle.orNull,
+            defaultTitle = title.orNull,
+            defaultIntroduction = introduction.orNull,
             unreleasedTerm = unreleasedTerm.get(),
+            groups = groups.get(),
             headerParserRegex = headerParserRegex.get(),
             itemPrefix = itemPrefix.get(),
+            repositoryUrl = repositoryUrl.orNull,
+            sectionUrlBuilder = sectionUrlBuilder.get(),
             lineSeparator = lineSeparator.get(),
         )
 
-        val preTitleValue = preTitle.orNull ?: changelog.preTitleValue
-        val titleValue = title.orNull ?: changelog.titleValue.removePrefix("$ATX_1 ")
-        val introductionValue = introduction.orNull ?: changelog.introductionValue
+        val releasedItems = changelog
+            .getAll()
+            .filterNot { it.key == unreleasedTermValue }
+            .values
 
-        val releasedItems = changelog.getAll().filterNot { it.key == unreleasedTermValue }.values
         val preReleaseItems = releasedItems
             .filter {
                 val current = Version.parse(version.get())
@@ -113,8 +119,7 @@ abstract class PatchChangelogTask : DefaultTask() {
         val item = Changelog.Item(
             version = version.get(),
             header = header.get(),
-            summary = "",
-            isUnreleased = true,
+            itemPrefix = itemPrefix.get(),
             lineSeparator = lineSeparator.get(),
         ) + changelog.runCatching { get(unreleasedTermValue) }.getOrNull() + preReleaseItems
 
@@ -128,34 +133,39 @@ abstract class PatchChangelogTask : DefaultTask() {
             throw StopActionException()
         }
 
-        if (item.getSections().isEmpty() && content.isBlank()) {
-            throw MissingReleaseNoteException(
-                ":patchChangelog task requires release note to be provided. " +
-                        "Add '$ATX_2 $unreleasedTermValue' section header to your changelog file: " +
-                        "'${inputFile.get().asFile.canonicalPath}' or provide it using '--release-note' CLI option."
-            )
-        }
+//        if (item.getSections().isEmpty() && content.isBlank()) {
+//            throw MissingReleaseNoteException(
+//                ":patchChangelog task requires release note to be provided. " +
+//                        "Add '$LEVEL_2 $unreleasedTermValue' section header to your changelog file: " +
+//                        "'${inputFile.get().asFile.canonicalPath}' or provide it using '--release-note' CLI option."
+//            )
+//        }
 
-        val patchedContent = compose(
-            preTitle = preTitleValue,
-            title = titleValue,
-            introduction = introductionValue,
-            unreleasedTerm = unreleasedTermValue.takeIf { keepUnreleasedSection.get() },
-            groups = groups.get(),
-            lineSeparator = lineSeparator.get(),
-        ) {
-            yield("$ATX_2 ${item.header}")
 
-            if (content.isNotBlank()) {
-                yield(content)
-            } else {
-                yield(item.withHeader(false).toString())
-            }
 
-            releasedItems.forEach {
-                yield(it.toString())
-            }
-        }
+//        val patchedContent = compose(
+////            preTitle = preTitleValue,
+////            title = titleValue,
+////            introduction = introductionValue,
+////            unreleasedItem = changelog.unreleasedItem.takeIf { keepUnreleasedSection.get() },
+////            items = releasedItems,
+////            repositoryUrl = repositoryUrl.orNull,
+////            sectionUrlBuilder = sectionUrlBuilder.get(),
+////            lineSeparator = lineSeparator.get(),
+//            changelog,
+//            sectionUrlBuilder.get(),
+//            lineSeparator.get(),
+//        ) {
+//            yield("$LEVEL_2 ${item.header}")
+//
+//            if (content.isNotBlank()) {
+//                yield(content)
+//            } else {
+//                yield(item.withHeader(false).toString())
+//            }
+//        }
+
+        val patchedContent = changelog.render(sectionUrlBuilder.get())
 
         outputFile.get()
             .asFile
