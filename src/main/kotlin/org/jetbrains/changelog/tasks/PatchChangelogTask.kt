@@ -4,15 +4,12 @@ package org.jetbrains.changelog.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
+import org.intellij.markdown.MarkdownElementTypes.ATX_2
 import org.jetbrains.changelog.Changelog
-import org.jetbrains.changelog.ChangelogPluginConstants.ATX_1
-import org.jetbrains.changelog.ChangelogPluginConstants.ATX_2
 import org.jetbrains.changelog.Version
-import org.jetbrains.changelog.compose
 import org.jetbrains.changelog.exceptions.MissingReleaseNoteException
 
 abstract class PatchChangelogTask : DefaultTask() {
@@ -22,143 +19,119 @@ abstract class PatchChangelogTask : DefaultTask() {
     @Option(option = "release-note", description = "Custom release note content")
     var releaseNote: String? = null
 
-    @get:InputFile
-    @get:Optional
-    abstract val inputFile: RegularFileProperty
-
-    @get:OutputFile
-    @get:Optional
-    abstract val outputFile: RegularFileProperty
-
-    @get:Input
-    @get:Optional
-    abstract val groups: ListProperty<String>
-
-    @get:Input
-    @get:Optional
-    abstract val header: Property<String>
-
-    @get:Input
-    @get:Optional
-    abstract val headerParserRegex: Property<Regex>
-
-    @get:Input
-    @get:Optional
-    abstract val preTitle: Property<String>
-
-    @get:Input
-    @get:Optional
-    abstract val title: Property<String>
-
-    @get:Input
-    @get:Optional
-    abstract val introduction: Property<String>
-
-    @get:Input
-    @get:Optional
-    abstract val itemPrefix: Property<String>
-
-    @get:Input
-    @get:Optional
-    abstract val keepUnreleasedSection: Property<Boolean>
-
-    @get:Input
-    @get:Optional
-    abstract val patchEmpty: Property<Boolean>
-
-    @get:Input
-    @get:Optional
-    abstract val unreleasedTerm: Property<String>
-
     @get:Input
     @get:Optional
     abstract val version: Property<String>
 
     @get:Internal
-    abstract val lineSeparator: Property<String>
+    abstract val header: Property<String>
+
+    @get:Internal
+    abstract val keepUnreleasedSection: Property<Boolean>
+
+    @get:Internal
+    abstract val patchEmpty: Property<Boolean>
 
     @get:Internal
     abstract val combinePreReleases: Property<Boolean>
 
+    @get:Internal
+    abstract val changelog: Property<Changelog>
+
+    @get:InputFile
+    @get:Optional
+    abstract val inputFile: RegularFileProperty
+
+    @get:Internal
+    val content = inputFile.map {
+        with(it.asFile) {
+            if (!exists()) {
+                createNewFile()
+            }
+            readText()
+        }
+    }
+
+    @get:OutputFile
+    @get:Optional
+    abstract val outputFile: RegularFileProperty
+
     @TaskAction
     fun run() {
-        val unreleasedTermValue = unreleasedTerm.get()
+//        val item = Changelog.Item(
+//            version = version.get(),
+//            header = header.get(),
+//            itemPrefix = itemPrefix.get(),
+//            lineSeparator = lineSeparator.get(),
+//        ) + changelog.runCatching { get(unreleasedTermValue) }.getOrNull() + preReleaseItems
+//
+//        val content = releaseNote ?: item
+//            .withEmptySections(false)
+//            .withHeader(false)
+//            .toText()
+//
+//        if (patchEmpty.get() && content.isEmpty()) {
+//            logger.info(":patchChangelog task skipped due to the missing release note in the '$unreleasedTerm'.")
+//            throw StopActionException()
+//        }
 
-        val changelog = Changelog(
-            file = inputFile.get().asFile,
-            preTitle = preTitle.orNull,
-            title = title.orNull,
-            introduction = introduction.orNull,
-            unreleasedTerm = unreleasedTerm.get(),
-            headerParserRegex = headerParserRegex.get(),
-            itemPrefix = itemPrefix.get(),
-            lineSeparator = lineSeparator.get(),
-        )
-
-        val preTitleValue = preTitle.orNull ?: changelog.preTitleValue
-        val titleValue = title.orNull ?: changelog.titleValue.removePrefix("$ATX_1 ")
-        val introductionValue = introduction.orNull ?: changelog.introductionValue
-
-        val releasedItems = changelog.getAll().filterNot { it.key == unreleasedTermValue }.values
-        val preReleaseItems = releasedItems
-            .filter {
-                val current = Version.parse(version.get())
-                with(Version.parse(it.version)) {
-                    current.major == major && current.minor == minor && current.patch == patch
+        with(changelog.get()) {
+            val preReleaseItems = releasedItems
+                .filter {
+                    val current = Version.parse(version.get())
+                    with(Version.parse(it.version)) {
+                        current.major == major && current.minor == minor && current.patch == patch
+                    }
                 }
-            }
-            .takeIf { combinePreReleases.get() }
-            .orEmpty()
+                .takeIf { combinePreReleases.get() }
+                .orEmpty()
 
-        val item = Changelog.Item(
-            version = version.get(),
-            header = header.get(),
-            summary = "",
-            isUnreleased = true,
-            lineSeparator = lineSeparator.get(),
-        ) + changelog.runCatching { get(unreleasedTermValue) }.getOrNull() + preReleaseItems
+            val newItem = (unreleasedItem ?: newUnreleasedItem).copy(
+                version = version.get(),
+                header = header.get(),
+                isUnreleased = false,
+            ).let {
+                parseTree(releaseNote)?.let { releaseNoteTree ->
+                    val (summary, items) = releaseNoteTree.children.extractItemData(releaseNote)
+                    val links = releaseNoteTree.children.extractLinks(releaseNote)
 
-        val content = releaseNote ?: item
-            .withEmptySections(false)
-            .withHeader(false)
-            .toText()
+                    baseLinks.addAll(links)
 
-        if (patchEmpty.get() && content.isEmpty()) {
-            logger.info(":patchChangelog task skipped due to the missing release note in the '$unreleasedTerm'.")
-            throw StopActionException()
-        }
+                    it.copy(
+                        summary = summary,
+                        items = items,
+                    )
+                } ?: it
+            } + preReleaseItems
 
-        if (item.getSections().isEmpty() && content.isBlank()) {
-            throw MissingReleaseNoteException(
-                ":patchChangelog task requires release note to be provided. " +
-                        "Add '$ATX_2 $unreleasedTermValue' section header to your changelog file: " +
-                        "'${inputFile.get().asFile.canonicalPath}' or provide it using '--release-note' CLI option."
-            )
-        }
+            if (newItem.summary.isEmpty() && newItem.sections.all { it.value.isEmpty() }) {
+                if (patchEmpty.get()) {
+                    logger.info(":patchChangelog task skipped due to the missing release note in the '$unreleasedTerm'.")
+                    throw StopActionException()
+                }
 
-        val patchedContent = compose(
-            preTitle = preTitleValue,
-            title = titleValue,
-            introduction = introductionValue,
-            unreleasedTerm = unreleasedTermValue.takeIf { keepUnreleasedSection.get() },
-            groups = groups.get(),
-            lineSeparator = lineSeparator.get(),
-        ) {
-            yield("$ATX_2 ${item.header}")
-
-            if (content.isNotBlank()) {
-                yield(content)
-            } else {
-                yield(item.withHeader(false).toString())
+                throw MissingReleaseNoteException(
+                    ":patchChangelog task requires release note to be provided. " +
+                            "Add '$ATX_2 $unreleasedTerm' section header with release notes to your changelog file: " +
+                            "'${inputFile.get().asFile.canonicalPath}' or provide it using '--release-note' CLI option."
+                )
             }
 
-            releasedItems.forEach {
-                yield(it.toString())
+            items = sequence {
+                if (keepUnreleasedSection.get()) {
+                    yield(unreleasedTerm to newUnreleasedItem)
+                }
+                yield(newItem.version to newItem)
+                releasedItems.forEach {
+                    yield(it.version to it)
+                }
+            }.toMap()
+
+            render(Changelog.OutputType.MARKDOWN).let {
+                outputFile.get()
+                    .asFile
+                    .writeText(it)
             }
         }
-
-        outputFile.get()
-            .asFile
-            .writeText(patchedContent)
     }
 }

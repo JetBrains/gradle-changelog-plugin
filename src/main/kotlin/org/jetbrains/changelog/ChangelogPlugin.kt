@@ -7,13 +7,17 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.register
+import org.jetbrains.changelog.ChangelogPluginConstants.CHANGELOG_FILE_NAME
 import org.jetbrains.changelog.ChangelogPluginConstants.EXTENSION_NAME
 import org.jetbrains.changelog.ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME
+import org.jetbrains.changelog.ChangelogPluginConstants.GROUPS
 import org.jetbrains.changelog.ChangelogPluginConstants.GROUP_NAME
 import org.jetbrains.changelog.ChangelogPluginConstants.INITIALIZE_CHANGELOG_TASK_NAME
+import org.jetbrains.changelog.ChangelogPluginConstants.ITEM_PREFIX
 import org.jetbrains.changelog.ChangelogPluginConstants.MINIMAL_SUPPORTED_GRADLE_VERSION
 import org.jetbrains.changelog.ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAME
 import org.jetbrains.changelog.ChangelogPluginConstants.PLUGIN_NAME
+import org.jetbrains.changelog.ChangelogPluginConstants.UNRELEASED_TERM
 import org.jetbrains.changelog.exceptions.VersionNotSpecifiedException
 import org.jetbrains.changelog.tasks.GetChangelogTask
 import org.jetbrains.changelog.tasks.InitializeChangelogTask
@@ -28,24 +32,30 @@ class ChangelogPlugin : Plugin<Project> {
         checkGradleVersion(project)
 
         val extension = project.extensions.create<ChangelogPluginExtension>(EXTENSION_NAME).apply {
-            groups.convention(ChangelogPluginConstants.GROUPS)
+            groups.convention(GROUPS)
             header.convention(project.provider {
-                "[${version.get()}] - ${date()}"
+                "${version.get()} - ${date()}"
             })
             keepUnreleasedSection.convention(true)
-            itemPrefix.convention(ChangelogPluginConstants.ITEM_PREFIX)
+            itemPrefix.convention(ITEM_PREFIX)
             path.convention(project.provider {
-                "${project.projectDir}/${ChangelogPluginConstants.CHANGELOG_FILE_NAME}"
+                "${project.projectDir}/$CHANGELOG_FILE_NAME"
+            }.map {
+                with(Path.of(it)) {
+                    if (!Files.exists(this)) {
+                        Files.createFile(this)
+                    }
+                    toAbsolutePath().toString()
+                }
             })
             patchEmpty.convention(true)
-            unreleasedTerm.convention(ChangelogPluginConstants.UNRELEASED_TERM)
+            unreleasedTerm.convention(UNRELEASED_TERM)
             version.convention(
                 project.provider {
                     project.version.toString().takeIf { it != Project.DEFAULT_VERSION }
                         ?: throw VersionNotSpecifiedException()
                 }
             )
-//            title.convention(ChangelogPluginConstants.DEFAULT_TITLE)
             lineSeparator.convention(path.map { path ->
                 val content = Path.of(path)
                     .takeIf { Files.exists(it) }
@@ -64,6 +74,39 @@ class ChangelogPlugin : Plugin<Project> {
                 }
             })
             combinePreReleases.convention(true)
+            repositoryUrl.map { it.removeSuffix("/") }
+            sectionUrlBuilder.convention(
+                ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
+                    repositoryUrl + when {
+                        isUnreleased -> "/compare/v$previousVersion...HEAD"
+                        previousVersion == null -> "/tag/v$currentVersion"
+                        else -> "/compare/v$previousVersion...v$currentVersion"
+                    }
+                }
+            )
+
+            instance.convention(project.provider {
+                Changelog(
+                    content = path.map {
+                        with(File(it)) {
+                            if (!exists()) {
+                                createNewFile()
+                            }
+                            readText()
+                        }
+                    }.get(),
+                    defaultPreTitle = preTitle.orNull,
+                    defaultTitle = title.orNull,
+                    defaultIntroduction = introduction.orNull,
+                    unreleasedTerm = unreleasedTerm.get(),
+                    groups = groups.get(),
+                    headerParserRegex = getHeaderParserRegex.get(),
+                    itemPrefix = itemPrefix.get(),
+                    repositoryUrl = repositoryUrl.orNull,
+                    sectionUrlBuilder = sectionUrlBuilder.get(),
+                    lineSeparator = lineSeparator.get(),
+                )
+            })
         }
 
         val pathProvider = project.layout.file(extension.path.map { File(it) })
@@ -71,12 +114,8 @@ class ChangelogPlugin : Plugin<Project> {
         project.tasks.register<GetChangelogTask>(GET_CHANGELOG_TASK_NAME) {
             group = GROUP_NAME
 
-            headerParserRegex.convention(extension.getHeaderParserRegex)
+            changelog.convention(extension.instance)
             inputFile.convention(pathProvider)
-            itemPrefix.convention(extension.itemPrefix)
-            unreleasedTerm.set(extension.unreleasedTerm)
-            version.set(extension.version)
-            lineSeparator.convention(extension.lineSeparator)
 
             outputs.upToDateWhen { false }
         }
@@ -84,35 +123,21 @@ class ChangelogPlugin : Plugin<Project> {
         project.tasks.register<PatchChangelogTask>(PATCH_CHANGELOG_TASK_NAME) {
             group = GROUP_NAME
 
-            groups.convention(extension.groups)
-            header.convention(extension.header)
-            preTitle.convention(extension.preTitle)
-            title.convention(extension.title)
-            introduction.set(extension.introduction)
-            headerParserRegex.convention(extension.getHeaderParserRegex)
-            inputFile.convention(pathProvider)
-            itemPrefix.convention(extension.itemPrefix)
-            keepUnreleasedSection.convention(extension.keepUnreleasedSection)
-            outputFile.convention(pathProvider)
-            patchEmpty.convention(extension.patchEmpty)
-            unreleasedTerm.convention(extension.unreleasedTerm)
             version.convention(extension.version)
-            lineSeparator.convention(extension.lineSeparator)
+            header.convention(extension.header)
+            keepUnreleasedSection.convention(extension.keepUnreleasedSection)
+            patchEmpty.convention(extension.patchEmpty)
             combinePreReleases.convention(extension.combinePreReleases)
+            changelog.convention(extension.instance)
+            inputFile.convention(pathProvider)
+            outputFile.convention(pathProvider)
         }
 
         project.tasks.register<InitializeChangelogTask>(INITIALIZE_CHANGELOG_TASK_NAME) {
             group = GROUP_NAME
 
-            preTitle.convention(extension.preTitle)
-            title.convention(extension.title)
-            introduction.convention(extension.introduction)
-
-            groups.set(extension.groups)
+            changelog.convention(extension.instance)
             outputFile.convention(pathProvider)
-            itemPrefix.set(extension.itemPrefix)
-            unreleasedTerm.set(extension.unreleasedTerm)
-            lineSeparator.convention(extension.lineSeparator)
         }
     }
 

@@ -31,6 +31,10 @@ class GetChangelogTaskTest : BaseTest() {
             
             ### Added
             - foo
+            
+            [Unreleased]: https://jetbrians.com/Unreleased
+            [1.0.1]: https://jetbrians.com/1.0.1
+            [1.0.0]: https://jetbrians.com/1.0.0
             """.trimIndent()
 
         buildFile =
@@ -47,18 +51,20 @@ class GetChangelogTaskTest : BaseTest() {
     }
 
     @Test
-    fun `returns change notes for the version specified with extension`() {
+    fun `returns change notes for the latest released version`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
         assertMarkdown(
             """
-            ## [1.0.0] - 2022-10-10
-            That was a great release.
+            ## [1.0.1] - 2022-10-17
+            Release with bugfix.
             
-            ### Added
-            - foo
+            ### Fixed
+            - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
             """.trimIndent(),
-            result.output.trim()
+            result.output
         )
     }
 
@@ -70,9 +76,12 @@ class GetChangelogTaskTest : BaseTest() {
             """
             ## [Unreleased]
             Some unreleased changes.
+            
             - bar
+            
+            [Unreleased]: https://jetbrians.com/Unreleased
             """.trimIndent(),
-            result.output.trim()
+            result.output
         )
     }
 
@@ -87,54 +96,78 @@ class GetChangelogTaskTest : BaseTest() {
             
             ### Fixed
             - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
             """.trimIndent(),
-            result.output.trim()
+            result.output
         )
     }
 
     @Test
-    fun `returns change notes without header for the version specified with extension`() {
+    fun `returns change notes without header for the latest released version`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--no-header")
 
         assertMarkdown(
             """
-            That was a great release.
+            Release with bugfix.
             
-            ### Added
-            - foo
+            ### Fixed
+            - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
             """.trimIndent(),
-            result.output.trim()
+            result.output
         )
     }
 
     @Test
-    fun `returns change notes without summary for the version specified with extension`() {
+    fun `returns change notes without summary for the latest released version`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--no-summary")
 
         assertMarkdown(
             """
-            ## [1.0.0] - 2022-10-10
+            ## [1.0.1] - 2022-10-17
             
-            ### Added
-            - foo
+            ### Fixed
+            - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
             """.trimIndent(),
-            result.output.trim()
+            result.output
+        )
+    }
+    
+    @Test
+    fun `returns change notes without links for the latest released version`() {
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--no-links")
+
+        assertMarkdown(
+            """
+            ## 1.0.1 - 2022-10-17
+            Release with bugfix.
+            
+            ### Fixed
+            - bar
+            """.trimIndent(),
+            result.output
         )
     }
 
     @Test
-    fun `returns change notes with summary for the version specified with extension`() {
+    fun `returns change notes with summary and links for the latest released version`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
         assertMarkdown(
             """
-            ## [1.0.0] - 2022-10-10
-            That was a great release.
+            ## [1.0.1] - 2022-10-17
+            Release with bugfix.
             
-            ### Added
-            - foo
+            ### Fixed
+            - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
             """.trimIndent(),
-            result.output.trim()
+            result.output
         )
     }
 
@@ -190,29 +223,6 @@ class GetChangelogTaskTest : BaseTest() {
         project.evaluate()
 
         runFailingTask(GET_CHANGELOG_TASK_NAME)
-    }
-
-    @Test
-    fun `throws VersionNotSpecifiedException when changelog extension has no version provided`() {
-        buildFile =
-            """
-            plugins {
-                id 'org.jetbrains.changelog'
-            }
-            changelog {
-            }
-            """.trimIndent()
-
-        project.evaluate()
-
-        val result = runFailingTask(GET_CHANGELOG_TASK_NAME)
-
-        assertTrue(
-            result.output.contains(
-                "org.jetbrains.changelog.exceptions.VersionNotSpecifiedException: Version is missing. " +
-                        "Please provide the project version to the `project` or `changelog.version` property explicitly."
-            )
-        )
     }
 
     @Test

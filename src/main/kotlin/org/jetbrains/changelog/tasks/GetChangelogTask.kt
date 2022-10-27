@@ -8,6 +8,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.exceptions.MissingVersionException
 
 abstract class GetChangelogTask : DefaultTask() {
 
@@ -18,6 +19,10 @@ abstract class GetChangelogTask : DefaultTask() {
     @get:Input
     @Option(option = "no-summary", description = "Omits summary section")
     var noSummary = false
+
+    @get:Input
+    @Option(option = "no-links", description = "Omits links")
+    var noLinks = false
 
     @get:Input
     @get:Optional
@@ -32,47 +37,36 @@ abstract class GetChangelogTask : DefaultTask() {
     @get:Optional
     abstract val inputFile: RegularFileProperty
 
-    @get:Input
-    @get:Optional
-    abstract val headerParserRegex: Property<Regex>
-
-    @get:Input
-    @get:Optional
-    abstract val itemPrefix: Property<String>
-
-    @get:Input
-    @get:Optional
-    abstract val unreleasedTerm: Property<String>
-
-    @get:Input
-    @get:Optional
-    abstract val version: Property<String>
+    @get:Internal
+    val content = inputFile.map {
+        with(it.asFile) {
+            if (!exists()) {
+                createNewFile()
+            }
+            readText()
+        }
+    }
 
     @get:Internal
-    abstract val lineSeparator: Property<String>
+    abstract val changelog: Property<Changelog>
 
     @TaskAction
     fun run() = logger.quiet(
-        Changelog(
-            file = inputFile.map { it.asFile }.get(),
-            preTitle = null,
-            title = null,
-            introduction = null,
-            unreleasedTerm = unreleasedTerm.get(),
-            headerParserRegex = headerParserRegex.get(),
-            itemPrefix = itemPrefix.get(),
-            lineSeparator = lineSeparator.get(),
-        ).let {
-            val version = cliVersion ?: when (unreleased) {
-                true -> unreleasedTerm
-                false -> version
-            }.get()
+        with(changelog.get()) {
+            val version = cliVersion
 
-            it
-                .get(version)
+            when {
+                version != null -> get(version)
+                unreleased -> unreleasedItem ?: throw MissingVersionException(unreleasedTerm)
+                else -> releasedItems.first()
+            }
                 .withHeader(!noHeader)
                 .withSummary(!noSummary)
-                .toText()
+                .withLinks(!noLinks)
+                .withLinkedHeader(!noLinks)
+                .let {
+                    renderItem(it, Changelog.OutputType.MARKDOWN)
+                }
         }
     )
 }

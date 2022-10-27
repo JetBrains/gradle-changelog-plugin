@@ -8,11 +8,7 @@ import org.jetbrains.changelog.tasks.GetChangelogTask
 import org.jetbrains.changelog.tasks.InitializeChangelogTask
 import org.jetbrains.changelog.tasks.PatchChangelogTask
 import java.io.File
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class ChangelogPluginTest : BaseTest() {
 
@@ -21,7 +17,7 @@ class ChangelogPluginTest : BaseTest() {
         assertNotNull(extension)
         assertTrue(extension.keepUnreleasedSection.get())
         assertEquals("${project.projectDir}/CHANGELOG.md", extension.path.get())
-        assertEquals("[Unreleased]", extension.unreleasedTerm.get())
+        assertEquals("Unreleased", extension.unreleasedTerm.get())
     }
 
     @Test

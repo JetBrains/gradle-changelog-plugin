@@ -19,7 +19,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             changelog {
                 version = "1.0.0"
             }
-            """
+            """.trimIndent()
 
         project.evaluate()
     }
@@ -28,12 +28,54 @@ class InitializeChangelogTaskTest : BaseTest() {
     fun `creates new changelog file`() {
         runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
+        assertMarkdown(
+            """
+            # Changelog
+            
+            ## Unreleased
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+
+            """.trimIndent(),
+            extension.render()
+        )
+
+        assertMarkdown(
+            """
+            ## Unreleased
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            """.trimIndent(),
+            extension.renderItem(extension.getUnreleased())
+        )
+
         extension.getAll().apply {
             assertEquals(1, keys.size)
-            assertEquals("[Unreleased]", keys.first())
+            assertEquals("Unreleased", keys.first())
             assertMarkdown(
                 """
-                ## [Unreleased]
+                ## Unreleased
                 
                 ### Added
                 
@@ -46,9 +88,9 @@ class InitializeChangelogTaskTest : BaseTest() {
                 ### Fixed
                 
                 ### Security
-                
+
                 """.trimIndent(),
-                values.first().toText()
+                extension.renderItem(values.first())
             )
         }
 
@@ -77,7 +119,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             }
             changelog {
                 version = "1.0.0"
-                path = "${File("${project.projectDir}/CHANGES.md").path.replace("\\", "\\\\")}"
+                path = file("CHANGES.md").canonicalPath
                 itemPrefix = "*"
                 unreleasedTerm = "Upcoming version"
                 groups = ["Added", "Removed"]
@@ -109,7 +151,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             ### Removed
             
             """.trimIndent(),
-            extension.instance.content
+            extension.render()
         )
     }
 

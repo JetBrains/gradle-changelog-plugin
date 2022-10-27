@@ -6,7 +6,8 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
-import java.io.File
+import org.jetbrains.changelog.ChangelogPluginConstants.SEM_VER_REGEX
+import org.jetbrains.changelog.exceptions.MissingVersionException
 import java.util.regex.Pattern
 
 abstract class ChangelogPluginExtension {
@@ -38,7 +39,7 @@ abstract class ChangelogPluginExtension {
             is Pattern -> it.toRegex()
             else -> throw IllegalArgumentException("Unsupported type of $it. Expected value types: Regex, String, Pattern.")
         }
-    }.orElse(ChangelogPluginConstants.SEM_VER_REGEX)
+    }.orElse(SEM_VER_REGEX)
 
     @get:Optional
     abstract val itemPrefix: Property<String>
@@ -64,27 +65,28 @@ abstract class ChangelogPluginExtension {
     @get:Optional
     abstract val combinePreReleases: Property<Boolean>
 
-    val instance
-        get() = Changelog(
-            file = File(path.get()),
-            preTitle = preTitle.orNull,
-            title = title.orNull,
-            introduction = introduction.orNull,
-            unreleasedTerm = unreleasedTerm.get(),
-            headerParserRegex = getHeaderParserRegex.get(),
-            itemPrefix = itemPrefix.get(),
-            lineSeparator = lineSeparator.get(),
-        )
+    @get:Optional
+    abstract val repositoryUrl: Property<String>
 
-    fun get(version: String) = instance.get(version)
+    @get:Optional
+    abstract val sectionUrlBuilder: Property<ChangelogSectionUrlBuilder>
 
-    fun getAll() = instance.getAll()
+    @get:Internal
+    abstract val instance: Property<Changelog>
 
-    fun getOrNull(version: String) = instance.runCatching { get(version) }.getOrNull()
+    fun get(version: String) = instance.get().get(version)
 
-    fun getLatest() = instance.getLatest()
+    fun getAll() = instance.get().items
 
-    fun getUnreleased() = get(unreleasedTerm.get())
+    fun getOrNull(version: String) = instance.get().runCatching { get(version) }.getOrNull()
 
-    fun has(version: String) = instance.has(version)
+    fun getLatest() = instance.get().getLatest()
+
+    fun getUnreleased() = instance.get().unreleasedItem ?: throw MissingVersionException(unreleasedTerm.get())
+
+    fun has(version: String) = instance.get().has(version)
+
+    fun render(outputType: Changelog.OutputType = Changelog.OutputType.MARKDOWN) = instance.get().render(outputType)
+
+    fun renderItem(item: Changelog.Item, outputType: Changelog.OutputType = Changelog.OutputType.MARKDOWN) = instance.get().renderItem(item, outputType)
 }

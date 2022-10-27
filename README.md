@@ -27,7 +27,6 @@ A Gradle plugin providing tasks and helper methods to simplify working with a ch
     - [`getOrNull`](#getornull)
     - [`getUnreleased`](#getunreleased)
     - [`getLatest`](#getlatest)
-    - [`getAll`](#getall)
     - [`has`](#has)
 - [Extension Fields](#extension-fields)
     - [`instance`](#instance)
@@ -375,24 +374,6 @@ tasks {
 }
 ```
 
-### `getAll`
-
-The method returns all available `Changelog.Item` objects.
-
-#### Examples
-
-**build.gradle.kts** (Kotlin)
-
-```kotlin
-extension.getAll().values.map { it.toText() }
-```
-
-**build.gradle** (Groovy)
-
-```groovy
-extension.getAll().values().each { it.toText() }
-```
-
 ### `has`
 
 The method checks if the given version exists in the changelog.
@@ -450,7 +431,6 @@ It provides methods to read and write the changelog file.
 |------------------------|---------------------------------|-------------------------------|
 | `has(String)`          | Checks if the version exists.   | `Boolean`                     |
 | `get(version: String)` | Returns the change note object. | `Changelog.Item`              |
-| `getAll()`             | Returns all change notes.       | `Map<String, Changelog.Item>` |
 | `getLatest()`          | Returns the latest change note. | `Changelog.Item`              |
 
 ### `Changelog.Item` class
