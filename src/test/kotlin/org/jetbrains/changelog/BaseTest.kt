@@ -51,7 +51,7 @@ open class BaseTest {
     protected var buildFile = ""
         set(value) {
             field = value
-            File("${project.projectDir}/build.gradle").run {
+            project.file("build.gradle").run {
                 createNewFile()
                 writeText(value)
             }

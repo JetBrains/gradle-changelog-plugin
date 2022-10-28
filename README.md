@@ -65,7 +65,7 @@ tasks {
 
 changelog {
     version.set("1.0.0")
-    path.set("${project.projectDir}/CHANGELOG.md")
+    path.set(file("CHANGELOG.md").cannonicalPath)
     header.set(provider { "[${version.get()}] - ${date()}" })
     headerParserRegex.set("""(\d+\.\d+)""".toRegex())
     introduction.set(
@@ -110,7 +110,7 @@ intellij {
 
 changelog {
     version = "1.0.0"
-    path = "${project.projectDir}/CHANGELOG.md"
+    path = file("CHANGELOG.md").cannonicalPath
     header = "[${-> version.get()}] - ${new SimpleDateFormat("yyyy-MM-dd").format(new Date())}"
     headerParserRegex = ~/(\d+\.\d+)/
     introduction = """
@@ -144,7 +144,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | Property                | Type                           | Default value                                                        | Description                                                                                                      |
 |-------------------------|--------------------------------|----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
 | `version`               | `String`                       | `project.version`                                                    | Current version. By default, project's version is used.                                                          |
-| `path`                  | `String`                       | `"${project.projectDir}/CHANGELOG.md"`                               | Path to the changelog file.                                                                                      |
+| `path`                  | `String`                       | `file("CHANGELOG.md").cannonicalPath`                                | Path to the changelog file.                                                                                      |
 | `preTitle`              | `String?`                      | `null`                                                               | Optional content placed before the `title`.                                                                      |
 | `title`                 | `String`                       | `"Changelog"`                                                        | The changelog title set as the top-lever header – `#`.                                                           |
 | `introduction`          | `String?`                      | `null`                                                               | Optional content placed after the `title`.                                                                       |

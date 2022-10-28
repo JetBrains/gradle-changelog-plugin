@@ -33,7 +33,7 @@ class ChangelogPlugin : Plugin<Project> {
 
         val extension = project.extensions.create<ChangelogPluginExtension>(EXTENSION_NAME).apply {
             path.convention(project.provider {
-                "${project.projectDir}/$CHANGELOG_FILE_NAME"
+                project.file(CHANGELOG_FILE_NAME).canonicalPath
             }.map {
                 with(Path.of(it)) {
                     if (!Files.exists(this)) {
