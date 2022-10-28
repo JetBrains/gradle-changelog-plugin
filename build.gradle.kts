@@ -9,12 +9,12 @@ plugins {
     `maven-publish`
     kotlin("jvm") version "1.7.20"
     id("com.gradle.plugin-publish") version "1.0.0"
-    id("org.jetbrains.changelog") version "1.3.1"
+    id("org.jetbrains.changelog") version "2.0.0"
     id("org.jetbrains.dokka") version "1.7.20"
 }
 
 version = properties("version")!!
-group = properties("group")!!
+group = properties("projectGroup")!!
 description = properties("description")
 
 repositories {

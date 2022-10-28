@@ -343,19 +343,19 @@ data class Changelog(
             message = "Method no longer available",
             replaceWith = ReplaceWith("changelog.renderItem(this, Changelog.OutputType.HTML)"),
         )
-        fun toHTML() = markdownToHTML(toText())
+        fun toHTML() = ""
 
         @Deprecated(
             message = "Method no longer available",
             replaceWith = ReplaceWith("changelog.renderItem(this, Changelog.OutputType.PLAIN_TEXT)"),
         )
-        fun toPlainText() = markdownToPlainText(toText(), lineSeparator)
+        fun toPlainText() = ""
 
         @Deprecated(
             message = "Method no longer available",
             replaceWith = ReplaceWith("changelog.renderItem(this)"),
         )
-        override fun toString() = toText()
+        override fun toString() = ""
     }
 
     enum class OutputType {
