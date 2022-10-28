@@ -379,15 +379,9 @@ data class Changelog(
     private fun String.processOutput(outputType: OutputType) = when (outputType) {
         OutputType.MARKDOWN -> this
 
-        OutputType.HTML -> ChangelogFlavourDescriptor().let { flavour ->
-            HtmlGenerator(this, MarkdownParser(flavour).buildMarkdownTreeFromString(this), flavour, false)
-                .generateHtml()
-        }
+        OutputType.HTML -> markdownToHTML(this)
 
-        OutputType.PLAIN_TEXT -> PlainTextFlavourDescriptor(lineSeparator).let { flavour ->
-            HtmlGenerator(this, MarkdownParser(flavour).buildMarkdownTreeFromString(this), flavour, false)
-                .generateHtml(PlainTextTagRenderer())
-        }
+        OutputType.PLAIN_TEXT -> markdownToPlainText(this, lineSeparator)
     }
 
     internal fun parseTree(content: String?) =
