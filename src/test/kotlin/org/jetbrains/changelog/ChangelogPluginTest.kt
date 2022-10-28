@@ -16,7 +16,7 @@ class ChangelogPluginTest : BaseTest() {
     fun `default properties values`() {
         assertNotNull(extension)
         assertTrue(extension.keepUnreleasedSection.get())
-        assertEquals("${project.projectDir}/CHANGELOG.md", extension.path.get())
+        assertEquals(project.file("CHANGELOG.md").canonicalPath, extension.path.get())
         assertEquals("Unreleased", extension.unreleasedTerm.get())
     }
 
