@@ -58,23 +58,6 @@ abstract class PatchChangelogTask : DefaultTask() {
 
     @TaskAction
     fun run() {
-//        val item = Changelog.Item(
-//            version = version.get(),
-//            header = header.get(),
-//            itemPrefix = itemPrefix.get(),
-//            lineSeparator = lineSeparator.get(),
-//        ) + changelog.runCatching { get(unreleasedTermValue) }.getOrNull() + preReleaseItems
-//
-//        val content = releaseNote ?: item
-//            .withEmptySections(false)
-//            .withHeader(false)
-//            .toText()
-//
-//        if (patchEmpty.get() && content.isEmpty()) {
-//            logger.info(":patchChangelog task skipped due to the missing release note in the '$unreleasedTerm'.")
-//            throw StopActionException()
-//        }
-
         with(changelog.get()) {
             val preReleaseItems = releasedItems
                 .filter {
