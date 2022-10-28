@@ -15,7 +15,6 @@ import org.intellij.markdown.MarkdownElementTypes.UNORDERED_LIST
 import org.intellij.markdown.MarkdownTokenTypes.Companion.EOL
 import org.intellij.markdown.ast.ASTNode
 import org.intellij.markdown.ast.getTextInNode
-import org.intellij.markdown.html.HtmlGenerator
 import org.intellij.markdown.parser.MarkdownParser
 import org.jetbrains.changelog.ChangelogPluginConstants.DEFAULT_TITLE
 import org.jetbrains.changelog.ChangelogPluginConstants.LEVEL_1
@@ -25,7 +24,6 @@ import org.jetbrains.changelog.ChangelogPluginConstants.SEM_VER_REGEX
 import org.jetbrains.changelog.exceptions.HeaderParseException
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.changelog.flavours.ChangelogFlavourDescriptor
-import org.jetbrains.changelog.flavours.PlainTextFlavourDescriptor
 
 @Suppress("MemberVisibilityCanBePrivate")
 data class Changelog(
@@ -329,12 +327,36 @@ data class Changelog(
             )
         }
 
+        operator fun plus(items: List<Item>) = items.fold(this) { acc, item -> acc + item }
+
         operator fun Map<String, Set<String>>.plus(other: Map<String, Set<String>>) = this
             .mapValues { (key, value) -> value + other[key].orEmpty() }
             .toMutableMap()
             .also { map -> map.putAll(other.filterKeys { !containsKey(it) }) }
 
-        operator fun plus(items: List<Item>) = items.fold(this) { acc, item -> acc + item }
+        @Deprecated(
+            message = "Method no longer available",
+            replaceWith = ReplaceWith("changelog.renderItem(this)"),
+        )
+        fun toText() = ""
+
+        @Deprecated(
+            message = "Method no longer available",
+            replaceWith = ReplaceWith("changelog.renderItem(this, Changelog.OutputType.HTML)"),
+        )
+        fun toHTML() = markdownToHTML(toText())
+
+        @Deprecated(
+            message = "Method no longer available",
+            replaceWith = ReplaceWith("changelog.renderItem(this, Changelog.OutputType.PLAIN_TEXT)"),
+        )
+        fun toPlainText() = markdownToPlainText(toText(), lineSeparator)
+
+        @Deprecated(
+            message = "Method no longer available",
+            replaceWith = ReplaceWith("changelog.renderItem(this)"),
+        )
+        override fun toString() = toText()
     }
 
     enum class OutputType {
