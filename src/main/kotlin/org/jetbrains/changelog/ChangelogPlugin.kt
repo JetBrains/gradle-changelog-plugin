@@ -78,7 +78,11 @@ class ChangelogPlugin : Plugin<Project> {
             sectionUrlBuilder.convention(
                 ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
                     repositoryUrl + when {
-                        isUnreleased -> "/compare/v$previousVersion...HEAD"
+                        isUnreleased -> when (previousVersion) {
+                            null -> "/commits"
+                            else -> "/compare/v$previousVersion...HEAD"
+                        }
+
                         previousVersion == null -> "/tag/v$currentVersion"
                         else -> "/compare/v$previousVersion...v$currentVersion"
                     }
