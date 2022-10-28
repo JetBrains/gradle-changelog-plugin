@@ -19,6 +19,11 @@
 - Updated the `HeaderParseException` message [#84](../../issues/84)
 - Use `"[${project.version}] - ${date()}"` as the default value for the `changelog.header` property [#18](../../issues/18)
 
+### Deprecated
+- `Changelog.Item.toText()` replaced with `Changelog.renderItem(Chagnelog.Item)`
+- `Changelog.Item.toHTML()` replaced with `Changelog.renderItem(Chagnelog.Item, Changelog.OutputType.HTML)`
+- `Changelog.Item.toPlainText()` replaced with `Changelog.renderItem(Chagnelog.Item, Changelog.OutputType.PLAIN_TEXT)`
+
 ## [1.3.1]
 ### Changed
 - Use the actual version numbers as keys for `extension.items` instead of raw header value

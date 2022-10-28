@@ -23,11 +23,10 @@ A Gradle plugin providing tasks and helper methods to simplify working with a ch
     - [`getChangelog`](#getchangelog)
     - [`patchChangelog`](#patchchangelog)
 - [Extension Methods](#extension-methods)
-    - [`get`](#get)
-    - [`getOrNull`](#getornull)
-    - [`getUnreleased`](#getunreleased)
-    - [`getLatest`](#getlatest)
-    - [`has`](#has)
+    - [`get`](#changelog-get-version-string-changelog-item)
+    - [`getUnreleased`](#changelog-getunreleased-changelog-item)
+    - [`getLatest`](#changelog-getlatest-changelog-item)
+    - [`has`](#changelog-has-version-string-boolean)
 - [Extension Fields](#extension-fields)
     - [`instance`](#instance)
 - [Classes](#classes)
@@ -58,7 +57,9 @@ tasks {
     // ...
 
     patchPluginXml {
-        changeNotes(provider { changelog.getUnreleased().toHTML() })
+        changeNotes(provider {
+            changelog.renderItem(changelog.getUnreleased(), Changelog.OutputType.HTML)
+        })
     }
 }
 
@@ -101,7 +102,9 @@ intellij {
     // ...
 
     patchPluginXml {
-        changeNotes({ changelog.getUnreleased().toHTML() })
+        changeNotes({
+            changelog.renderItem(changelog.getUnreleased(), Changelog.OutputType.HTML)
+        })
     }
 }
 
@@ -128,7 +131,7 @@ changelog {
 
 > **Note**
 >
-> All the extension and tasks properties are now lazy (see [Lazy Configuration][gradle-lazy-configuration]).
+> All the extension and task properties are now lazy (see [Lazy Configuration][gradle-lazy-configuration]).
 >
 > To set values in Kotlin DSL, use `.set(...)` method explicitly, like `changelog.version.set("1.0.0")`, in Groovy it is still possible to use `=` assignment.
 >
@@ -138,35 +141,38 @@ changelog {
 
 Plugin can be configured with the following properties set in the `changelog {}` closure:
 
-| Property                | Description                                                                     | Default value                                                                 |
-|-------------------------|---------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| **`version`**           | Current version. By default, global project's version is used.                  | `project.version`                                                             |
-| `groups`                | List of groups created with a new Unreleased section.                           | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]`          |
-| `preHeader`             | `String` or `Provider` that returns content placed before the changelog header. | `null`                                                                        |
-| `header`                | `String` or `Provider` that returns current header value.                       | `provider { "[${version.get()}]" }`                                           |
-| `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string.      | `null`, fallbacks to [`ChangelogPluginConstants#SEM_VER_REGEX`][semver-regex] |
-| `introduction`          | An optional portion of text that appears after the main header.                 | `null`                                                                        |
-| `itemPrefix`            | Single item's prefix, allows to customise the bullet sign.                      | `"-"`                                                                         |
-| `keepUnreleasedSection` | Add Unreleased empty section after patching.                                    | `true`                                                                        |
-| `patchEmpty`            | Patches changelog even if no release note is provided.                          | `true`                                                                        |
-| `path`                  | Path to the changelog file.                                                     | `"${project.projectDir}/CHANGELOG.md"`                                        |
-| `unreleasedTerm`        | Unreleased section text.                                                        | `"[Unreleased]"`                                                              |
-| `lineSeparator`         | Line separator used for generating changelog content.                           | `"\n"` or determined from the existing file                                   |
-| `combinePreReleases`    | Combines pre-releases into the final release note when patching.                | `true`                                                                        |
+| Property                | Type                           | Default value                                                                 | Description                                                                                                      |
+|-------------------------|--------------------------------|-------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| `version`               | `String`                       | `project.version`                                                             | Current version. By default, project's version is used.                                                          |
+| `path`                  | `String`                       | `"${project.projectDir}/CHANGELOG.md"`                                        | Path to the changelog file.                                                                                      |
+| `preTitle`              | `String?`                      | `null`                                                                        | Optional content placed before the `title`.                                                                      |
+| `title`                 | `String`                       | `"Changelog"`                                                                 | The changelog title set as the top-lever header – `#`.                                                           |
+| `introduction`          | `String?`                      | `null`                                                                        | Optional content placed after the `title`.                                                                       |
+| `header`                | `String`                       | `provider { "${version.get()} - ${date()}" }`                                 | Header value used when patching the *Unreleased* section with text containing the current version.               |
+| `headerParserRegex`     | `Regex` / `Pattern` / `String` | `null`, fallbacks to [`ChangelogPluginConstants.SEM_VER_REGEX`][semver-regex] | `Regex`/`Pattern`/`String` used to extract version from the header string.                                       |
+| `unreleasedTerm`        | `String`                       | `"[Unreleased]"`                                                              | Unreleased section name.                                                                                         |
+| `keepUnreleasedSection` | `Boolean`                      | `true`                                                                        | Add an unreleased empty section on the top of the changelog after running the patching task.                     |
+| `patchEmpty`            | `Boolean`                      | `true`                                                                        | Patches changelog even if no release note is provided.                                                           |
+| `groups`                | `String`                       | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]`          | List of groups created with a new Unreleased section.                                                            |
+| `itemPrefix`            | `String`                       | `"-"`                                                                         | Single item's prefix, allows to customise the bullet sign.                                                       |
+| `combinePreReleases`    | `Boolean`                      | `true`                                                                        | Combines pre-releases (like `1.0.0-alpha`, `1.0.0-beta.2`) into the final release note when patching.            |
+| `lineSeparator`         | `String`                       | `"\n"` or determined from the existing file                                   | Line separator used for generating changelog content.                                                            |
+| `repositoryUrl`         | `String?`                      | `null`                                                                        | The GitHub repository URL used to build release links. If provided, leads to the GitHub comparison page.         |
+| `sectionUrlBuilder`     | `ChangelogSectionUrlBuilder`   | Common `ChangelogSectionUrlBuilder` implementation                            | Function to build a single URL to link section with the GitHub page to present changes within the given release. |
 
 > **Note**
 >
-> `header` closure has the delegate explicitly set to the extension's context for the sake of the [Configuration cache][configuration-cache] support.
+> The `header` closure has the delegate explicitly set to the extension's context for the sake of the [Configuration cache][configuration-cache] support.
 
 ## Tasks
 
 The plugin introduces the following tasks:
 
-| Task                                          | Description                                                                                                             |
-|-----------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
-| [`getChangelog`](#getchangelog)               | Retrieves changelog for the specified version.                                                                          |
-| [`initializeChangelog`](#initializechangelog) | Creates new changelog file with Unreleased section and empty groups.                                                    |
-| [`patchChangelog`](#patchchangelog)           | Updates the unreleased section to the given version. Requires *unreleased* section to be present in the changelog file. |
+| Task                                          | Description                                                               |
+|-----------------------------------------------|---------------------------------------------------------------------------|
+| [`getChangelog`](#getchangelog)               | Retrieves changelog for the specified version.                            |
+| [`initializeChangelog`](#initializechangelog) | Creates a new changelog file with an unreleased section and empty groups. |
+| [`patchChangelog`](#patchchangelog)           | Updates the unreleased section to the given version.                      |
 
 ### `getChangelog`
 
@@ -174,12 +180,13 @@ Retrieves changelog for the specified version.
 
 #### Options
 
-| Option         | Type      | Description                                        |
-|----------------|-----------|----------------------------------------------------|
-| `--no-header`  | `Boolean` | Skips the first version header line in the output. |
-| `--no-summary` | `Boolean` | Skips the summary section in the output.           |
-| `--unreleased` | `Boolean` | Returns Unreleased change notes.                   |
-| `--version`    | `String`  | Returns change notes for the specified version.    |
+| Option         | Type      | Default value | Description                                        |
+|----------------|-----------|---------------|----------------------------------------------------|
+| `--no-header`  | `Boolean` | `false`       | Omits the section header in the changelog output.  |
+| `--no-summary` | `Boolean` | `false`       | Omits the section summary in the changelog output. |
+| `--no-links`   | `Boolean` | `false`       | Omits links in the changelog output.               |
+| `--version`    | `String?` | `null`        | Returns change notes for the specified version.    |
+| `--unreleased` | `Boolean` | `false`       | Returns change notes for an unreleased section.    |
 
 #### Examples
 
@@ -194,7 +201,7 @@ $ ./gradlew getChangelog --console=plain -q --no-header --no-summary
 
 ### `initializeChangelog`
 
-Creates new changelog file with Unreleased section and empty groups.
+Creates new changelog file with an unreleased section and empty groups.
 
 #### Examples
 
@@ -215,22 +222,22 @@ $ cat CHANGELOG.md
 ### Fixed
 
 ### Security
+
 ```
 
 ### `patchChangelog`
 
 Updates the unreleased section to the given version.
-Requires *unreleased* section to be present in the changelog file.
 
 #### Options
 
-| Option           | Description                                             |
-|------------------|---------------------------------------------------------|
-| `--release-note` | Adds custom release note to the latest changelog entry. |
+| Option           | Type      | Default value | Description                                            |
+|------------------|-----------|---------------|--------------------------------------------------------|
+| `--release-note` | `String?` | `null`        | Use custom release note to create new changelog entry. |
 
 > **Warning**
-> 
-> Content provided with the `--release-note` option will override the existing release note for the latest "unreleased" entry.
+>
+> Content provided with the `--release-note` option will override the existing release note for the latest unreleased entry.
 
 #### Examples
 
@@ -268,147 +275,69 @@ $ cat CHANGELOG.md
 
 ## Extension Methods
 
-All the methods are available via the `changelog` extension and allow for reading the changelog file within the Gradle tasks to provide the latest (or specific)
-change notes.
+All the methods are available via the `changelog` extension and allow for reading the changelog file within the Gradle tasks to provide the latest (or specific) change notes.
 
 > **Note**
 >
-> Following methods depend on the `changelog` extension, which is set in the *Configuration* [build phase][build-phases].
-> To make it run properly, it's required to place the configuration before the first usage of such a method.
-> Alternatively, you can pass the Gradle closure to the task, which will postpone the method invocation.
+> The following methods depend on the `changelog` extension set in the *Configuration* [build phase][build-phases].
+> For safe access and process of your changelog file, we recommend accessing the `changelog` extension within Gradle closures as presented in the [Usage](#usage) section.
 
-### `get`
+### `changelog.get(version: String): Changelog.Item`
 
-The method returns a `Changelog.Item` object for the specified version.
+The method returns a `Changelog.Item?` object for the specified version.
 Throws `MissingVersionException` if the version is not available.
 
-It is possible to specify the *unreleased* section with setting the `${changelog.unreleasedTerm}` value.
-
 #### Parameters
 
-| Parameter | Type     | Description          | Default value          |
-|-----------|----------|----------------------|------------------------|
-| `version` | `String` | Change note version. | `${changelog.version}` |
+| Parameter | Type     | Description          |
+|-----------|----------|----------------------|
+| `version` | `String` | Change note version. |
 
-#### Examples
+### `changelog.getUnreleased(): Changelog.Item`
 
-**build.gradle.kts** (Kotlin)
+The method returns a `Changelog.Item` object for the unreleased version.
+Throws `MissingVersionException` if the version is not available.
 
-```kotlin
-tasks {
-    patchPluginXml {
-        changeNotes.set(provider { changelog.get("1.0.0").toHTML() })
-    }
-}
-```
+### `changelog.getLatest(): Changelog.Item`
 
-**build.gradle** (Groovy)
+The method returns the latest released `Changelog.Item` object (first on the list).
+Throws `MissingVersionException` if the version is not available.
 
-```groovy
-tasks {
-    patchPluginXml {
-        changeNotes = { changelog.get("1.0.0").toHTML() }
-    }
-}
-```
-
-### `getOrNull`
-
-Same as `get`, but returns `null` instead of throwing `MissingVersionException`.
-
-#### Parameters
-
-| Parameter | Type     | Description          | Default value          |
-|-----------|----------|----------------------|------------------------|
-| `version` | `String` | Change note version. | `${changelog.version}` |
-
-### `getUnreleased`
-
-The method returns a `Changelog.Item` object for the *unreleased* version.
-
-#### Examples
-
-**build.gradle.kts** (Kotlin)
-
-```kotlin
-tasks {
-    patchPluginXml {
-        changeNotes.set(provider { changelog.getUnreleased().toHTML() })
-    }
-}
-```
-
-**build.gradle** (Groovy)
-
-```groovy
-tasks {
-    patchPluginXml {
-        changeNotes = { changelog.getUnreleased().toHTML() }
-    }
-}
-```
-
-### `getLatest`
-
-The method returns the latest `Changelog.Item` object (first on the list).
-
-#### Examples
-
-**build.gradle.kts** (Kotlin)
-
-```kotlin
-tasks {
-    patchPluginXml {
-        changeNotes.set(provider { changelog.getLatest().toHTML() })
-    }
-}
-```
-
-**build.gradle** (Groovy)
-
-```groovy
-tasks {
-    patchPluginXml {
-        changeNotes = { changelog.getLatest().toHTML() }
-    }
-}
-```
-
-### `has`
+### `changelog.has(version: String): Boolean`
 
 The method checks if the given version exists in the changelog.
 
-#### Examples
+#### Parameters
 
-**build.gradle.kts** (Kotlin)
+| Parameter | Type     | Description          |
+|-----------|----------|----------------------|
+| `version` | `String` | Change note version. |
 
-```kotlin
-tasks {
-    patchPluginXml {
-        provider { changelog.has("1.0.0") }
-    }
-}
-```
+### `changelog.render(outputType: Changelog.OutputType): String`
 
-**build.gradle** (Groovy)
+Renders the whole `Changelog` object to string based on the given `outputType`.
 
-```groovy
-tasks {
-    patchPluginXml {
-        {
-            changelog.has("1.0.0")
-        }
-    }
-}
-```
+#### Parameters
 
-## Extension Fields
+| Parameter    | Type                   | Description                                                         |
+|--------------|------------------------|---------------------------------------------------------------------|
+| `outputType` | `Changelog.OutputType` | Output type, see [Changelog.OutputType](#changelog-outputtype-enum) |
 
-All the fields available via the `changelog` extension and allow for the direct access to the `changelog` extension.
+### `changelog.renderItem(item: Changelog.Item, outputType: Changelog.OutputType): String`
 
-### `instance`
+Renders the given `Changelog.Item` object to string based on the given `outputType`.
 
-The field returns the current `Changelog` instance.
+#### Parameters
+
+| Parameter    | Type                   | Description                                                         |
+|--------------|------------------------|---------------------------------------------------------------------|
+| `item`       | `Changelog.Item`       | Item to render, see [Changelog.Item](#changelog-item-class)         |
+| `outputType` | `Changelog.OutputType` | Output type, see [Changelog.OutputType](#changelog-outputtype-enum) |
+
+### `changelog.getInstance(): Changelog`
+
+Returns the `Changelog` instance shared among all the tasks.
+See [`Changelog`](#changalog-class) for more details.
 
 ## Classes
 
@@ -419,19 +348,33 @@ It provides methods to read and write the changelog file.
 
 #### Properties
 
-| Name           | Type     | Description                                                                             |
-|----------------|----------|-----------------------------------------------------------------------------------------|
-| `preHeader`    | `String` | Section that appears before the actual changelog header.                                |
-| `header`       | `String` | Changelog header.                                                                       |
-| `introduction` | `String` | Static leading text introduction placed after the header and before changelog sections. |
+| Name             | Type                          | Description                                                                                    |
+|------------------|-------------------------------|------------------------------------------------------------------------------------------------|
+| `preTitle`       | `String`                      | Optional content placed before the `title`.                                                    |
+| `title`          | `String`                      | The changelog title set as the top-lever header – `#`.                                         |
+| `introduction`   | `String`                      | Optional content placed after the `title`.                                                     |
+| `items`          | `Map<String, Changelog.Item>` | List of all items available in the changelog stored in a map of `version` to `Changelog.Item`. |
+| `unreleasedItem` | `Changelog.Item?`             | An instance of the unreleased item, may be `null`.                                             |
+| `releasedItems`  | `List<Changelog.Item>`        | List of already relased item instances.                                                        |
+| `links`          | `Map<String, String>`         | List of all links stored at the end of the changelog in a map of `id` to `url`.                |
 
 #### Methods
 
-| Name                   | Description                     | Returned type                 |
-|------------------------|---------------------------------|-------------------------------|
-| `has(String)`          | Checks if the version exists.   | `Boolean`                     |
-| `get(version: String)` | Returns the change note object. | `Changelog.Item`              |
-| `getLatest()`          | Returns the latest change note. | `Changelog.Item`              |
+| Name                                                                 | Return type      | Description                                                                          |
+|----------------------------------------------------------------------|------------------|--------------------------------------------------------------------------------------|
+| `get(version: String)`                                               | `Changelog.Item` | Returns item for the given `version`. Throws `MissingVersionException` if missing.   |
+| `getLatest()`                                                        | `Changelog.Item` | Returns the latest released item. Throws `MissingVersionException` if missing.       |
+| `has(version: String)`                                               | `Boolean`        | Checks if item with the given `version` exists.                                      |
+| `render(outputType: Changelog.OutputType)`                           | `String`         | Renders the whole `Changelog` object to string based on the given `outputType`.      |
+| `renderItem(item: Changelog.Item, outputType: Changelog.OutputType)` | `String`         | Renders the given `Changelog.Item` object to string based on the given `outputType`. |
+
+### `Changelog.OutputType` enum
+
+| Name         | Description                                   |
+|--------------|-----------------------------------------------|
+| `MARKDOWN`   | Default, Markdown content format.             |
+| `PLAIN_TEXT` | Plain text with no Markdown syntax generated. |
+| `HTML`       | HTML content created out of Markdown version. |
 
 ### `Changelog.Item` class
 
@@ -441,23 +384,27 @@ It provides a couple of properties and methods that allow altering the output fo
 
 #### Properties
 
-| Name      | Type     | Description          |
-|-----------|----------|----------------------|
-| `version` | `String` | Change note version. |
+| Name           | Type      | Description                                                                                |
+|----------------|-----------|--------------------------------------------------------------------------------------------|
+| `version`      | `String`  | Item version.                                                                              |
+| `header`       | `String`  | Literal representation of the given item – may contain version with extra meta, like date. |
+| `summary`      | `String`  | Optional summary of the release item.                                                      |
+| `isUnreleased` | `Boolean` | Determines if an item is released or not.                                                  |
 
 #### Methods
 
-| Name                         | Description                       | Returned type |
-|------------------------------|-----------------------------------|---------------|
-| `withHeader(Boolean)`        | Includes/excludes header part.    | `this`        |
-| `getHeader()`                | Returns header text.              | `String`      |
-| `withSummary(Boolean)`       | Includes/excludes summary part.   | `this`        |
-| `getSummary()`               | Returns summary text.             | `String`      |
-| `withEmptySections(Boolean)` | Includes/excludes empty sections. | `this`        |
-| `toText()`                   | Generates Markdown output.        | `String`      |
-| `toPlainText()`              | Generates Plain Text output.      | `String`      |
-| `toString()`                 | Generates Markdown output.        | `String`      |
-| `toHTML()`                   | Generates HTML output.            | `String`      |
+| Name                         | Description                                                                   | Returned type    |
+|------------------------------|-------------------------------------------------------------------------------|------------------|
+| `withHeader(Boolean)`        | Includes header part in the output.                                           | `Chagnelog.Item` |
+| `withLinkedHeader(Boolean)`  | Adds link to the version in the header.                                       | `Chagnelog.Item` |
+| `withSummary(Boolean)`       | Includes summary part.                                                        | `Chagnelog.Item` |
+| `withLinks(Boolean)`         | Returns links used in the release section at the end.                         | `Chagnelog.Item` |
+| `withEmptySections(Boolean)` | Prints empty sections.                                                        | `Chagnelog.Item` |
+| `withFilter(Boolean)`        | Applies custom filter to the returned entries.                                | `Chagnelog.Item` |
+| `toText()`                   | Deprecated. Use `changelog.renderItem(item)`                                  | `String`         |
+| `toPlainText()`              | Deprecated. Use `changelog.renderItem(item, Changelog.OutputType.PLAIN_TEXT)` | `String`         |
+| `toString()`                 | Deprecated. Use `changelog.renderItem(item, Changelog.OutputType.MARKDOWN)`   | `String`         |
+| `toHTML()`                   | Deprecated. Use `changelog.renderItem(item, Changelog.OutputType.HTML)`       | `String`         |
 
 ## Helper Methods
 
@@ -482,6 +429,7 @@ It provides a couple of properties and methods that allow altering the output fo
 ## Usage Examples
 
 - [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+- [Gradle IntelliJ Plugin](https://github.com/JetBrains/gradle-intellij-plugin)
 - [Unity Support for ReSharper and Rider](https://github.com/JetBrains/resharper-unity)
 
 ## Changelog
@@ -501,25 +449,14 @@ Licensed under the Apache License, Version 2.0 (the "License"), see [LICENCE](./
 
 
 [gh:build]: https://github.com/JetBrains/gradle-changelog-plugin/actions?query=workflow%3ABuild
-
 [gh:gradle-intellij-plugin]: https://github.com/JetBrains/gradle-intellij-plugin
-
 [jb:github]: https://github.com/JetBrains/.github/blob/main/profile/README.md
-
 [jb:slack]: https://plugins.jetbrains.com/slack
-
 [jb:twitter]: https://twitter.com/JBPlatform
-
 [build-phases]: https://docs.gradle.org/current/userguide/build_lifecycle.html#sec:build_phases
-
 [configuration-cache]: https://docs.gradle.org/6.8.2/userguide/configuration_cache.html
-
 [keep-a-changelog]: https://keepachangelog.com/en/1.0.0
-
 [gradle-plugin-shield]: https://img.shields.io/maven-metadata/v.svg?label=Gradle%20Plugin&color=blue&metadataUrl=https://plugins.gradle.org/m2/org/jetbrains/intellij/plugins/gradle-changelog-plugin/maven-metadata.xml
-
 [gradle-plugin]: https://plugins.gradle.org/plugin/org.jetbrains.changelog
-
 [gradle-lazy-configuration]: https://docs.gradle.org/current/userguide/lazy_configuration.html
-
 [semver-regex]: https://github.com/JetBrains/gradle-changelog-plugin/blob/main/src/main/kotlin/org/jetbrains/changelog/ChangelogPluginConstants.kt#L38

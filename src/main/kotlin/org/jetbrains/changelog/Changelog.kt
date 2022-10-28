@@ -27,17 +27,17 @@ import org.jetbrains.changelog.flavours.ChangelogFlavourDescriptor
 
 @Suppress("MemberVisibilityCanBePrivate")
 data class Changelog(
-    val content: String,
-    val defaultPreTitle: String?,
-    val defaultTitle: String?,
-    val defaultIntroduction: String?,
-    val unreleasedTerm: String,
-    val groups: List<String>,
-    val headerParserRegex: Regex,
-    val itemPrefix: String,
-    val repositoryUrl: String?,
-    val sectionUrlBuilder: ChangelogSectionUrlBuilder,
-    val lineSeparator: String,
+    private val content: String,
+    private val defaultPreTitle: String?,
+    private val defaultTitle: String?,
+    private val defaultIntroduction: String?,
+    private val unreleasedTerm: String,
+    private val groups: List<String>,
+    private val headerParserRegex: Regex,
+    private val itemPrefix: String,
+    private val repositoryUrl: String?,
+    private val sectionUrlBuilder: ChangelogSectionUrlBuilder,
+    private val lineSeparator: String,
 ) {
 
     val preTitle: String
@@ -48,6 +48,14 @@ data class Changelog(
 
     private val baseItems: Map<String, List<ASTNode>>
     internal val baseLinks: MutableList<Pair<String, String>>
+    internal val newUnreleasedItem
+        get() = Item(
+            version = unreleasedTerm,
+            header = unreleasedTerm,
+            items = groups.associateWith { emptySet() },
+            itemPrefix = itemPrefix,
+            lineSeparator = lineSeparator,
+        ).withEmptySections(true)
 
     init {
         val tree = parseTree(content)
@@ -111,7 +119,6 @@ data class Changelog(
                 .withEmptySections(isUnreleased)
         }
     }
-
     val links
         get() = sequence {
             repositoryUrl?.let {
@@ -120,7 +127,7 @@ data class Changelog(
 
                 with(unreleasedTerm) {
                     if (items.containsKey(this)) {
-                        val url = build(repositoryUrl, this, ids.first(), true)
+                        val url = build(repositoryUrl, this, ids.firstOrNull(), true)
                         yield(this to url)
                     }
                 }
@@ -130,7 +137,7 @@ data class Changelog(
                     yield(current to url)
                 }
 
-                ids.last().let {
+                ids.lastOrNull()?.let {
                     val url = build(repositoryUrl, it, null, false)
                     yield(it to url)
                 }
@@ -154,28 +161,20 @@ data class Changelog(
                 }
             })
             .toMap()
+
     val unreleasedItem: Item?
         get() = items[unreleasedTerm]
-
-    val newUnreleasedItem
-        get() = Item(
-            version = unreleasedTerm,
-            header = unreleasedTerm,
-            items = groups.associateWith { emptySet() },
-            itemPrefix = itemPrefix,
-            lineSeparator = lineSeparator,
-        ).withEmptySections(true)
 
     val releasedItems
         get() = items
             .filterKeys { it != unreleasedTerm }
             .values
 
-    fun has(version: String) = items.containsKey(version)
-
     fun get(version: String) = items[version] ?: throw MissingVersionException(version)
 
     fun getLatest() = releasedItems.firstOrNull() ?: throw MissingVersionException("any")
+
+    fun has(version: String) = items.containsKey(version)
 
     fun renderItem(item: Item, outputType: OutputType) = with(item) {
         sequence {

@@ -22,7 +22,7 @@ fun markdownToPlainText(input: String, lineSeparator: String) = PlainTextFlavour
         .generateHtml(PlainTextTagRenderer())
 }
 
-fun String.reformat(lineSeparator: String): String {
+internal fun String.reformat(lineSeparator: String): String {
     val result = listOf(
         """(?:^|$lineSeparator)+(#+ [^$lineSeparator]*)(?:$lineSeparator)*""".toRegex() to "$lineSeparator$lineSeparator$1$lineSeparator",
         """((?:^|$lineSeparator)#+ .*?)$lineSeparator(#+ )""".toRegex() to "$1$lineSeparator$lineSeparator$2",

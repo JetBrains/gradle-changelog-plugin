@@ -12,24 +12,139 @@ import java.util.regex.Pattern
 
 abstract class ChangelogPluginExtension {
 
+    /**
+     * Current version. By default, project's version is used.
+     *
+     * Default value: `project.version`
+     */
     @get:Optional
-    abstract val groups: ListProperty<String>
+    abstract val version: Property<String>
 
+    /**
+     * Path to the changelog file.
+     *
+     * Default value: `"${project.projectDir}/CHANGELOG.md"`
+     */
+    @get:Optional
+    abstract val path: Property<String>
+
+    /**
+     * Optional content placed before the [title].
+     */
     @get:Optional
     abstract val preTitle: Property<String>
 
+    /**
+     * The changelog title set as the top-lever header – `#`.
+     *
+     * Default value: `"Changelog"`
+     */
     @get:Optional
     abstract val title: Property<String>
 
-    @get:Optional
-    abstract val header: Property<String>
-
-    @get:Optional
-    abstract val headerParserRegex: Property<Any>
-
+    /**
+     * Optional content placed after the [title].
+     */
     @get:Optional
     abstract val introduction: Property<String>
 
+    /**
+     * Header value used when patching the *Unreleased* section with text containing the current version.
+     *
+     * Default value: `provider { "${version.get()} - ${date()}" }`
+     */
+    @get:Optional
+    abstract val header: Property<String>
+
+    /**
+     * `Regex`/`Pattern`/`String` used to extract version from the header string.
+     *
+     * Default value: `null`, fallbacks to [ChangelogPluginConstants.SEM_VER_REGEX]
+     */
+    @get:Optional
+    abstract val headerParserRegex: Property<Any>
+
+    /**
+     * Unreleased section name.
+     *
+     * Default value: [ChangelogPluginConstants.UNRELEASED_TERM]
+     */
+    @get:Optional
+    abstract val unreleasedTerm: Property<String>
+
+    /**
+     * Add an unreleased empty section on the top of the changelog after running the patching task.
+     *
+     * Default value: `true`
+     */
+    @get:Optional
+    abstract val keepUnreleasedSection: Property<Boolean>
+
+    /**
+     * Patches changelog even if no release note is provided.
+     *
+     * Default value: `true`
+     */
+    @get:Optional
+    abstract val patchEmpty: Property<Boolean>
+
+    /**
+     * List of groups created with a new Unreleased section.
+     *
+     * Default value: [ChangelogPluginConstants.GROUPS]
+     */
+    @get:Optional
+    abstract val groups: ListProperty<String>
+
+    /**
+     * Single item's prefix, allows to customise the bullet sign.
+     *
+     * Default value: [ChangelogPluginConstants.ITEM_PREFIX]
+     */
+    @get:Optional
+    abstract val itemPrefix: Property<String>
+
+    /**
+     * Combines pre-releases (like `1.0.0-alpha`, `1.0.0-beta.2`) into the final release note when patching.
+     *
+     * Default value: `true`
+     */
+    @get:Optional
+    abstract val combinePreReleases: Property<Boolean>
+
+    /**
+     * Line separator used for generating changelog content.
+     *
+     * Default value: `"\n"` or determined from the existing file
+     */
+    @get:Optional
+    abstract val lineSeparator: Property<String>
+
+    /**
+     * The GitHub repository URL used to build release links.
+     * If provided, leads to the GitHub comparison page.
+     */
+    @get:Optional
+    abstract val repositoryUrl: Property<String>
+
+    /**
+     * Function to build a single URL to link section with the GitHub page to present changes within the given release.
+     *
+     * Default value: Common [ChangelogSectionUrlBuilder] implementation
+     */
+    @get:Optional
+    abstract val sectionUrlBuilder: Property<ChangelogSectionUrlBuilder>
+
+    /**
+     * [Changelog] instance shared between [ChangelogPluginExtension] and tasks.
+     */
+    @get:Internal
+    abstract val instance: Property<Changelog>
+
+    /**
+     * [headerParserRegex] value normalized to [Regex] instance.
+     * Falls back to [ChangelogPluginConstants.SEM_VER_REGEX]]
+     */
     @get:Internal
     @Suppress("LeakingThis")
     val getHeaderParserRegex = headerParserRegex.map {
@@ -40,39 +155,6 @@ abstract class ChangelogPluginExtension {
             else -> throw IllegalArgumentException("Unsupported type of $it. Expected value types: Regex, String, Pattern.")
         }
     }.orElse(SEM_VER_REGEX)
-
-    @get:Optional
-    abstract val itemPrefix: Property<String>
-
-    @get:Optional
-    abstract val keepUnreleasedSection: Property<Boolean>
-
-    @get:Optional
-    abstract val patchEmpty: Property<Boolean>
-
-    @get:Optional
-    abstract val path: Property<String>
-
-    @get:Optional
-    abstract val unreleasedTerm: Property<String>
-
-    @get:Optional
-    abstract val version: Property<String>
-
-    @get:Optional
-    abstract val lineSeparator: Property<String>
-
-    @get:Optional
-    abstract val combinePreReleases: Property<Boolean>
-
-    @get:Optional
-    abstract val repositoryUrl: Property<String>
-
-    @get:Optional
-    abstract val sectionUrlBuilder: Property<ChangelogSectionUrlBuilder>
-
-    @get:Internal
-    abstract val instance: Property<Changelog>
 
     fun get(version: String) = instance.get().get(version)
 

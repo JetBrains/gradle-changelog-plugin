@@ -2,53 +2,90 @@
 
 package org.jetbrains.changelog.tasks
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogPluginExtension
 import org.jetbrains.changelog.exceptions.MissingVersionException
 
-abstract class GetChangelogTask : DefaultTask() {
+/**
+ * Retrieves changelog for the specified version.
+ */
+abstract class GetChangelogTask : BaseChangelogTask() {
 
+    /**
+     * Omits the section header in the changelog output.
+     *
+     * Default value: `false`
+     */
     @get:Input
-    @Option(option = "no-header", description = "Omits header version line")
+    @Option(
+        option = "no-header",
+        description = "Omits the section header in the changelog output.",
+    )
     var noHeader = false
 
+    /**
+     * Omits the section summary in the changelog output.
+     *
+     * Default value: `false`
+     */
     @get:Input
-    @Option(option = "no-summary", description = "Omits summary section")
+    @Option(
+        option = "no-summary",
+        description = "Omits the section summary in the changelog output.",
+    )
     var noSummary = false
 
+    /**
+     * Omits links in the changelog output.
+     *
+     * Default value: `false`
+     */
     @get:Input
-    @Option(option = "no-links", description = "Omits links")
+    @Option(
+        option = "no-links",
+        description = "Omits links in the changelog output.",
+    )
     var noLinks = false
 
+    /**
+     * Returns change notes for the specified version.
+     *
+     * Default value: `null`
+     */
     @get:Input
     @get:Optional
-    @Option(option = "version", description = "Returns change notes for the specified version")
+    @Option(
+        option = "version",
+        description = "Returns change notes for the specified version.",
+    )
     var cliVersion = null as String?
 
+    /**
+     * Returns change notes for an unreleased section.
+     *
+     * Default value: `false`
+     */
     @get:Input
-    @Option(option = "unreleased", description = "Returns Unreleased change notes")
+    @Option(
+        option = "unreleased",
+        description = "Returns change notes for an unreleased section.",
+    )
     var unreleased = false
 
+    /**
+     * Changelog input file.
+     *
+     * Default value: file resolved with [ChangelogPluginExtension.path]
+     */
     @get:InputFile
     @get:Optional
     abstract val inputFile: RegularFileProperty
-
-    @get:Internal
-    val content = inputFile.map {
-        with(it.asFile) {
-            if (!exists()) {
-                createNewFile()
-            }
-            readText()
-        }
-    }
-
-    @get:Internal
-    abstract val changelog: Property<Changelog>
 
     @TaskAction
     fun run() = logger.quiet(
@@ -57,16 +94,14 @@ abstract class GetChangelogTask : DefaultTask() {
 
             when {
                 version != null -> get(version)
-                unreleased -> unreleasedItem ?: throw MissingVersionException(unreleasedTerm)
+                unreleased -> unreleasedItem ?: throw MissingVersionException(unreleasedTerm.get())
                 else -> releasedItems.first()
             }
                 .withHeader(!noHeader)
                 .withSummary(!noSummary)
                 .withLinks(!noLinks)
                 .withLinkedHeader(!noLinks)
-                .let {
-                    renderItem(it, Changelog.OutputType.MARKDOWN)
-                }
+                .let { renderItem(it, Changelog.OutputType.MARKDOWN) }
         }
     )
 }

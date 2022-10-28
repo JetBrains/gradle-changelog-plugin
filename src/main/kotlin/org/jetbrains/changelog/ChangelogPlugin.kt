@@ -32,12 +32,6 @@ class ChangelogPlugin : Plugin<Project> {
         checkGradleVersion(project)
 
         val extension = project.extensions.create<ChangelogPluginExtension>(EXTENSION_NAME).apply {
-            groups.convention(GROUPS)
-            header.convention(project.provider {
-                "${version.get()} - ${date()}"
-            })
-            keepUnreleasedSection.convention(true)
-            itemPrefix.convention(ITEM_PREFIX)
             path.convention(project.provider {
                 "${project.projectDir}/$CHANGELOG_FILE_NAME"
             }.map {
@@ -48,14 +42,21 @@ class ChangelogPlugin : Plugin<Project> {
                     toAbsolutePath().toString()
                 }
             })
-            patchEmpty.convention(true)
-            unreleasedTerm.convention(UNRELEASED_TERM)
             version.convention(
                 project.provider {
                     project.version.toString().takeIf { it != Project.DEFAULT_VERSION }
                         ?: throw VersionNotSpecifiedException()
                 }
             )
+            header.convention(project.provider {
+                "${version.get()} - ${date()}"
+            })
+            unreleasedTerm.convention(UNRELEASED_TERM)
+            keepUnreleasedSection.convention(true)
+            patchEmpty.convention(true)
+            groups.convention(GROUPS)
+            itemPrefix.convention(ITEM_PREFIX)
+            combinePreReleases.convention(true)
             lineSeparator.convention(path.map { path ->
                 val content = Path.of(path)
                     .takeIf { Files.exists(it) }
@@ -73,7 +74,6 @@ class ChangelogPlugin : Plugin<Project> {
                     else -> "\n"
                 }
             })
-            combinePreReleases.convention(true)
             repositoryUrl.map { it.removeSuffix("/") }
             sectionUrlBuilder.convention(
                 ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
@@ -84,6 +84,7 @@ class ChangelogPlugin : Plugin<Project> {
                         }
 
                         previousVersion == null -> "/tag/v$currentVersion"
+
                         else -> "/compare/v$previousVersion...v$currentVersion"
                     }
                 }
@@ -118,6 +119,7 @@ class ChangelogPlugin : Plugin<Project> {
         project.tasks.register<GetChangelogTask>(GET_CHANGELOG_TASK_NAME) {
             group = GROUP_NAME
 
+            unreleasedTerm.convention(extension.unreleasedTerm)
             changelog.convention(extension.instance)
             inputFile.convention(pathProvider)
 
@@ -132,6 +134,7 @@ class ChangelogPlugin : Plugin<Project> {
             keepUnreleasedSection.convention(extension.keepUnreleasedSection)
             patchEmpty.convention(extension.patchEmpty)
             combinePreReleases.convention(extension.combinePreReleases)
+            unreleasedTerm.convention(extension.unreleasedTerm)
             changelog.convention(extension.instance)
             inputFile.convention(pathProvider)
             outputFile.convention(pathProvider)
@@ -140,6 +143,7 @@ class ChangelogPlugin : Plugin<Project> {
         project.tasks.register<InitializeChangelogTask>(INITIALIZE_CHANGELOG_TASK_NAME) {
             group = GROUP_NAME
 
+            unreleasedTerm.convention(extension.unreleasedTerm)
             changelog.convention(extension.instance)
             outputFile.convention(pathProvider)
         }

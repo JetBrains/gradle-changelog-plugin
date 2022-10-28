@@ -2,24 +2,27 @@
 
 package org.jetbrains.changelog.tasks
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogPluginExtension
 
-abstract class InitializeChangelogTask : DefaultTask() {
+/**
+ * Creates a new changelog file with an unreleased section and empty groups.
+ */
+abstract class InitializeChangelogTask : BaseChangelogTask() {
 
+    /**
+     * Changelog output file.
+     *
+     * Default value: file resolved with [ChangelogPluginExtension.path]
+     */
     @get:OutputFile
     @get:Optional
     abstract val outputFile: RegularFileProperty
-
-    @get:Internal
-    abstract val changelog: Property<Changelog>
 
     @TaskAction
     fun run() {
@@ -30,7 +33,7 @@ abstract class InitializeChangelogTask : DefaultTask() {
 
         with (changelog.get()) {
             items = mapOf(
-                unreleasedTerm to newUnreleasedItem
+                unreleasedTerm.get() to newUnreleasedItem
             )
 
             render(Changelog.OutputType.MARKDOWN).let {
