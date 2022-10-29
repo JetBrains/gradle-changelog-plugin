@@ -52,7 +52,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Added
             - foo
             
-            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v1.0.0
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
             
             """.trimIndent(),
             extension.renderItem(extension.get(version))
@@ -106,7 +106,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Added
             - foo
             
-            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v1.0.0
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
             
             """.trimIndent(),
             extension.renderItem(extension.get(version))
@@ -184,7 +184,7 @@ class PatchChangelogTaskTest : BaseTest() {
             - foo
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
-            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v1.0.0
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
 
             """.trimIndent(),
             changelog,
@@ -208,7 +208,7 @@ class PatchChangelogTaskTest : BaseTest() {
             - Something added.
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.1.0...HEAD
-            [0.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v0.1.0
+            [0.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.1.0
 
             """.trimIndent()
 
@@ -329,7 +329,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Removed
             - bar
             
-            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v1.0.0
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
             
             """.trimIndent(),
             extension.renderItem(extension.get(version))
@@ -477,7 +477,7 @@ class PatchChangelogTaskTest : BaseTest() {
             - Buz
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.1.0...HEAD
-            [0.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v0.1.0
+            [0.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.1.0
             """.trimIndent()
 
         project.evaluate()
@@ -504,7 +504,7 @@ class PatchChangelogTaskTest : BaseTest() {
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.1.0...v1.0.0
-            [0.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v0.1.0
+            [0.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.1.0
             [world]: https://jetbrains.com
             
             """.trimIndent(),
@@ -513,7 +513,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertMarkdown(
             """
-            ## [1.0.0] - 2022-10-28
+            ## [1.0.0] - $date
             Foo
             
             - asd
@@ -533,7 +533,7 @@ class PatchChangelogTaskTest : BaseTest() {
             
             ## [Unreleased]
             
-            ## [1.0.0] - 2022-10-28
+            ## [1.0.0] - $date
             Foo
             
             - asd
@@ -546,7 +546,7 @@ class PatchChangelogTaskTest : BaseTest() {
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.1.0...v1.0.0
-            [0.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v0.1.0
+            [0.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.1.0
             [world]: https://jetbrains.com
             
             """.trimIndent(),
@@ -630,7 +630,7 @@ class PatchChangelogTaskTest : BaseTest() {
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.0.1...v1.0.0
-            [0.0.1]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v0.0.1
+            [0.0.1]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.0.1
             
             """.trimIndent(),
             extension.render()
@@ -669,7 +669,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [1.0.0] - $date
             - Fixed stuff
             
-            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v1.0.0
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
             """.trimIndent(),
             extension.render()
         )
@@ -708,7 +708,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [1.0.0] - $date
             - Fixed stuff
             
-            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v1.0.0
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
 
             """.trimIndent(),
             extension.render()
@@ -834,7 +834,7 @@ class PatchChangelogTaskTest : BaseTest() {
             [1.0.0-beta]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0-alpha.2...v1.0.0-beta
             [1.0.0-alpha.2]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0-alpha.1...v1.0.0-alpha.2
             [1.0.0-alpha.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.0...v1.0.0-alpha.1
-            [0.9.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v0.9.0
+            [0.9.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.9.0
             
             """.trimIndent(),
             extension.render()
@@ -901,7 +901,7 @@ class PatchChangelogTaskTest : BaseTest() {
             [1.0.0-beta]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0-alpha.2...v1.0.0-beta
             [1.0.0-alpha.2]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0-alpha.1...v1.0.0-alpha.2
             [1.0.0-alpha.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.0...v1.0.0-alpha.1
-            [0.9.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v0.9.0
+            [0.9.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.9.0
             
             """.trimIndent()
 
@@ -969,7 +969,7 @@ class PatchChangelogTaskTest : BaseTest() {
             [1.0.0-beta]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0-alpha.2...v1.0.0-beta
             [1.0.0-alpha.2]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0-alpha.1...v1.0.0-alpha.2
             [1.0.0-alpha.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.0...v1.0.0-alpha.1
-            [0.9.0]: https://github.com/JetBrains/gradle-changelog-plugin/tag/v0.9.0
+            [0.9.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.9.0
             
             """.trimIndent(),
             extension.render()
