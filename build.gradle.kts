@@ -67,8 +67,8 @@ artifacts {
 }
 
 changelog {
-    version.set("${project.version}")
     groups.set(emptyList())
+    repositoryUrl.set("https://github.com/JetBrains/gradle-changelog-plugin")
 }
 
 tasks {
