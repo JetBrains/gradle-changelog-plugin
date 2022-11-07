@@ -57,8 +57,14 @@ tasks {
     // ...
 
     patchPluginXml {
-        changeNotes(provider {
-            changelog.renderItem(changelog.getUnreleased(), Changelog.OutputType.HTML)
+        changeNotes.set(provider {
+            changelog.renderItem(
+                changelog
+                    .getUnreleased()
+                    .withHeader(false)
+                    .withEmptySections(false),
+                Changelog.OutputType.HTML
+            )
         })
     }
 }
@@ -102,9 +108,15 @@ intellij {
     // ...
 
     patchPluginXml {
-        changeNotes({
-            changelog.renderItem(changelog.getUnreleased(), Changelog.OutputType.HTML)
-        })
+        changeNotes = {
+            changelog.renderItem(
+                changelog
+                    .getUnreleased()
+                    .withHeader(false)
+                    .withEmptySections(false),
+                Changelog.OutputType.HTML
+            )
+        }
     }
 }
 
