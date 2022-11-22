@@ -47,6 +47,7 @@ The latest available version is: [![Gradle Plugin][gradle-plugin-shield]][gradle
 **build.gradle.kts** (Kotlin)
 
 ```kotlin
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.date
 
 plugins {
@@ -71,7 +72,7 @@ tasks {
 
 changelog {
     version.set("1.0.0")
-    path.set(file("CHANGELOG.md").cannonicalPath)
+    path.set(file("CHANGELOG.md").canonicalPath)
     header.set(provider { "[${version.get()}] - ${date()}" })
     headerParserRegex.set("""(\d+\.\d+)""".toRegex())
     introduction.set(
