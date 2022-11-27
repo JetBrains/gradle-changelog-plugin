@@ -447,7 +447,7 @@ It provides a couple of properties and methods that allow altering the output fo
 
 ## Changelog
 
-All releases are available in the [Releases](https://github.com/JetBrains/gradle-intellij-plugin/releases) section.
+All releases are available in the [Releases](https://github.com/JetBrains/gradle-changelog-plugin/releases) section.
 The latest available version is:
 
 [![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
