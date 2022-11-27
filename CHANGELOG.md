@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- `versionPrefix` to allow setting the version prefix to compare tags
+
 ## [2.0.0] - 2022-10-28
 
 ### Added

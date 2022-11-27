@@ -13,6 +13,14 @@ import java.util.regex.Pattern
 abstract class ChangelogPluginExtension {
 
     /**
+     * Version prefix used to compare tags.
+     *
+     * Default value: `v`
+     */
+    @get:Optional
+    abstract val versionPrefix: Property<String>
+
+    /**
      * Current version. By default, project's version is used.
      *
      * Default value: `project.version`

@@ -120,6 +120,45 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
+    fun `patches Unreleased version with custom version prefix to the current one`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                versionPrefix = "w"
+                version = "$version"
+                keepUnreleasedSection = false
+                repositoryUrl = "https://github.com/JetBrains/gradle-changelog-plugin"
+            }
+            """.trimIndent()
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            ## [1.0.0] - $date
+            Fancy release.
+            
+            ### Added
+            - foo
+            
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/w1.0.0
+            
+            """.trimIndent(),
+            extension.renderItem(extension.get(version))
+        )
+
+        assertFailsWith<MissingVersionException> {
+            extension.getUnreleased().also {
+                println("it = ${it}")
+            }
+        }
+    }
+
+    @Test
     fun `applies custom header patcher`() {
         buildFile =
             """

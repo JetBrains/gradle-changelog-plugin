@@ -156,6 +156,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 
 | Property                | Type                           | Default value                                                        | Description                                                                                                      |
 |-------------------------|--------------------------------|----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| `versionPrefix`         | `String`                       | `v`                                                                  | Version prefix used to compare tags.                                                                             |
 | `version`               | `String`                       | `project.version`                                                    | Current version. By default, project's version is used.                                                          |
 | `path`                  | `String`                       | `file("CHANGELOG.md").cannonicalPath`                                | Path to the changelog file.                                                                                      |
 | `preTitle`              | `String?`                      | `null`                                                               | Optional content placed before the `title`.                                                                      |
