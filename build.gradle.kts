@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains:markdown:0.3.1") {
+    implementation("org.jetbrains:markdown:0.3.6") {
         exclude(group = "org.jetbrains.kotlin")
     }
     testImplementation(kotlin("test"))
