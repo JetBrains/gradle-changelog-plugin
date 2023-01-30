@@ -350,11 +350,11 @@ Renders the given `Changelog.Item` object to string based on the given `outputTy
 ### `changelog.getInstance(): Changelog`
 
 Returns the `Changelog` instance shared among all the tasks.
-See [`Changelog`](#changalog-class) for more details.
+See [`Changelog`](#changelog-class) for more details.
 
 ## Classes
 
-### `Changalog` class
+### `Changelog` class
 
 The `Changelog` class is a wrapper for the `Changelog` file.
 It provides methods to read and write the changelog file.
