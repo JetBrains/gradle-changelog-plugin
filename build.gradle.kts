@@ -8,7 +8,7 @@ fun environment(key: String) = providers.environmentVariable(key)
 plugins {
     `kotlin-dsl`
     `maven-publish`
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.8.10"
     id("com.gradle.plugin-publish") version "1.1.0"
     id("org.jetbrains.changelog") version "2.0.0"
     id("org.jetbrains.dokka") version "1.7.20"
