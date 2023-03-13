@@ -34,19 +34,16 @@ kotlin {
 }
 
 gradlePlugin {
+    website.set(properties("website"))
+    vcsUrl.set(properties("vcsUrl"))
+
     plugins.create("changelog") {
         id = properties("pluginId")
-        implementationClass = properties("pluginImplementationClass")
         displayName = properties("pluginDisplayName")
-        description = properties("pluginDescription")
+        implementationClass = properties("pluginImplementationClass")
+        description = project.description
+        tags.set(properties("tags")?.split(','))
     }
-}
-
-pluginBundle {
-    website = properties("website")
-    vcsUrl = properties("vcsUrl")
-    description = properties("description")
-    tags = properties("tags")?.split(',')
 }
 
 val dokkaHtml by tasks.getting(DokkaTask::class)
