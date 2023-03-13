@@ -41,7 +41,7 @@ gradlePlugin {
 
     plugins.create("changelog") {
         id = properties("pluginId").get()
-        displayName = properties("pluginDisplayName").get()
+        displayName = properties("name").get()
         implementationClass = properties("pluginImplementationClass").get()
         description = project.description
         tags.set(properties("tags").map { it.split(',') })

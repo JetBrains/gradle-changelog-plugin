@@ -30,7 +30,7 @@ import java.nio.file.Path
 class ChangelogPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        checkGradleVersion(project)
+        checkGradleVersion()
 
         val extension = project.extensions.create<ChangelogPluginExtension>(EXTENSION_NAME).apply {
             path.convention(project.provider {
@@ -150,7 +150,7 @@ class ChangelogPlugin : Plugin<Project> {
         }
     }
 
-    private fun checkGradleVersion(project: Project) {
+    private fun checkGradleVersion() {
         if (GradleVersion.current() < GradleVersion.version(MINIMAL_SUPPORTED_GRADLE_VERSION)) {
             throw PluginInstantiationException("$PLUGIN_NAME requires Gradle $MINIMAL_SUPPORTED_GRADLE_VERSION and higher")
         }
