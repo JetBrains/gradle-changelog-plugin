@@ -2,7 +2,8 @@
 
 import org.jetbrains.dokka.gradle.DokkaTask
 
-fun properties(key: String) = project.findProperty(key)?.toString()
+fun properties(key: String) = providers.gradleProperty(key)
+fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
     `kotlin-dsl`
@@ -13,9 +14,9 @@ plugins {
     id("org.jetbrains.dokka") version "1.7.20"
 }
 
-version = properties("version")!!
-group = properties("projectGroup")!!
-description = properties("description")
+group = properties("projectGroup").get()
+version = properties("version").get()
+description = properties("description").get()
 
 repositories {
     mavenCentral()
@@ -33,16 +34,17 @@ kotlin {
     jvmToolchain(11)
 }
 
+@Suppress("UnstableApiUsage")
 gradlePlugin {
     website.set(properties("website"))
     vcsUrl.set(properties("vcsUrl"))
 
     plugins.create("changelog") {
-        id = properties("pluginId")
-        displayName = properties("pluginDisplayName")
-        implementationClass = properties("pluginImplementationClass")
+        id = properties("pluginId").get()
+        displayName = properties("pluginDisplayName").get()
+        implementationClass = properties("pluginImplementationClass").get()
         description = project.description
-        tags.set(properties("tags")?.split(','))
+        tags.set(properties("tags").map { it.split(',') })
     }
 }
 
@@ -75,14 +77,14 @@ tasks {
             File(testGradleHomePath).mkdir()
         }
         systemProperties["test.gradle.home"] = testGradleHomePath
-        systemProperties["test.gradle.default"] = properties("gradleVersion")
-        systemProperties["test.gradle.version"] = properties("testGradleVersion")
-        systemProperties["test.gradle.arguments"] = properties("testGradleArguments")
+        systemProperties["test.gradle.default"] = properties("gradleVersion").get()
+        systemProperties["test.gradle.version"] = properties("testGradleVersion").get()
+        systemProperties["test.gradle.arguments"] = properties("testGradleArguments").get()
         outputs.dir(testGradleHomePath)
     }
 
     wrapper {
-        gradleVersion = properties("gradleVersion")
+        gradleVersion = properties("gradleVersion").get()
         distributionUrl = "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
     }
 }
