@@ -48,6 +48,7 @@ The latest available version is: [![Gradle Plugin][gradle-plugin-shield]][gradle
 
 ```kotlin
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.date
 
 plugins {
@@ -90,6 +91,7 @@ changelog {
     groups.set(listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"))
     lineSeparator.set("\n")
     combinePreReleases.set(true)
+    sectionUrlBuilder.set(ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased -> "foo" })
 }
 ```
 
@@ -97,6 +99,7 @@ changelog {
 
 ```groovy
 import java.text.SimpleDateFormat
+import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
@@ -139,6 +142,7 @@ changelog {
     groups = ["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]
     lineSeparator = "\n"
     combinePreReleases = true
+    sectionUrlBuilder = { repositoryUrl, currentVersion, previousVersion, isUnreleased -> "foo" } as ChangelogSectionUrlBuilder
 }
 ```
 
