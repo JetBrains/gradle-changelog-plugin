@@ -457,7 +457,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 extension.renderItem(values.first())
             )
-             assertMarkdown(
+            assertMarkdown(
                 """
                 ## [1.0.0]
                 First release.
@@ -602,5 +602,43 @@ class ChangelogPluginExtensionTest : BaseTest() {
         extension.introduction.set("New introduction")
 
         assertEquals("New introduction", extension.instance.get().introduction)
+    }
+
+    @Test
+    fun `provide a custom sectionUrlBuilder`() {
+        changelog =
+            """
+            # Changelog
+            Foo
+            
+            ## [Unreleased]
+            Not yet released version.
+            
+            ### Added
+            - Foo
+            
+            ## [0.0.1]
+            
+            ### Added
+            - Bar
+            """.trimIndent()
+
+        val customRepositoryUrl = "https://github.com/JetBrains/gradle-changelog-plugin"
+
+        extension.repositoryUrl.set(customRepositoryUrl)
+        extension.sectionUrlBuilder.set(ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
+            "repositoryUrl = $repositoryUrl | currentVersion = $currentVersion | previousVersion = $previousVersion | isUnreleased = $isUnreleased"
+        })
+
+        val items = extension.instance.get().links.values
+
+        assertEquals(
+            "repositoryUrl = $customRepositoryUrl | currentVersion = Unreleased | previousVersion = 0.0.1 | isUnreleased = true",
+            items.first(),
+        )
+        assertEquals(
+            "repositoryUrl = $customRepositoryUrl | currentVersion = 0.0.1 | previousVersion = null | isUnreleased = false",
+            items.last(),
+        )
     }
 }
