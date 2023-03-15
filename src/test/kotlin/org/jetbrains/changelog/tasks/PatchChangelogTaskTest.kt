@@ -113,9 +113,7 @@ class PatchChangelogTaskTest : BaseTest() {
         )
 
         assertFailsWith<MissingVersionException> {
-            extension.getUnreleased().also {
-                println("it = ${it}")
-            }
+            extension.getUnreleased()
         }
     }
 

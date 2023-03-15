@@ -4,6 +4,7 @@ package org.jetbrains.changelog
 
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.jetbrains.changelog.ChangelogPluginConstants.SEM_VER_REGEX
@@ -147,7 +148,7 @@ abstract class ChangelogPluginExtension {
      */
     @get:Internal
     @Suppress("LeakingThis")
-    val getHeaderParserRegex = headerParserRegex.map {
+    val getHeaderParserRegex: Provider<Regex> = headerParserRegex.map {
         when (it) {
             is Regex -> it
             is String -> it.toRegex()

@@ -21,5 +21,4 @@ abstract class BaseChangelogTask : DefaultTask() {
      */
     @get:Internal
     abstract val changelog: Property<Changelog>
-
 }

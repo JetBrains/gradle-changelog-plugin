@@ -372,7 +372,7 @@ It provides methods to read and write the changelog file.
 | `introduction`   | `String`                      | Optional content placed after the `title`.                                                     |
 | `items`          | `Map<String, Changelog.Item>` | List of all items available in the changelog stored in a map of `version` to `Changelog.Item`. |
 | `unreleasedItem` | `Changelog.Item?`             | An instance of the unreleased item, may be `null`.                                             |
-| `releasedItems`  | `List<Changelog.Item>`        | List of already relased item instances.                                                        |
+| `releasedItems`  | `List<Changelog.Item>`        | List of already released item instances.                                                       |
 | `links`          | `Map<String, String>`         | List of all links stored at the end of the changelog in a map of `id` to `url`.                |
 
 #### Methods
