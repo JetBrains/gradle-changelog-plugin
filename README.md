@@ -98,7 +98,7 @@ changelog {
 **build.gradle** (Groovy)
 
 ```groovy
-import java.text.SimpleDateFormat
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.ExtensionsKt
 
@@ -112,7 +112,7 @@ intellij {
     // ...
 
     patchPluginXml {
-        changeNotes = {
+        changeNotes = provider {
             changelog.renderItem(
                 changelog
                     .getUnreleased()
@@ -126,8 +126,8 @@ intellij {
 
 changelog {
     version = "1.0.0"
-    path = file("CHANGELOG.md").cannonicalPath
-    header = "[${-> version.get()}] - ${new SimpleDateFormat("yyyy-MM-dd").format(new Date())}"
+    path = file("CHANGELOG.md").canonicalPath
+    header = "[${-> version.get()}] - ${ExtensionsKt.date("yyyy-MM-dd")}"
     headerParserRegex = ~/(\d+\.\d+)/
     introduction = """
         My awesome project that provides a lot of useful features, like:
