@@ -39,6 +39,8 @@ jobs:
     name: Gradle ${{ matrix.gradleVersion }} @ ${{ matrix.os }}
     needs: gradleValidation
     runs-on: ${{ matrix.os }}
+    permissions:
+      checks: write
     strategy:
       fail-fast: false
       matrix:
@@ -82,8 +84,6 @@ jobs:
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: ${{ always() }}
-        permissions:
-          checks: write
         with:
           name: "Unit Tests Report: Gradle ${{ matrix.gradleVersion }} @ ${{ matrix.os }}"
           path: "**/build/test-results/*/TEST-*.xml"
