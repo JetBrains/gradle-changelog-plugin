@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- No-longer discard all but the last paragraph in list items [#133](../../issues/133) [#147](../../issues/147)
+
 ## [2.0.0] - 2022-10-28
 
 ### Added
