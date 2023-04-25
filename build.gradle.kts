@@ -1,4 +1,4 @@
-// Copyright 2000-2022 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
+// Copyright 2000-2023 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
 
 import org.jetbrains.dokka.gradle.DokkaTask
 
@@ -8,7 +8,7 @@ fun environment(key: String) = providers.environmentVariable(key)
 plugins {
     `kotlin-dsl`
     `maven-publish`
-    kotlin("jvm") version "1.8.20"
+    kotlin("jvm") version "1.8.21"
     id("com.gradle.plugin-publish") version "1.2.0"
     id("org.jetbrains.changelog") version "2.0.0"
     id("org.jetbrains.dokka") version "1.8.10"
