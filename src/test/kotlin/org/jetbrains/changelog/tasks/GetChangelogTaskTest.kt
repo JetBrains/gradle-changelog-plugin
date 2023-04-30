@@ -20,6 +20,11 @@ class GetChangelogTaskTest : BaseTest() {
             
             - bar
             
+            ### Added
+            
+            ### Fixed
+            - I fixed myself a beverage.
+            
             ## [1.0.1] - 2022-10-17
             Release with bugfix.
             
@@ -79,6 +84,30 @@ class GetChangelogTaskTest : BaseTest() {
             
             - bar
             
+            ### Added
+            
+            ### Fixed
+            - I fixed myself a beverage.
+            
+            [Unreleased]: https://jetbrians.com/Unreleased
+            """.trimIndent(),
+            result.output
+        )
+    }
+
+    fun `returns the Unreleased change notes without empty sections`() {
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--unreleased", "--no-empty-sections")
+
+        assertMarkdown(
+            """
+            ## [Unreleased]
+            Some unreleased changes.
+            
+            - bar
+            
+            ### Fixed
+            - I fixed myself a beverage.
+            
             [Unreleased]: https://jetbrians.com/Unreleased
             """.trimIndent(),
             result.output
@@ -136,7 +165,7 @@ class GetChangelogTaskTest : BaseTest() {
             result.output
         )
     }
-    
+
     @Test
     fun `returns change notes without links for the latest released version`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--no-links")
