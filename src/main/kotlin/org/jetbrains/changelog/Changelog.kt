@@ -145,7 +145,7 @@ data class Changelog(
 
             yieldAll(baseLinks)
         }
-            .sortedWith(Comparator { (left), (right) ->
+            .sortedWith { (left), (right) ->
                 val leftIsSemVer = SEM_VER_REGEX.matches(left)
                 val rightIsSemVer = SEM_VER_REGEX.matches(right)
                 val leftVersion = Version.parse(left)
@@ -159,7 +159,7 @@ data class Changelog(
                     rightIsSemVer -> 1
                     else -> left.compareTo(right)
                 }
-            })
+            }
             .toMap()
 
     val unreleasedItem: Item?

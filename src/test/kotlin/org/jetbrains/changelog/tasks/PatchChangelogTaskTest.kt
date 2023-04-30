@@ -113,9 +113,7 @@ class PatchChangelogTaskTest : BaseTest() {
         )
 
         assertFailsWith<MissingVersionException> {
-            extension.getUnreleased().also {
-                println("it = ${it}")
-            }
+            extension.getUnreleased()
         }
     }
 
@@ -975,6 +973,65 @@ class PatchChangelogTaskTest : BaseTest() {
             """.trimIndent(),
             extension.render()
         )
+    }
+
+
+    @Test
+    fun `do not break configuration cache with custom sectionUrlBuilder`() {
+        buildFile =
+            """
+            import org.jetbrains.changelog.ChangelogSectionUrlBuilder
+            
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                repositoryUrl = "https://github.com/JetBrains/gradle-changelog-plugin"
+                sectionUrlBuilder = { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
+                    "repositoryUrl=" + repositoryUrl + "|currentVersion=" + currentVersion + "|previousVersion=" + previousVersion + "|isUnreleased=" + isUnreleased
+                } as ChangelogSectionUrlBuilder
+            }
+            """.trimIndent()
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+        val result = runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            <!-- Foo bar -->
+            
+            # Changelog
+            My project changelog.
+            
+            ## [Unreleased]
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            ## [1.0.0] - $date
+            Fancy release.
+            
+            ### Added
+            - foo
+            
+            [Unreleased]: repositoryUrl=https://github.com/JetBrains/gradle-changelog-plugin|currentVersion=Unreleased|previousVersion=1.0.0|isUnreleased=true
+            [1.0.0]: repositoryUrl=https://github.com/JetBrains/gradle-changelog-plugin|currentVersion=1.0.0|previousVersion=null|isUnreleased=false
+            """.trimIndent(),
+            extension.render()
+        )
+
+        assertTrue(result.output.contains("Reusing configuration cache."))
     }
 
     @Test
