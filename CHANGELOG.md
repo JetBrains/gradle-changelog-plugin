@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- Add `--no-empty-sections` flag to `getChangelog` task. [#167](../../issues/167)
+
 ## [2.0.0] - 2022-10-28
 
 ### Added

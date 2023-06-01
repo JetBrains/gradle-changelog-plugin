@@ -54,6 +54,18 @@ abstract class GetChangelogTask : BaseChangelogTask() {
     var noLinks = false
 
     /**
+     * Omits empty sections in the changelog output.
+     *
+     * Default value: `false`
+     */
+    @get:Input
+    @Option(
+        option = "no-empty-sections",
+        description = "Omits empty sections in the changelog output.",
+    )
+    var noEmptySections = false
+
+    /**
      * Returns change notes for the specified version.
      *
      * Default value: `null`
@@ -101,6 +113,7 @@ abstract class GetChangelogTask : BaseChangelogTask() {
                 .withSummary(!noSummary)
                 .withLinks(!noLinks)
                 .withLinkedHeader(!noLinks)
+                .withEmptySections(!noEmptySections)
                 .let { renderItem(it, Changelog.OutputType.MARKDOWN) }
         }
     )

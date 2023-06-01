@@ -197,13 +197,14 @@ Retrieves changelog for the specified version.
 
 #### Options
 
-| Option         | Type      | Default value | Description                                        |
-|----------------|-----------|---------------|----------------------------------------------------|
-| `--no-header`  | `Boolean` | `false`       | Omits the section header in the changelog output.  |
-| `--no-summary` | `Boolean` | `false`       | Omits the section summary in the changelog output. |
-| `--no-links`   | `Boolean` | `false`       | Omits links in the changelog output.               |
-| `--version`    | `String?` | `null`        | Returns change notes for the specified version.    |
-| `--unreleased` | `Boolean` | `false`       | Returns change notes for an unreleased section.    |
+| Option                | Type      | Default value | Description                                        |
+|-----------------------|-----------|---------------|----------------------------------------------------|
+| `--no-header`         | `Boolean` | `false`       | Omits the section header in the changelog output.  |
+| `--no-summary`        | `Boolean` | `false`       | Omits the section summary in the changelog output. |
+| `--no-links`          | `Boolean` | `false`       | Omits links in the changelog output.               |
+| `--no-empty-sections` | `Boolean` | `false`       | Omits empty sections in the changelog output.      |
+| `--version`           | `String?` | `null`        | Returns change notes for the specified version.    |
+| `--unreleased`        | `Boolean` | `false`       | Returns change notes for an unreleased section.    |
 
 #### Examples
 
