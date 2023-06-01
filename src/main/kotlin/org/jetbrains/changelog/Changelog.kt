@@ -145,7 +145,7 @@ data class Changelog(
 
             yieldAll(baseLinks)
         }
-            .sortedWith(Comparator { (left), (right) ->
+            .sortedWith { (left), (right) ->
                 val leftIsSemVer = SEM_VER_REGEX.matches(left)
                 val rightIsSemVer = SEM_VER_REGEX.matches(right)
                 val leftVersion = Version.parse(left)
@@ -159,7 +159,7 @@ data class Changelog(
                     rightIsSemVer -> 1
                     else -> left.compareTo(right)
                 }
-            })
+            }
             .toMap()
 
     val unreleasedItem: Item?
@@ -364,6 +364,17 @@ data class Changelog(
         HTML,
     }
 
+    private fun ASTNode?.textAsIs(customContent: String? = null) = this
+        ?.getTextInNode(customContent ?: content)
+        ?.let {
+            when (type) {
+                EOL -> lineSeparator
+                else -> it
+            }
+        }
+        ?.toString()
+        .orEmpty()
+
     private fun ASTNode?.text(customContent: String? = null) = this
         ?.getTextInNode(customContent ?: content)
         ?.let {
@@ -431,7 +442,11 @@ data class Changelog(
                     .flatMap { list ->
                         list.children
                             .filter { it.type == org.intellij.markdown.MarkdownElementTypes.LIST_ITEM }
-                            .map { it.children.last().text(content) }
+                            .map { listItem ->
+                                listItem.children
+                                    .drop(1) // MarkdownTokenTypes.LIST_BULLET or LIST_NUMBER
+                                    .joinToString("") { it.textAsIs(content) }
+                            }
                             .toSet()
                     }
                     .toSet()
@@ -445,7 +460,11 @@ data class Changelog(
                 .associate { (left, right) ->
                     left.text(content) to right.children
                         .filter { it.type == org.intellij.markdown.MarkdownElementTypes.LIST_ITEM }
-                        .map { it.children.last().text(content) }
+                        .map { listItem ->
+                            listItem.children
+                                .drop(1) // MarkdownTokenTypes.LIST_BULLET or LIST_NUMBER
+                                .joinToString("") { it.textAsIs(content) }
+                        }
                         .toSet()
                 }
 

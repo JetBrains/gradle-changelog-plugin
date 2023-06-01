@@ -7,6 +7,7 @@ import org.gradle.api.Project
 import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.register
+import org.gradle.util.GradleVersion
 import org.jetbrains.changelog.ChangelogPluginConstants.CHANGELOG_FILE_NAME
 import org.jetbrains.changelog.ChangelogPluginConstants.EXTENSION_NAME
 import org.jetbrains.changelog.ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME
@@ -29,7 +30,7 @@ import java.nio.file.Path
 class ChangelogPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        checkGradleVersion(project)
+        checkGradleVersion()
 
         val extension = project.extensions.create<ChangelogPluginExtension>(EXTENSION_NAME).apply {
             path.convention(project.provider {
@@ -152,8 +153,8 @@ class ChangelogPlugin : Plugin<Project> {
         }
     }
 
-    private fun checkGradleVersion(project: Project) {
-        if (Version.parse(project.gradle.gradleVersion) < Version.parse(MINIMAL_SUPPORTED_GRADLE_VERSION)) {
+    private fun checkGradleVersion() {
+        if (GradleVersion.current() < GradleVersion.version(MINIMAL_SUPPORTED_GRADLE_VERSION)) {
             throw PluginInstantiationException("$PLUGIN_NAME requires Gradle $MINIMAL_SUPPORTED_GRADLE_VERSION and higher")
         }
     }

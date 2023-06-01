@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Gradle Wrapper Validation
-        uses: gradle/wrapper-validation-action@v1.0.5
+        uses: gradle/wrapper-validation-action@v1.0.6
 
   codeInspection:
     name: Code Inspection
@@ -32,8 +32,8 @@ jobs:
       - name: Fetch Sources
         uses: actions/checkout@v3
 
-      - name: Qodana - Code Inspection
-        uses: JetBrains/qodana-action@v2022.2.3
+#      - name: Qodana - Code Inspection
+#        uses: JetBrains/qodana-action@v2022.3.4
 
   test:
     name: Gradle ${{ matrix.gradleVersion }} @ ${{ matrix.os }}
@@ -44,9 +44,9 @@ jobs:
       matrix:
         gradleVersion:
           - 6.8
-          - 6.9.3
-          - 7.5.1
-          - 7.6-rc-1
+          - 6.9.2
+          - 7.6.1
+          - 8.1.1
         os:
           - windows-latest
           - ubuntu-latest
@@ -79,14 +79,6 @@ jobs:
       - name: Run Linters and Test
         run: ./gradlew check -PtestGradleVersion="${{ matrix.gradleVersion }}"
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: ${{ always() }}
-        with:
-          name: "Unit Tests Report: Gradle ${{ matrix.gradleVersion }} @ ${{ matrix.os }}"
-          path: "**/build/test-results/*/TEST-*.xml"
-          reporter: java-junit
-
       - name: Collect Test Results
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
@@ -95,6 +87,7 @@ jobs:
           path: |
             ${{ github.workspace }}/build/reports/tests
             ${{ github.workspace }}/build/reports/configuration-cache
+            ${{ github.workspace }}/build/test-results
 
   build:
     name: Build

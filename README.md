@@ -1,7 +1,7 @@
 # Gradle Changelog Plugin
 
 [![official JetBrains project](https://jb.gg/badges/official.svg)][jb:github]
-[![Twitter Follow](https://img.shields.io/twitter/follow/JBPlatform?style=flat)][jb:twitter]
+[![Twitter Follow](https://img.shields.io/badge/follow-%40JBPlatform-1DA1F2?logo=twitter)][jb:twitter]
 [![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
 [![Build](https://github.com/JetBrains/gradle-changelog-plugin/workflows/Build/badge.svg)][gh:build]
 [![Slack](https://img.shields.io/badge/Slack-%23gradle--changelog--plugin-blue)][jb:slack]
@@ -48,6 +48,7 @@ The latest available version is: [![Gradle Plugin][gradle-plugin-shield]][gradle
 
 ```kotlin
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.date
 
 plugins {
@@ -90,13 +91,15 @@ changelog {
     groups.set(listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"))
     lineSeparator.set("\n")
     combinePreReleases.set(true)
+    sectionUrlBuilder.set(ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased -> "foo" })
 }
 ```
 
 **build.gradle** (Groovy)
 
 ```groovy
-import java.text.SimpleDateFormat
+import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.ExtensionsKt
 
 plugins {
@@ -109,7 +112,7 @@ intellij {
     // ...
 
     patchPluginXml {
-        changeNotes = {
+        changeNotes = provider {
             changelog.renderItem(
                 changelog
                     .getUnreleased()
@@ -123,8 +126,8 @@ intellij {
 
 changelog {
     version = "1.0.0"
-    path = file("CHANGELOG.md").cannonicalPath
-    header = "[${-> version.get()}] - ${new SimpleDateFormat("yyyy-MM-dd").format(new Date())}"
+    path = file("CHANGELOG.md").canonicalPath
+    header = "[${-> version.get()}] - ${ExtensionsKt.date("yyyy-MM-dd")}"
     headerParserRegex = ~/(\d+\.\d+)/
     introduction = """
         My awesome project that provides a lot of useful features, like:
@@ -139,6 +142,7 @@ changelog {
     groups = ["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]
     lineSeparator = "\n"
     combinePreReleases = true
+    sectionUrlBuilder = { repositoryUrl, currentVersion, previousVersion, isUnreleased -> "foo" } as ChangelogSectionUrlBuilder
 }
 ```
 
@@ -194,13 +198,14 @@ Retrieves changelog for the specified version.
 
 #### Options
 
-| Option         | Type      | Default value | Description                                        |
-|----------------|-----------|---------------|----------------------------------------------------|
-| `--no-header`  | `Boolean` | `false`       | Omits the section header in the changelog output.  |
-| `--no-summary` | `Boolean` | `false`       | Omits the section summary in the changelog output. |
-| `--no-links`   | `Boolean` | `false`       | Omits links in the changelog output.               |
-| `--version`    | `String?` | `null`        | Returns change notes for the specified version.    |
-| `--unreleased` | `Boolean` | `false`       | Returns change notes for an unreleased section.    |
+| Option                | Type      | Default value | Description                                        |
+|-----------------------|-----------|---------------|----------------------------------------------------|
+| `--no-header`         | `Boolean` | `false`       | Omits the section header in the changelog output.  |
+| `--no-summary`        | `Boolean` | `false`       | Omits the section summary in the changelog output. |
+| `--no-links`          | `Boolean` | `false`       | Omits links in the changelog output.               |
+| `--no-empty-sections` | `Boolean` | `false`       | Omits empty sections in the changelog output.      |
+| `--version`           | `String?` | `null`        | Returns change notes for the specified version.    |
+| `--unreleased`        | `Boolean` | `false`       | Returns change notes for an unreleased section.    |
 
 #### Examples
 
@@ -351,11 +356,11 @@ Renders the given `Changelog.Item` object to string based on the given `outputTy
 ### `changelog.getInstance(): Changelog`
 
 Returns the `Changelog` instance shared among all the tasks.
-See [`Changelog`](#changalog-class) for more details.
+See [`Changelog`](#changelog-class) for more details.
 
 ## Classes
 
-### `Changalog` class
+### `Changelog` class
 
 The `Changelog` class is a wrapper for the `Changelog` file.
 It provides methods to read and write the changelog file.
@@ -369,7 +374,7 @@ It provides methods to read and write the changelog file.
 | `introduction`   | `String`                      | Optional content placed after the `title`.                                                     |
 | `items`          | `Map<String, Changelog.Item>` | List of all items available in the changelog stored in a map of `version` to `Changelog.Item`. |
 | `unreleasedItem` | `Changelog.Item?`             | An instance of the unreleased item, may be `null`.                                             |
-| `releasedItems`  | `List<Changelog.Item>`        | List of already relased item instances.                                                        |
+| `releasedItems`  | `List<Changelog.Item>`        | List of already released item instances.                                                       |
 | `links`          | `Map<String, String>`         | List of all links stored at the end of the changelog in a map of `id` to `url`.                |
 
 #### Methods
@@ -448,7 +453,7 @@ It provides a couple of properties and methods that allow altering the output fo
 
 ## Changelog
 
-All releases are available in the [Releases](https://github.com/JetBrains/gradle-intellij-plugin/releases) section.
+All releases are available in the [Releases](https://github.com/JetBrains/gradle-changelog-plugin/releases) section.
 The latest available version is:
 
 [![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]

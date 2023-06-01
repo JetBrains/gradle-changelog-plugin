@@ -17,7 +17,7 @@ open class BaseTest {
 
     protected lateinit var project: DefaultProject
     protected lateinit var extension: ChangelogPluginExtension
-    protected val lineSeparator
+    protected val lineSeparator: String
         get() = extension.lineSeparator.get()
     protected val date
         get() = date()
