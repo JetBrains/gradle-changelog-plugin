@@ -39,8 +39,6 @@ jobs:
     name: Gradle ${{ matrix.gradleVersion }} @ ${{ matrix.os }}
     needs: gradleValidation
     runs-on: ${{ matrix.os }}
-    permissions:
-      checks: write
     strategy:
       fail-fast: false
       matrix:
@@ -48,7 +46,7 @@ jobs:
           - 6.8
           - 6.9.2
           - 7.6.1
-          - 8.0.2
+          - 8.1.1
         os:
           - windows-latest
           - ubuntu-latest
@@ -81,14 +79,6 @@ jobs:
       - name: Run Linters and Test
         run: ./gradlew check -PtestGradleVersion="${{ matrix.gradleVersion }}"
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: ${{ always() }}
-        with:
-          name: "Unit Tests Report: Gradle ${{ matrix.gradleVersion }} @ ${{ matrix.os }}"
-          path: "**/build/test-results/*/TEST-*.xml"
-          reporter: java-junit
-
       - name: Collect Test Results
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
@@ -97,6 +87,7 @@ jobs:
           path: |
             ${{ github.workspace }}/build/reports/tests
             ${{ github.workspace }}/build/reports/configuration-cache
+            ${{ github.workspace }}/build/test-results
 
   build:
     name: Build
