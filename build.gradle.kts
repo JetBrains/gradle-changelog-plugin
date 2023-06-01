@@ -36,27 +36,27 @@ kotlin {
 
 @Suppress("UnstableApiUsage")
 gradlePlugin {
-    website.set(properties("website"))
-    vcsUrl.set(properties("vcsUrl"))
+    website = properties("website")
+    vcsUrl = properties("vcsUrl")
 
     plugins.create("changelog") {
         id = properties("pluginId").get()
         displayName = properties("name").get()
         implementationClass = properties("pluginImplementationClass").get()
         description = project.description
-        tags.set(properties("tags").map { it.split(',') })
+        tags = properties("tags").map { it.split(',') }
     }
 }
 
 val dokkaHtml by tasks.getting(DokkaTask::class)
 val javadocJar by tasks.registering(Jar::class) {
     dependsOn(dokkaHtml)
-    archiveClassifier.set("javadoc")
+    archiveClassifier = "javadoc"
     from(dokkaHtml.outputDirectory)
 }
 
 val sourcesJar = tasks.register<Jar>("sourcesJar") {
-    archiveClassifier.set("sources")
+    archiveClassifier = "sources"
     from(sourceSets.main.get().allSource)
 }
 
@@ -66,8 +66,8 @@ artifacts {
 }
 
 changelog {
-    groups.set(emptyList())
-    repositoryUrl.set("https://github.com/JetBrains/gradle-changelog-plugin")
+    groups = emptyList()
+    repositoryUrl = "https://github.com/JetBrains/gradle-changelog-plugin"
 }
 
 tasks {
@@ -85,6 +85,5 @@ tasks {
 
     wrapper {
         gradleVersion = properties("gradleVersion").get()
-        distributionUrl = "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
     }
 }
