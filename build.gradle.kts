@@ -8,10 +8,10 @@ fun environment(key: String) = providers.environmentVariable(key)
 plugins {
     `kotlin-dsl`
     `maven-publish`
-    kotlin("jvm") version "1.8.21"
-    id("com.gradle.plugin-publish") version "1.2.0"
-    id("org.jetbrains.changelog") version "2.0.0"
-    id("org.jetbrains.dokka") version "1.8.10"
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.pluginPublish)
+    alias(libs.plugins.changelog)
+    alias(libs.plugins.dokka)
 }
 
 group = properties("projectGroup").get()
@@ -23,11 +23,11 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains:markdown:0.4.1") {
+    implementation(libs.markdown) {
         exclude(group = "org.jetbrains.kotlin")
     }
-    testImplementation(kotlin("test"))
-    testImplementation(kotlin("test-junit"))
+    testImplementation(libs.kotlinTest)
+    testImplementation(libs.kotlinTestJunit)
 }
 
 kotlin {
