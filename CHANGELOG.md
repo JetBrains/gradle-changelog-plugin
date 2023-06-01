@@ -3,7 +3,8 @@
 ## [Unreleased]
 
 ### Added
-- Add `--no-empty-sections` flag to `getChangelog` task. [#167](../../issues/167)
+- `versionPrefix` to allow setting the version prefix to compare tags [#139](../../issues/139)
+- `--no-empty-sections` flag to `getChangelog` task [#167](../../issues/167)
 
 ### Fixed
 - No-longer discard all but the last paragraph in list items [#133](../../issues/133) [#147](../../issues/147)
