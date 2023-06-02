@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [2.1.0] - 2023-06-02
+
 ### Added
 - `versionPrefix` to allow setting the version prefix to compare tags [#139](../../issues/139)
 - `--no-empty-sections` flag to `getChangelog` task [#167](../../issues/167)
@@ -211,7 +213,8 @@
 - `changelog` extension configuration
 - `getChangelog`/`patchChangelog` tasks
 
-[Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.3.1...v2.0.0
 [1.3.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.2.1...v1.3.0
