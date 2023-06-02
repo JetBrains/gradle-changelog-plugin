@@ -7,7 +7,7 @@ markdown = "0.4.1"
 dokka = "1.8.10"
 kotlin = "1.8.21"
 gradlePluginPublish = "1.2.0"
-gradleChangelogPlugin = "2.0.0"
+gradleChangelogPlugin = "2.1.0"
 
 [libraries]
 kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
