@@ -6,13 +6,13 @@
 [![Build](https://github.com/JetBrains/gradle-changelog-plugin/workflows/Build/badge.svg)][gh:build]
 [![Slack](https://img.shields.io/badge/Slack-%23gradle--changelog--plugin-blue)][jb:slack]
 
-**This project requires Gradle 6.8 or newer**
+A Gradle plugin providing tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
 
 > **Note**
 >
-> Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 7.5.1`
-
-A Gradle plugin providing tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
+> **This project requires Gradle 6.8 or newer**
+>
+> Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 8.1.1`
 
 ## Table of contents
 
@@ -220,7 +220,7 @@ $ ./gradlew getChangelog --console=plain -q --no-header --no-summary
 
 ### `initializeChangelog`
 
-Creates new changelog file with an unreleased section and empty groups.
+Creates a new changelog file with an unreleased section and empty groups.
 
 #### Examples
 
