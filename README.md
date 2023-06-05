@@ -414,12 +414,12 @@ It provides a couple of properties and methods that allow altering the output fo
 
 | Name                         | Description                                                                   | Returned type    |
 |------------------------------|-------------------------------------------------------------------------------|------------------|
-| `withHeader(Boolean)`        | Includes header part in the output.                                           | `Chagnelog.Item` |
-| `withLinkedHeader(Boolean)`  | Adds link to the version in the header.                                       | `Chagnelog.Item` |
-| `withSummary(Boolean)`       | Includes summary part.                                                        | `Chagnelog.Item` |
-| `withLinks(Boolean)`         | Returns links used in the release section at the end.                         | `Chagnelog.Item` |
-| `withEmptySections(Boolean)` | Prints empty sections.                                                        | `Chagnelog.Item` |
-| `withFilter(Boolean)`        | Applies custom filter to the returned entries.                                | `Chagnelog.Item` |
+| `withHeader(Boolean)`        | Includes header part in the output.                                           | `Changelog.Item` |
+| `withLinkedHeader(Boolean)`  | Adds link to the version in the header.                                       | `Changelog.Item` |
+| `withSummary(Boolean)`       | Includes summary part.                                                        | `Changelog.Item` |
+| `withLinks(Boolean)`         | Returns links used in the release section at the end.                         | `Changelog.Item` |
+| `withEmptySections(Boolean)` | Prints empty sections.                                                        | `Changelog.Item` |
+| `withFilter(Boolean)`        | Applies custom filter to the returned entries.                                | `Changelog.Item` |
 | `toText()`                   | Deprecated. Use `changelog.renderItem(item)`                                  | `String`         |
 | `toPlainText()`              | Deprecated. Use `changelog.renderItem(item, Changelog.OutputType.PLAIN_TEXT)` | `String`         |
 | `toString()`                 | Deprecated. Use `changelog.renderItem(item, Changelog.OutputType.MARKDOWN)`   | `String`         |
