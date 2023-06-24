@@ -101,7 +101,7 @@ class ChangelogPlugin : Plugin<Project> {
                             if (!exists()) {
                                 createNewFile()
                             }
-                            readText()
+                            readText().normalizeToLineFeed()
                         }
                     }.get(),
                     defaultPreTitle = preTitle.orNull,

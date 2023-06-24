@@ -76,4 +76,45 @@ class ExtensionsTest {
             """.trimIndent().reformat(lineSeparator)
         )
     }
+
+    @Test
+    fun `normalize string to line feed`() {
+        val text = """
+            Pre title content.
+            
+            # Title
+            Summary
+            
+            ## [Unreleased]
+            
+            ## [1.0.0]
+            - asd
+            
+            ## [0.1.0]
+            
+            ### Added
+            - Buz
+            
+            """.trimIndent()
+
+        assertEquals(
+            text,
+            text.replace("\n", "\r\n").normalizeToLineFeed()
+        )
+
+        assertEquals(
+            text,
+            text.replace("\n", "\r").normalizeToLineFeed()
+        )
+
+        assertEquals(
+            text,
+            text.normalizeToLineFeed()
+        )
+
+        assertEquals(
+            "text\ntext2\ntext3\ntext4",
+            "text\ntext2\rtext3\r\ntext4".normalizeToLineFeed()
+        )
+    }
 }

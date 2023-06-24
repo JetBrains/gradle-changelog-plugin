@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Wrong markdown render of changelog that use CRLF or CR line separator [#176](../../issues/176)
+
 ## [2.1.0] - 2023-06-02
 
 ### Added

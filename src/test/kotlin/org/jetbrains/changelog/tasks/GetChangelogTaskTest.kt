@@ -95,6 +95,7 @@ class GetChangelogTaskTest : BaseTest() {
         )
     }
 
+    @Test
     fun `returns the Unreleased change notes without empty sections`() {
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--unreleased", "--no-empty-sections")
 
@@ -260,5 +261,101 @@ class GetChangelogTaskTest : BaseTest() {
         val result = runTask(GET_CHANGELOG_TASK_NAME)
 
         assertTrue(result.output.contains("Reusing configuration cache."))
+    }
+
+    @Test
+    fun `get changelog with CRLF line separator`() {
+        changelog =
+            """
+            # Changelog
+            ## [Unreleased]
+            Some unreleased changes.
+            
+            - bar
+            
+            ### Added
+            
+            ### Fixed
+            - I fixed myself a beverage.
+            
+            ## [1.0.1] - 2022-10-17
+            Release with bugfix.
+            
+            ### Fixed
+            - bar
+            
+            ## [1.0.0] - 2022-10-10
+            That was a great release.
+            
+            ### Added
+            - foo
+            
+            [Unreleased]: https://jetbrians.com/Unreleased
+            [1.0.1]: https://jetbrians.com/1.0.1
+            [1.0.0]: https://jetbrians.com/1.0.0
+            """.trimIndent().replace("\n", "\r\n")
+
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
+
+        assertMarkdown(
+            """
+            ## [1.0.1] - 2022-10-17
+            Release with bugfix.
+            
+            ### Fixed
+            - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
+            """.trimIndent().replace("\n", "\r\n"),
+            result.output
+        )
+    }
+
+    @Test
+    fun `get changelog with CR line separator`() {
+        changelog =
+            """
+            # Changelog
+            ## [Unreleased]
+            Some unreleased changes.
+            
+            - bar
+            
+            ### Added
+            
+            ### Fixed
+            - I fixed myself a beverage.
+            
+            ## [1.0.1] - 2022-10-17
+            Release with bugfix.
+            
+            ### Fixed
+            - bar
+            
+            ## [1.0.0] - 2022-10-10
+            That was a great release.
+            
+            ### Added
+            - foo
+            
+            [Unreleased]: https://jetbrians.com/Unreleased
+            [1.0.1]: https://jetbrians.com/1.0.1
+            [1.0.0]: https://jetbrians.com/1.0.0
+            """.trimIndent().replace("\n", "\r")
+
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
+
+        assertMarkdown(
+            """
+            ## [1.0.1] - 2022-10-17
+            Release with bugfix.
+            
+            ### Fixed
+            - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
+            """.trimIndent().replace("\n", "\r"),
+            result.output
+        )
     }
 }

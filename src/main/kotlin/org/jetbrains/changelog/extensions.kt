@@ -39,6 +39,17 @@ internal fun String.reformat(lineSeparator: String): String {
     }
 }
 
+internal fun String.normalizeToLineFeed(): String {
+    val result = listOf(
+        "\r\n" to "\n",
+        "\r" to "\n",
+    ).fold(this) { acc, (pattern, replacement) ->
+        acc.replace(pattern, replacement)
+    }
+
+    return result
+}
+
 fun interface ChangelogSectionUrlBuilder {
     fun build(repositoryUrl: String, currentVersion: String?, previousVersion: String?, isUnreleased: Boolean): String
 }
