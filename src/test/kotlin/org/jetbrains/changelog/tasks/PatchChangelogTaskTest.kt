@@ -1181,4 +1181,88 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertTrue(result.output.contains("Reusing configuration cache."))
     }
+
+    @Test
+    fun `patch with CRLF line separator`() {
+        changelog =
+            """
+            <!-- Foo bar -->
+            
+            # Changelog
+            My project changelog.
+            
+            ## [Unreleased]
+            Fancy release.
+            
+            ### Added
+            - foo
+            
+            ### Changed
+            - changed
+            - changed 2
+            """.trimIndent().replace("\n", "\r\n")
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            ## [1.0.0] - $date
+            Fancy release.
+            
+            ### Added
+            - foo
+            
+            ### Changed
+            - changed
+            - changed 2
+            
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
+            
+            """.trimIndent().replace("\n", "\r\n"),
+            extension.renderItem(extension.get(version))
+        )
+    }
+
+    @Test
+    fun `patch with CR line separator`() {
+        changelog =
+            """
+            <!-- Foo bar -->
+            
+            # Changelog
+            My project changelog.
+            
+            ## [Unreleased]
+            Fancy release.
+            
+            ### Added
+            - foo
+            
+            ### Changed
+            - changed
+            - changed 2
+            """.trimIndent().replace("\n", "\r")
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            ## [1.0.0] - $date
+            Fancy release.
+            
+            ### Added
+            - foo
+            
+            ### Changed
+            - changed
+            - changed 2
+            
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
+            
+            """.trimIndent().replace("\n", "\r"),
+            extension.renderItem(extension.get(version))
+        )
+    }
 }

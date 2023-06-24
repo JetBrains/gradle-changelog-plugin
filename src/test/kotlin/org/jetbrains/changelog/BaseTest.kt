@@ -36,7 +36,7 @@ open class BaseTest {
             field = value
             changelogFile.run {
                 createNewFile()
-                writeText(value.trimIndent().trim())
+                writeText(value)
             }
         }
         get() = changelogFile.readText()

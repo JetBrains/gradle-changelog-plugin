@@ -181,4 +181,102 @@ class InitializeChangelogTaskTest : BaseTest() {
 
         assertTrue(result.output.contains("Reusing configuration cache."))
     }
+
+    @Test
+    fun `creates new changelog file with CRLF line separator`() {
+        extension.lineSeparator.set("\r\n")
+
+        runTask(INITIALIZE_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            # Changelog
+            
+            ## Unreleased
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+
+            """.trimIndent().replace("\n", "\r\n"),
+            extension.render()
+        )
+
+        assertMarkdown(
+            """
+            ## Unreleased
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            """.trimIndent().replace("\n", "\r\n"),
+            extension.renderItem(extension.getUnreleased())
+        )
+    }
+
+    @Test
+    fun `creates new changelog file with CR line separator`() {
+        extension.lineSeparator.set("\r")
+
+        runTask(INITIALIZE_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            # Changelog
+            
+            ## Unreleased
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+
+            """.trimIndent().replace("\n", "\r"),
+            extension.render()
+        )
+
+        assertMarkdown(
+            """
+            ## Unreleased
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            """.trimIndent().replace("\n", "\r"),
+            extension.renderItem(extension.getUnreleased())
+        )
+    }
 }
