@@ -271,6 +271,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
         val date = SimpleDateFormat("yyyy-MM-dd").format(Date())
         assertEquals("1.0.0 - $date", extension.get(version).header)
+        assertEquals("[0.1.0] - 2020-07-02", extension.get("0.1.0").header, "Existing headers should have their format preserved.")
     }
 
     @Test
