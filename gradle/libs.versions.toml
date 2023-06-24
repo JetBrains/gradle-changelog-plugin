@@ -1,0 +1,21 @@
+[versions]
+
+# libraries
+markdown = "0.4.1"
+
+# plugins
+dokka = "1.8.20"
+kotlin = "1.8.22"
+gradlePluginPublish = "1.2.0"
+gradleChangelogPlugin = "2.1.0"
+
+[libraries]
+kotlinTest = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+kotlinTestJunit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
+markdown = { group = "org.jetbrains", name = "markdown", version.ref = "markdown" }
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "gradlePluginPublish" }
+changelog = { id = "org.jetbrains.changelog", version.ref = "gradleChangelogPlugin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

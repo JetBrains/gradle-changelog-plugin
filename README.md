@@ -6,13 +6,13 @@
 [![Build](https://github.com/JetBrains/gradle-changelog-plugin/workflows/Build/badge.svg)][gh:build]
 [![Slack](https://img.shields.io/badge/Slack-%23gradle--changelog--plugin-blue)][jb:slack]
 
-**This project requires Gradle 6.8 or newer**
+A Gradle plugin providing tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
 
 > **Note**
 >
-> Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 7.5.1`
-
-A Gradle plugin providing tasks and helper methods to simplify working with a changelog that is managed in the [keep a changelog][keep-a-changelog] style.
+> **This project requires Gradle 6.8 or newer**
+>
+> Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 8.1.1`
 
 ## Table of contents
 
@@ -98,7 +98,7 @@ changelog {
 **build.gradle** (Groovy)
 
 ```groovy
-import java.text.SimpleDateFormat
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import org.jetbrains.changelog.ExtensionsKt
 
@@ -112,7 +112,7 @@ intellij {
     // ...
 
     patchPluginXml {
-        changeNotes = {
+        changeNotes = provider {
             changelog.renderItem(
                 changelog
                     .getUnreleased()
@@ -126,8 +126,8 @@ intellij {
 
 changelog {
     version = "1.0.0"
-    path = file("CHANGELOG.md").cannonicalPath
-    header = "[${-> version.get()}] - ${new SimpleDateFormat("yyyy-MM-dd").format(new Date())}"
+    path = file("CHANGELOG.md").canonicalPath
+    header = "[${-> version.get()}] - ${ExtensionsKt.date("yyyy-MM-dd")}"
     headerParserRegex = ~/(\d+\.\d+)/
     introduction = """
         My awesome project that provides a lot of useful features, like:
@@ -158,24 +158,25 @@ changelog {
 
 Plugin can be configured with the following properties set in the `changelog {}` closure:
 
-| Property                | Type                           | Default value                                                        | Description                                                                                                      |
-|-------------------------|--------------------------------|----------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| `version`               | `String`                       | `project.version`                                                    | Current version. By default, project's version is used.                                                          |
-| `path`                  | `String`                       | `file("CHANGELOG.md").cannonicalPath`                                | Path to the changelog file.                                                                                      |
-| `preTitle`              | `String?`                      | `null`                                                               | Optional content placed before the `title`.                                                                      |
-| `title`                 | `String`                       | `"Changelog"`                                                        | The changelog title set as the top-lever header – `#`.                                                           |
-| `introduction`          | `String?`                      | `null`                                                               | Optional content placed after the `title`.                                                                       |
-| `header`                | `String`                       | `provider { "${version.get()} - ${date()}" }`                        | Header value used when patching the *Unreleased* section with text containing the current version.               |
-| `headerParserRegex`     | `Regex` / `Pattern` / `String` | `null`, fallbacks to [`SEM_VER_REGEX`][semver-regex]                 | `Regex`/`Pattern`/`String` used to extract version from the header string.                                       |
-| `unreleasedTerm`        | `String`                       | `"[Unreleased]"`                                                     | Unreleased section name.                                                                                         |
-| `keepUnreleasedSection` | `Boolean`                      | `true`                                                               | Add an unreleased empty section on the top of the changelog after running the patching task.                     |
-| `patchEmpty`            | `Boolean`                      | `true`                                                               | Patches changelog even if no release note is provided.                                                           |
-| `groups`                | `String`                       | `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]` | List of groups created with a new Unreleased section.                                                            |
-| `itemPrefix`            | `String`                       | `"-"`                                                                | Single item's prefix, allows to customise the bullet sign.                                                       |
-| `combinePreReleases`    | `Boolean`                      | `true`                                                               | Combines pre-releases (like `1.0.0-alpha`, `1.0.0-beta.2`) into the final release note when patching.            |
-| `lineSeparator`         | `String`                       | `"\n"` or determined from the existing file                          | Line separator used for generating changelog content.                                                            |
-| `repositoryUrl`         | `String?`                      | `null`                                                               | The GitHub repository URL used to build release links. If provided, leads to the GitHub comparison page.         |
-| `sectionUrlBuilder`     | `ChangelogSectionUrlBuilder`   | Common `ChangelogSectionUrlBuilder` implementation                   | Function to build a single URL to link section with the GitHub page to present changes within the given release. |
+| Property                | Description                                                                                                      |                                                                                                                                    |
+|-------------------------|------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| `versionPrefix`         | Version prefix used to compare tags.                                                                             | _Type:_ `String`                       <br/> _Default value:_ `v`                                                                  |
+| `version`               | Current version. By default, project's version is used.                                                          | _Type:_ `String`                       <br/> _Default value:_ `project.version`                                                    |
+| `path`                  | Path to the changelog file.                                                                                      | _Type:_ `String`                       <br/> _Default value:_ `file("CHANGELOG.md").cannonicalPath`                                |
+| `preTitle`              | Optional content placed before the `title`.                                                                      | _Type:_ `String?`                      <br/> _Default value:_ `null`                                                               |
+| `title`                 | The changelog title set as the top-lever header – `#`.                                                           | _Type:_ `String`                       <br/> _Default value:_ `"Changelog"`                                                        |
+| `introduction`          | Optional content placed after the `title`.                                                                       | _Type:_ `String?`                      <br/> _Default value:_ `null`                                                               |
+| `header`                | Header value used when patching the *Unreleased* section with text containing the current version.               | _Type:_ `String`                       <br/> _Default value:_ `provider { "${version.get()} - ${date()}" }`                        |
+| `headerParserRegex`     | `Regex`/`Pattern`/`String` used to extract version from the header string.                                       | _Type:_ `Regex` / `Pattern` / `String` <br/> _Default value:_ `null`, fallbacks to [`SEM_VER_REGEX`][semver-regex]                 |
+| `unreleasedTerm`        | Unreleased section name.                                                                                         | _Type:_ `String`                       <br/> _Default value:_ `"[Unreleased]"`                                                     |
+| `keepUnreleasedSection` | Add an unreleased empty section on the top of the changelog after running the patching task.                     | _Type:_ `Boolean`                      <br/> _Default value:_ `true`                                                               |
+| `patchEmpty`            | Patches changelog even if no release note is provided.                                                           | _Type:_ `Boolean`                      <br/> _Default value:_ `true`                                                               |
+| `groups`                | List of groups created with a new Unreleased section.                                                            | _Type:_ `String`                       <br/> _Default value:_ `["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]` |
+| `itemPrefix`            | Single item's prefix, allows to customise the bullet sign.                                                       | _Type:_ `String`                       <br/> _Default value:_ `"-"`                                                                |
+| `combinePreReleases`    | Combines pre-releases (like `1.0.0-alpha`, `1.0.0-beta.2`) into the final release note when patching.            | _Type:_ `Boolean`                      <br/> _Default value:_ `true`                                                               |
+| `lineSeparator`         | Line separator used for generating changelog content.                                                            | _Type:_ `String`                       <br/> _Default value:_ `"\n"` or determined from the existing file                          |
+| `repositoryUrl`         | The GitHub repository URL used to build release links. If provided, leads to the GitHub comparison page.         | _Type:_ `String?`                      <br/> _Default value:_ `null`                                                               |
+| `sectionUrlBuilder`     | Function to build a single URL to link section with the GitHub page to present changes within the given release. | _Type:_ `ChangelogSectionUrlBuilder`   <br/> _Default value:_ Common `ChangelogSectionUrlBuilder` implementation                   |
 
 > **Note**
 >
@@ -197,13 +198,14 @@ Retrieves changelog for the specified version.
 
 #### Options
 
-| Option         | Type      | Default value | Description                                        |
-|----------------|-----------|---------------|----------------------------------------------------|
-| `--no-header`  | `Boolean` | `false`       | Omits the section header in the changelog output.  |
-| `--no-summary` | `Boolean` | `false`       | Omits the section summary in the changelog output. |
-| `--no-links`   | `Boolean` | `false`       | Omits links in the changelog output.               |
-| `--version`    | `String?` | `null`        | Returns change notes for the specified version.    |
-| `--unreleased` | `Boolean` | `false`       | Returns change notes for an unreleased section.    |
+| Option                | Type      | Default value | Description                                        |
+|-----------------------|-----------|---------------|----------------------------------------------------|
+| `--no-header`         | `Boolean` | `false`       | Omits the section header in the changelog output.  |
+| `--no-summary`        | `Boolean` | `false`       | Omits the section summary in the changelog output. |
+| `--no-links`          | `Boolean` | `false`       | Omits links in the changelog output.               |
+| `--no-empty-sections` | `Boolean` | `false`       | Omits empty sections in the changelog output.      |
+| `--version`           | `String?` | `null`        | Returns change notes for the specified version.    |
+| `--unreleased`        | `Boolean` | `false`       | Returns change notes for an unreleased section.    |
 
 #### Examples
 
@@ -218,7 +220,7 @@ $ ./gradlew getChangelog --console=plain -q --no-header --no-summary
 
 ### `initializeChangelog`
 
-Creates new changelog file with an unreleased section and empty groups.
+Creates a new changelog file with an unreleased section and empty groups.
 
 #### Examples
 
@@ -412,12 +414,12 @@ It provides a couple of properties and methods that allow altering the output fo
 
 | Name                         | Description                                                                   | Returned type    |
 |------------------------------|-------------------------------------------------------------------------------|------------------|
-| `withHeader(Boolean)`        | Includes header part in the output.                                           | `Chagnelog.Item` |
-| `withLinkedHeader(Boolean)`  | Adds link to the version in the header.                                       | `Chagnelog.Item` |
-| `withSummary(Boolean)`       | Includes summary part.                                                        | `Chagnelog.Item` |
-| `withLinks(Boolean)`         | Returns links used in the release section at the end.                         | `Chagnelog.Item` |
-| `withEmptySections(Boolean)` | Prints empty sections.                                                        | `Chagnelog.Item` |
-| `withFilter(Boolean)`        | Applies custom filter to the returned entries.                                | `Chagnelog.Item` |
+| `withHeader(Boolean)`        | Includes header part in the output.                                           | `Changelog.Item` |
+| `withLinkedHeader(Boolean)`  | Adds link to the version in the header.                                       | `Changelog.Item` |
+| `withSummary(Boolean)`       | Includes summary part.                                                        | `Changelog.Item` |
+| `withLinks(Boolean)`         | Returns links used in the release section at the end.                         | `Changelog.Item` |
+| `withEmptySections(Boolean)` | Prints empty sections.                                                        | `Changelog.Item` |
+| `withFilter(Boolean)`        | Applies custom filter to the returned entries.                                | `Changelog.Item` |
 | `toText()`                   | Deprecated. Use `changelog.renderItem(item)`                                  | `String`         |
 | `toPlainText()`              | Deprecated. Use `changelog.renderItem(item, Changelog.OutputType.PLAIN_TEXT)` | `String`         |
 | `toString()`                 | Deprecated. Use `changelog.renderItem(item, Changelog.OutputType.MARKDOWN)`   | `String`         |

@@ -43,6 +43,8 @@ class ChangelogPlugin : Plugin<Project> {
                     toAbsolutePath().toString()
                 }
             })
+            versionPrefix.convention(project.provider { "v" })
+
             version.convention(
                 project.provider {
                     project.version.toString().takeIf { it != Project.DEFAULT_VERSION }
@@ -78,15 +80,16 @@ class ChangelogPlugin : Plugin<Project> {
             repositoryUrl.map { it.removeSuffix("/") }
             sectionUrlBuilder.convention(
                 ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
+                    val prefix = versionPrefix.get()
                     repositoryUrl + when {
                         isUnreleased -> when (previousVersion) {
                             null -> "/commits"
-                            else -> "/compare/v$previousVersion...HEAD"
+                            else -> "/compare/$prefix$previousVersion...HEAD"
                         }
 
-                        previousVersion == null -> "/commits/v$currentVersion"
+                        previousVersion == null -> "/commits/$prefix$currentVersion"
 
-                        else -> "/compare/v$previousVersion...v$currentVersion"
+                        else -> "/compare/$prefix$previousVersion...$prefix$currentVersion"
                     }
                 }
             )

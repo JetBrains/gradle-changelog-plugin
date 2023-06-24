@@ -118,6 +118,45 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
+    fun `patches Unreleased version with custom version prefix to the current one`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                versionPrefix = "w"
+                version = "$version"
+                keepUnreleasedSection = false
+                repositoryUrl = "https://github.com/JetBrains/gradle-changelog-plugin"
+            }
+            """.trimIndent()
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            ## [1.0.0] - $date
+            Fancy release.
+            
+            ### Added
+            - foo
+            
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/w1.0.0
+            
+            """.trimIndent(),
+            extension.renderItem(extension.get(version))
+        )
+
+        assertFailsWith<MissingVersionException> {
+            extension.getUnreleased().also {
+                println("it = ${it}")
+            }
+        }
+    }
+
+    @Test
     fun `applies custom header patcher`() {
         buildFile =
             """
@@ -561,6 +600,108 @@ class PatchChangelogTaskTest : BaseTest() {
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertTrue(changelog.endsWith(lineSeparator))
+    }
+
+    @Test
+    fun `preserves complex list items`() {
+        changelog =
+            """
+            # Changelog
+            
+            ## [Unreleased]
+            
+            ### Changed
+            - This item has three paragraphs.
+            
+              All paragraphs should be preserved.
+            
+              Separate paragraphs must not be merged.
+            - This item contains a nested list.
+            
+              - Sub-Item 1
+              - Sub-Item 2
+            - ```
+              This item is a code block
+              ```
+            
+            ## [0.0.1] - 2022-10-10
+            
+            ### Added
+            - ```
+              A code block could also be followed by a list
+              ```
+            
+              - Sub-Item 1
+              - Sub-Item 2
+            
+              | Header                      |
+              |-----------------------------|
+              | There could also be a table |
+            
+            ### Fixed
+            - Following sections must stay unaffected.
+            """.trimIndent()
+
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            # Changelog
+            
+            ## [Unreleased]
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            ## [1.0.0] - $date
+            
+            ### Changed
+            - This item has three paragraphs.
+            
+              All paragraphs should be preserved.
+            
+              Separate paragraphs must not be merged.
+            - This item contains a nested list.
+            
+              - Sub-Item 1
+              - Sub-Item 2
+            - ```
+              This item is a code block
+              ```
+            
+            ## [0.0.1] - 2022-10-10
+            
+            ### Added
+            - ```
+              A code block could also be followed by a list
+              ```
+            
+              - Sub-Item 1
+              - Sub-Item 2
+            
+              | Header                      |
+              |-----------------------------|
+              | There could also be a table |
+            
+            ### Fixed
+            - Following sections must stay unaffected.
+            
+            [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.0.1...v1.0.0
+            [0.0.1]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.0.1
+            
+            """.trimIndent(),
+            changelog
+        )
     }
 
     @Test
