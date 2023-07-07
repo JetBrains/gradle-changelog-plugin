@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [2.1.1] - 2023-07-07
+
 ### Fixed
 - Wrong markdown render of changelog that use CRLF or CR line separator [#176](../../issues/176)
 - `Changelog.Item.plus` copies original item without restoring all original data [#179](../../issues/179)
@@ -217,7 +219,8 @@
 - `changelog` extension configuration
 - `getChangelog`/`patchChangelog` tasks
 
-[Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.1...HEAD
+[2.1.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.3.1...v2.0.0
 [1.3.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.3.0...v1.3.1
