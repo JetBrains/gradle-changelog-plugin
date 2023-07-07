@@ -323,6 +323,7 @@ data class Changelog(
             return copy(
                 summary = summary.ifEmpty { item.summary },
                 items = items + item.items,
+                filterCallback = filterCallback,
             )
         }
 

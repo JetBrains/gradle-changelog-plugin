@@ -4,6 +4,7 @@
 
 ### Fixed
 - Wrong markdown render of changelog that use CRLF or CR line separator [#176](../../issues/176)
+- `Changelog.Item.plus` copies original item without restoring all original data [#179](../../issues/179)
 
 ## [2.1.0] - 2023-06-02
 
