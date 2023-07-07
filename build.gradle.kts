@@ -8,7 +8,6 @@ fun environment(key: String) = providers.environmentVariable(key)
 plugins {
     `kotlin-dsl`
     `maven-publish`
-    alias(libs.plugins.kotlin)
     alias(libs.plugins.pluginPublish)
     alias(libs.plugins.changelog)
     alias(libs.plugins.dokka)
@@ -26,8 +25,8 @@ dependencies {
     implementation(libs.markdown) {
         exclude(group = "org.jetbrains.kotlin")
     }
-    testImplementation(libs.kotlinTest)
-    testImplementation(libs.kotlinTestJunit)
+    testImplementation(embeddedKotlin("test"))
+    testImplementation(embeddedKotlin("test-junit"))
 }
 
 kotlin {
