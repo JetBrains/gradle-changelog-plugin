@@ -78,7 +78,7 @@ class ExtensionsTest {
     }
 
     @Test
-    fun `normalize string to line feed`() {
+    fun `normalize string line separator`() {
         val text = """
             Pre title content.
             
@@ -99,22 +99,22 @@ class ExtensionsTest {
 
         assertEquals(
             text,
-            text.replace("\n", "\r\n").normalizeToLineFeed()
+            text.replace("\n", "\r\n").normalizeLineSeparator("\n")
         )
 
         assertEquals(
             text,
-            text.replace("\n", "\r").normalizeToLineFeed()
+            text.replace("\n", "\r").normalizeLineSeparator("\n")
         )
 
         assertEquals(
             text,
-            text.normalizeToLineFeed()
+            text.normalizeLineSeparator("\n")
         )
 
         assertEquals(
             "text\ntext2\ntext3\ntext4",
-            "text\ntext2\rtext3\r\ntext4".normalizeToLineFeed()
+            "text\ntext2\rtext3\r\ntext4".normalizeLineSeparator("\n")
         )
     }
 }

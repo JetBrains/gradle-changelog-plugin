@@ -69,7 +69,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 extension.renderItem(this)
             )
 
-            assertMarkdown(
+            assertText(
                 """
                 1.0.0
                 First release.
@@ -238,7 +238,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent(),
                 extension.renderItem(this, Changelog.OutputType.HTML)
             )
-            assertMarkdown(
+            assertText(
                 """
                 1.0.0
                 First release.
@@ -295,7 +295,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 !it.endsWith('x')
             }.apply {
 
-                with (sections) {
+                with(sections) {
                     assertEquals(2, size)
                     assertTrue(containsKey("Added"))
                     assertEquals(3, get("Added")?.size)
@@ -488,7 +488,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             """.trimIndent()
 
         assertNotNull(extension.getUnreleased())
-        assertEquals(
+        assertHTML(
             """
             <h2>Unreleased</h2>
             <ul><li>Foo</li></ul>
@@ -640,5 +640,233 @@ class ChangelogPluginExtensionTest : BaseTest() {
             "repositoryUrl = $customRepositoryUrl | currentVersion = 0.0.1 | previousVersion = null | isUnreleased = false",
             items.last(),
         )
+    }
+
+    @Test
+    fun `returns change notes for the v1_0_0 version of changelog that use CRLF`() {
+        changelog =
+            """
+            # Changelog
+            Project description.
+            Multiline description:
+            - item 1
+            - item 2
+            
+            ## [Unreleased]
+            Not yet released version.
+            
+            ### Added
+            - Foo
+            
+            ## [1.0.0]
+            First release.
+            
+            ### Added
+            - Test [link](https://www.example.org) test
+            
+            ### Removed
+            - Bar
+            
+            [Unreleased]: https://blog.jetbrains.com
+            [1.0.0]: https://jetbrains.com
+            """.trimIndent().normalizeLineSeparator("\r\n")
+
+        extension.get(version).apply {
+            assertEquals(project.version, version)
+
+            assertMarkdown(
+                """
+                ## [1.0.0]
+                First release.
+
+                ### Added
+                - Test [link](https://www.example.org) test
+
+                ### Removed
+                - Bar
+
+                [1.0.0]: https://jetbrains.com
+                """.trimIndent().normalizeLineSeparator("\r\n"),
+                extension.renderItem(this)
+            )
+
+            assertHTML(
+                """
+                <h2><a href="https://jetbrains.com">1.0.0</a></h2>
+                <p>First release.</p>
+
+                <h3>Added</h3>
+                <ul><li>Test <a href="https://www.example.org">link</a> test</li></ul>
+
+                <h3>Removed</h3>
+                <ul><li>Bar</li></ul>
+                """.trimIndent().normalizeLineSeparator("\r\n"),
+                extension.renderItem(this, Changelog.OutputType.HTML)
+            )
+
+            assertText(
+                """
+                1.0.0
+                First release.
+                
+                Added
+                - Test link test
+                
+                Removed
+                - Bar
+                """.trimIndent().normalizeLineSeparator("\r\n"),
+                extension.renderItem(this, Changelog.OutputType.PLAIN_TEXT)
+            )
+        }
+    }
+
+    @Test
+    @Suppress("LongMethod", "MaxLineLength")
+    fun `render changelog that use CRLF`() {
+        changelog =
+            """
+            # Changelog
+            My project description.
+            
+            ## [1.1.0]
+            First release.
+            
+            But a great one.
+            
+            ### Added
+            - Foo *FOO* foo
+            - Bar **BAR** bar
+            - Test [link](https://www.example.org) test
+            - Code `block` code
+            - Bravo
+            - Alpha
+            
+            ### Fixed
+            - Hello
+            - World
+            
+            ### Removed
+            - Hola
+            
+            ## [1.0.0]
+            
+            ### Added
+            - Foo 1.0.0
+            - Bar 1.0.0
+            
+            ### Removed
+            - Removed 1.0.0
+            
+            [1.1.0]: https://jetbrains.com/1.1.0
+            [1.0.0]: https://jetbrains.com/1.0.0
+            """.trimIndent().normalizeLineSeparator("\r\n")
+
+        extension.get(version).apply {
+
+            assertMarkdown(
+                """
+                # Changelog
+                My project description.
+                
+                ## [1.1.0]
+                First release.
+                
+                But a great one.
+                
+                ### Added
+                - Foo *FOO* foo
+                - Bar **BAR** bar
+                - Test [link](https://www.example.org) test
+                - Code `block` code
+                - Bravo
+                - Alpha
+                
+                ### Fixed
+                - Hello
+                - World
+                
+                ### Removed
+                - Hola
+                
+                ## [1.0.0]
+                
+                ### Added
+                - Foo 1.0.0
+                - Bar 1.0.0
+                
+                ### Removed
+                - Removed 1.0.0
+                
+                [1.1.0]: https://jetbrains.com/1.1.0
+                [1.0.0]: https://jetbrains.com/1.0.0
+                """.trimIndent().normalizeLineSeparator("\r\n"),
+                extension.render(Changelog.OutputType.MARKDOWN)
+            )
+            assertHTML(
+                """
+                <h1>Changelog</h1>
+                <p>My project description.</p>
+                
+                <h2><a href="https://jetbrains.com/1.1.0">1.1.0</a></h2>
+                <p>First release.</p>
+                
+                <p>But a great one.</p>
+                
+                <h3>Added</h3>
+                <ul><li>Foo <em>FOO</em> foo</li><li>Bar <strong>BAR</strong> bar</li><li>Test <a href="https://www.example.org">link</a> test</li><li>Code <code>block</code> code</li><li>Bravo</li><li>Alpha</li></ul>
+                
+                <h3>Fixed</h3>
+                <ul><li>Hello</li><li>World</li></ul>
+                
+                <h3>Removed</h3>
+                <ul><li>Hola</li></ul>
+                
+                <h2><a href="https://jetbrains.com/1.0.0">1.0.0</a></h2>
+                
+                <h3>Added</h3>
+                <ul><li>Foo 1.0.0</li><li>Bar 1.0.0</li></ul>
+                
+                <h3>Removed</h3>
+                <ul><li>Removed 1.0.0</li></ul>
+                """.trimIndent().normalizeLineSeparator("\r\n"),
+                extension.render(Changelog.OutputType.HTML)
+            )
+            assertText(
+                """
+                Changelog
+                My project description.
+                
+                1.1.0
+                First release.
+                
+                But a great one.
+                
+                Added
+                - Foo FOO foo
+                - Bar BAR bar
+                - Test link test
+                - Code block code
+                - Bravo
+                - Alpha
+                
+                Fixed
+                - Hello
+                - World
+                
+                Removed
+                - Hola
+                
+                1.0.0
+                
+                Added
+                - Foo 1.0.0
+                - Bar 1.0.0
+                
+                Removed
+                - Removed 1.0.0
+                """.trimIndent().normalizeLineSeparator("\r\n"),
+                extension.render(Changelog.OutputType.PLAIN_TEXT)
+            )
+        }
     }
 }

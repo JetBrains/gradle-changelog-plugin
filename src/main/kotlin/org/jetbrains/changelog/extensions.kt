@@ -12,13 +12,18 @@ import java.util.*
 
 fun date(pattern: String = DATE_PATTERN) = SimpleDateFormat(pattern).format(Date())!!
 
-fun markdownToHTML(input: String) = ChangelogFlavourDescriptor().run {
-    HtmlGenerator(input, MarkdownParser(this).buildMarkdownTreeFromString(input), this, false)
+fun markdownToHTML(input: String, lineSeparator: String = "\n") = ChangelogFlavourDescriptor().run {
+    // Normalize text to LF, because markdown library currently full support only this line separator
+    val lfString = input.normalizeLineSeparator("\n")
+    HtmlGenerator(lfString, MarkdownParser(this).buildMarkdownTreeFromString(lfString), this, false)
         .generateHtml()
+        .normalizeLineSeparator(lineSeparator)
 }
 
 fun markdownToPlainText(input: String, lineSeparator: String) = PlainTextFlavourDescriptor(lineSeparator).run {
-    HtmlGenerator(input, MarkdownParser(this).buildMarkdownTreeFromString(input), this, false)
+    // Normalize text to LF, because markdown library currently full support only this line separator
+    val lfString = input.normalizeLineSeparator("\n")
+    HtmlGenerator(lfString, MarkdownParser(this).buildMarkdownTreeFromString(lfString), this, false)
         .generateHtml(PlainTextTagRenderer())
 }
 
@@ -26,8 +31,8 @@ internal fun String.reformat(lineSeparator: String): String {
     val result = listOf(
         """(?:^|$lineSeparator)+(#+ [^$lineSeparator]*)(?:$lineSeparator)*""".toRegex() to "$lineSeparator$lineSeparator$1$lineSeparator",
         """((?:^|$lineSeparator)#+ .*?)$lineSeparator(#+ )""".toRegex() to "$1$lineSeparator$lineSeparator$2",
-        """$lineSeparator+(\[.*?]:)""".toRegex() to "$lineSeparator$lineSeparator$1",
-        """(?<=$lineSeparator)(\[.*?]:.*?)$lineSeparator+""".toRegex() to "$1$lineSeparator",
+        """(?:$lineSeparator)+(\[.*?]:)""".toRegex() to "$lineSeparator$lineSeparator$1",
+        """(?<=$lineSeparator)(\[.*?]:.*?)(?:$lineSeparator)+""".toRegex() to "$1$lineSeparator",
         """($lineSeparator){3,}""".toRegex() to "$lineSeparator$lineSeparator",
     ).fold(this) { acc, (pattern, replacement) ->
         acc.replace(pattern, replacement)
@@ -39,15 +44,8 @@ internal fun String.reformat(lineSeparator: String): String {
     }
 }
 
-internal fun String.normalizeToLineFeed(): String {
-    val result = listOf(
-        "\r\n" to "\n",
-        "\r" to "\n",
-    ).fold(this) { acc, (pattern, replacement) ->
-        acc.replace(pattern, replacement)
-    }
-
-    return result
+internal fun String.normalizeLineSeparator(lineSeparator: String): String {
+    return this.replace("\\R".toRegex(), lineSeparator)
 }
 
 fun interface ChangelogSectionUrlBuilder {

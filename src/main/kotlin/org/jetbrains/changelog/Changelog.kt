@@ -119,6 +119,7 @@ data class Changelog(
                 .withEmptySections(isUnreleased)
         }
     }
+
     val links
         get() = sequence {
             repositoryUrl?.let {
@@ -180,7 +181,15 @@ data class Changelog(
         sequence {
             if (withHeader) {
                 when {
-                    withLinkedHeader && links.containsKey(version) -> yield("$LEVEL_2 ${header.replace(version, "[$version]")}")
+                    withLinkedHeader && links.containsKey(version) -> yield(
+                        "$LEVEL_2 ${
+                            header.replace(
+                                version,
+                                "[$version]"
+                            )
+                        }"
+                    )
+
                     else -> yield("$LEVEL_2 $header")
                 }
             }
@@ -412,7 +421,7 @@ data class Changelog(
     private fun String.processOutput(outputType: OutputType) = when (outputType) {
         OutputType.MARKDOWN -> this
 
-        OutputType.HTML -> markdownToHTML(this)
+        OutputType.HTML -> markdownToHTML(this, lineSeparator)
 
         OutputType.PLAIN_TEXT -> markdownToPlainText(this, lineSeparator)
     }
