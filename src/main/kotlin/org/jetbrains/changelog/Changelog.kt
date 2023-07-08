@@ -419,10 +419,8 @@ data class Changelog(
         .trim()
 
     private fun String.processOutput(outputType: OutputType) = when (outputType) {
-        OutputType.MARKDOWN -> this
-
+        OutputType.MARKDOWN -> this.normalizeLineSeparator(lineSeparator) // Ensure that output content has always the correct line separator
         OutputType.HTML -> markdownToHTML(this, lineSeparator)
-
         OutputType.PLAIN_TEXT -> markdownToPlainText(this, lineSeparator)
     }
 
