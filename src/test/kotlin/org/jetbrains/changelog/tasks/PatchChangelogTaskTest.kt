@@ -5,6 +5,7 @@ package org.jetbrains.changelog.tasks
 import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.ChangelogPluginConstants.PATCH_CHANGELOG_TASK_NAME
 import org.jetbrains.changelog.exceptions.MissingVersionException
+import org.jetbrains.changelog.normalizeLineSeparator
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.test.*
@@ -151,7 +152,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
         assertFailsWith<MissingVersionException> {
             extension.getUnreleased().also {
-                println("it = ${it}")
+                println("it = $it")
             }
         }
     }
@@ -519,7 +520,10 @@ class PatchChangelogTaskTest : BaseTest() {
 
         project.evaluate()
 
-        runTask(PATCH_CHANGELOG_TASK_NAME, "--release-note=Foo\n\n- asd\n- Hello [world]!\n\n[world]: https://jetbrains.com")
+        runTask(
+            PATCH_CHANGELOG_TASK_NAME,
+            "--release-note=Foo\n\n- asd\n- Hello [world]!\n\n[world]: https://jetbrains.com"
+        )
 
         assertMarkdown(
             """
@@ -1200,7 +1204,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Changed
             - changed
             - changed 2
-            """.trimIndent().replace("\n", "\r\n")
+            """.trimIndent().normalizeLineSeparator("\r\n")
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
@@ -1219,7 +1223,7 @@ class PatchChangelogTaskTest : BaseTest() {
             
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
             
-            """.trimIndent().replace("\n", "\r\n"),
+            """.trimIndent().normalizeLineSeparator("\r\n"),
             extension.renderItem(extension.get(version))
         )
     }
@@ -1242,7 +1246,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Changed
             - changed
             - changed 2
-            """.trimIndent().replace("\n", "\r")
+            """.trimIndent().normalizeLineSeparator("\r")
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
@@ -1261,7 +1265,7 @@ class PatchChangelogTaskTest : BaseTest() {
             
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
             
-            """.trimIndent().replace("\n", "\r"),
+            """.trimIndent().normalizeLineSeparator("\r"),
             extension.renderItem(extension.get(version))
         )
     }

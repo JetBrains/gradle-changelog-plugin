@@ -427,11 +427,11 @@ It provides a couple of properties and methods that allow altering the output fo
 
 ## Helper Methods
 
-| Name                                   | Description                                                    | Returned type |
-|----------------------------------------|----------------------------------------------------------------|---------------|
-| `date(pattern: String = "yyyy-MM-dd")` | Shorthand for retrieving the current date in the given format. | `String`      |
-| `markdownToHTML(input: String)`        | Converts given Markdown content to HTML output.                | `String`      |
-| `markdownToPlainText(input: String)`   | Converts given Markdown content to Plain Text output.          | `String`      |
+| Name                                                          | Description                                                    | Returned type |
+|---------------------------------------------------------------|----------------------------------------------------------------|---------------|
+| `date(pattern: String = "yyyy-MM-dd")`                        | Shorthand for retrieving the current date in the given format. | `String`      |
+| `markdownToHTML(input: String, lineSeparator: String = "\n")` | Converts given Markdown content to HTML output.                | `String`      |
+| `markdownToPlainText(input: String, lineSeparator: String)`   | Converts given Markdown content to Plain Text output.          | `String`      |
 
 > **Note**
 >

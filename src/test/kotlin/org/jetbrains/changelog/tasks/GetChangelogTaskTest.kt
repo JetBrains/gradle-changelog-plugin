@@ -4,6 +4,7 @@ package org.jetbrains.changelog.tasks
 
 import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME
+import org.jetbrains.changelog.normalizeLineSeparator
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -293,7 +294,7 @@ class GetChangelogTaskTest : BaseTest() {
             [Unreleased]: https://jetbrians.com/Unreleased
             [1.0.1]: https://jetbrians.com/1.0.1
             [1.0.0]: https://jetbrians.com/1.0.0
-            """.trimIndent().replace("\n", "\r\n")
+            """.trimIndent().normalizeLineSeparator("\r\n")
 
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
@@ -306,7 +307,7 @@ class GetChangelogTaskTest : BaseTest() {
             - bar
             
             [1.0.1]: https://jetbrians.com/1.0.1
-            """.trimIndent().replace("\n", "\r\n"),
+            """.trimIndent().normalizeLineSeparator("\r\n"),
             result.output
         )
     }
@@ -341,7 +342,7 @@ class GetChangelogTaskTest : BaseTest() {
             [Unreleased]: https://jetbrians.com/Unreleased
             [1.0.1]: https://jetbrians.com/1.0.1
             [1.0.0]: https://jetbrians.com/1.0.0
-            """.trimIndent().replace("\n", "\r")
+            """.trimIndent().normalizeLineSeparator("\r")
 
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
@@ -354,7 +355,7 @@ class GetChangelogTaskTest : BaseTest() {
             - bar
             
             [1.0.1]: https://jetbrians.com/1.0.1
-            """.trimIndent().replace("\n", "\r"),
+            """.trimIndent().normalizeLineSeparator("\r"),
             result.output
         )
     }

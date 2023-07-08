@@ -4,6 +4,7 @@ package org.jetbrains.changelog.tasks
 
 import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.ChangelogPluginConstants.INITIALIZE_CHANGELOG_TASK_NAME
+import org.jetbrains.changelog.normalizeLineSeparator
 import java.io.File
 import kotlin.test.*
 
@@ -206,7 +207,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             
             ### Security
 
-            """.trimIndent().replace("\n", "\r\n"),
+            """.trimIndent().normalizeLineSeparator("\r\n"),
             extension.render()
         )
 
@@ -226,7 +227,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             
             ### Security
             
-            """.trimIndent().replace("\n", "\r\n"),
+            """.trimIndent().normalizeLineSeparator("\r\n"),
             extension.renderItem(extension.getUnreleased())
         )
     }
@@ -255,7 +256,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             
             ### Security
 
-            """.trimIndent().replace("\n", "\r"),
+            """.trimIndent().normalizeLineSeparator("\r"),
             extension.render()
         )
 
@@ -275,7 +276,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             
             ### Security
             
-            """.trimIndent().replace("\n", "\r"),
+            """.trimIndent().normalizeLineSeparator("\r"),
             extension.renderItem(extension.getUnreleased())
         )
     }

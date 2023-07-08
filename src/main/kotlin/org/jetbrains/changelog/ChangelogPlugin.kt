@@ -101,7 +101,8 @@ class ChangelogPlugin : Plugin<Project> {
                             if (!exists()) {
                                 createNewFile()
                             }
-                            readText().normalizeToLineFeed()
+                            // Normalize text to LF, because markdown library currently full support only this line separator
+                            readText().normalizeLineSeparator("\n")
                         }
                     }.get(),
                     defaultPreTitle = preTitle.orNull,

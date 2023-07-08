@@ -99,4 +99,8 @@ open class BaseTest {
     protected fun assertHTML(@Language("HTML") expected: String, @Language("HTML") actual: String) {
         assertEquals(expected.trim(), actual.trim())
     }
+
+    protected fun assertText(@Language("TEXT") expected: String, @Language("TEXT") actual: String) {
+        assertEquals(expected.trim(), actual.trim())
+    }
 }
