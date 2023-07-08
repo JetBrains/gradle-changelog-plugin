@@ -9,8 +9,6 @@ import kotlin.test.assertEquals
 
 class ExtensionsTest {
 
-    private val lineSeparator = "\n"
-
     @Test
     fun dateTest() {
         assertEquals(SimpleDateFormat("yyyy-MM-dd").format(Date()), date())
@@ -21,8 +19,9 @@ class ExtensionsTest {
 
     @Test
     fun `reformat changelog`() {
-        assertEquals(
-            """
+        for (lineSeparator: String in listOf("\n", "\r\n", "\r")) {
+            assertEquals(
+                """
             Pre title content.
             
             # Title
@@ -38,8 +37,8 @@ class ExtensionsTest {
             ### Added
             - Buz
             
-            """.trimIndent(),
-            """
+            """.trimIndent().normalizeLineSeparator(lineSeparator),
+                """
             Pre title content.
             # Title
             Summary
@@ -49,11 +48,12 @@ class ExtensionsTest {
             ## [0.1.0]
             ### Added
             - Buz
-            """.trimIndent().reformat(lineSeparator)
-        )
+            """.trimIndent().normalizeLineSeparator(lineSeparator).reformat(lineSeparator),
+                "reformat changelog that use $lineSeparator"
+            )
 
-        assertEquals(
-            """
+            assertEquals(
+                """
             Foo
             
             # My Title
@@ -65,16 +65,58 @@ class ExtensionsTest {
             
             ### Removed
             
-            """.trimIndent(),
-            """
+            """.trimIndent().normalizeLineSeparator(lineSeparator),
+                """
             Foo
             # My Title
             Introduction
             ## Upcoming version
             ### Added
             ### Removed
-            """.trimIndent().reformat(lineSeparator)
-        )
+            """.trimIndent().normalizeLineSeparator(lineSeparator).reformat(lineSeparator),
+                "reformat changelog that use $lineSeparator"
+            )
+
+            assertEquals(
+                """
+            Pre title content.
+            
+            # Title
+            Summary
+            
+            ## [Unreleased]
+            
+            ## [1.0.0]
+            - asd
+            
+            ## [0.1.0]
+            
+            ### Added
+            - Buz
+            
+            [Unreleased] https://jetbrains.com/unreleased
+            [1.0.0] https://jetbrains.com/1.0.0
+            [0.1.0] https://jetbrains.com/0.1.0
+            
+            """.trimIndent().normalizeLineSeparator(lineSeparator),
+                """
+            Pre title content.
+            # Title
+            Summary
+            ## [Unreleased]
+            ## [1.0.0]
+            - asd
+            ## [0.1.0]
+            ### Added
+            - Buz
+            
+            [Unreleased] https://jetbrains.com/unreleased
+            [1.0.0] https://jetbrains.com/1.0.0
+            [0.1.0] https://jetbrains.com/0.1.0
+            """.trimIndent().normalizeLineSeparator(lineSeparator).reformat(lineSeparator),
+                "reformat changelog that use $lineSeparator"
+            )
+        }
     }
 
     @Test
@@ -115,6 +157,16 @@ class ExtensionsTest {
         assertEquals(
             "text\ntext2\ntext3\ntext4",
             "text\ntext2\rtext3\r\ntext4".normalizeLineSeparator("\n")
+        )
+
+        assertEquals(
+            text.replace("\n", "\r\n"),
+            text.normalizeLineSeparator("\r\n")
+        )
+
+        assertEquals(
+            text.replace("\n", "\r"),
+            text.normalizeLineSeparator("\r")
         )
     }
 }
