@@ -1,6 +1,8 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Fixed
+- Changelog render is inconsistent between different line separators [#182](../../issues/182)
 
 ### Changed
 - Use `GITHUB_OUTPUT` environment file instead of deprecated `::set-output` command in GitHub Actions
