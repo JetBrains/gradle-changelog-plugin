@@ -1,6 +1,8 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+### Fixed
+- Changelog render is inconsistent between different line separators [#182](../../issues/182)
 
 ## [2.1.1] - 2023-07-07
 
