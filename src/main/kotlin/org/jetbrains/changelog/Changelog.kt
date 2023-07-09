@@ -181,15 +181,7 @@ data class Changelog(
         sequence {
             if (withHeader) {
                 when {
-                    withLinkedHeader && links.containsKey(version) -> yield(
-                        "$LEVEL_2 ${
-                            header.replace(
-                                version,
-                                "[$version]"
-                            )
-                        }"
-                    )
-
+                    withLinkedHeader && links.containsKey(version) -> yield("$LEVEL_2 ${header.replace(version, "[$version]")}")
                     else -> yield("$LEVEL_2 $header")
                 }
             }
