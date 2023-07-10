@@ -1,6 +1,9 @@
 # Gradle Changelog Plugin
 
 ## [Unreleased]
+
+## [2.1.2] - 2023-07-10
+
 ### Fixed
 - Changelog render is inconsistent between different line separators [#182](../../issues/182)
 
@@ -225,7 +228,8 @@
 - `changelog` extension configuration
 - `getChangelog`/`patchChangelog` tasks
 
-[Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.1...HEAD
+[Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.2...HEAD
+[2.1.2]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.3.1...v2.0.0
