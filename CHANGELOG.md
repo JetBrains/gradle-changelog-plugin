@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Use `GITHUB_OUTPUT` environment file instead of deprecated `::set-output` command in GitHub Actions
+
 ## [2.1.1] - 2023-07-07
 
 ### Fixed
