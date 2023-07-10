@@ -53,8 +53,6 @@ data class Changelog(
             version = unreleasedTerm,
             header = unreleasedTerm,
             items = groups.associateWith { emptySet() },
-            itemPrefix = itemPrefix,
-            lineSeparator = lineSeparator,
         ).withEmptySections(true)
 
     init {
@@ -115,7 +113,7 @@ data class Changelog(
 
             val (summary, items) = value.extractItemData()
 
-            Item(key, header, summary, isUnreleased, items, itemPrefix, lineSeparator)
+            Item(key, header, summary, isUnreleased, items)
                 .withEmptySections(isUnreleased)
         }
     }
@@ -258,9 +256,22 @@ data class Changelog(
         val summary: String = "",
         val isUnreleased: Boolean = false,
         private val items: Map<String, Set<String>> = emptyMap(),
-        private val itemPrefix: String,
-        private val lineSeparator: String,
     ) {
+
+        @Suppress("UNUSED_PARAMETER")
+        @Deprecated(
+            message = "itemPrefix and lineSeparator properties are unused and scheduled for removal",
+            replaceWith = ReplaceWith("Item(version, header, summary, isUnreleased, items)")
+        )
+        constructor(
+            version: String,
+            header: String,
+            summary: String = "",
+            isUnreleased: Boolean = false,
+            items: Map<String, Set<String>> = emptyMap(),
+            itemPrefix: String,
+            lineSeparator: String,
+        ) : this(version, header, summary, isUnreleased, items)
 
         internal var withHeader = true
         internal var withLinkedHeader = true
@@ -299,15 +310,7 @@ data class Changelog(
             withLinks: Boolean = this.withLinks,
             withEmptySections: Boolean = this.withEmptySections,
             filterCallback: ((String) -> Boolean)? = this.filterCallback,
-        ) = Item(
-            version,
-            header,
-            summary,
-            isUnreleased,
-            items,
-            itemPrefix,
-            lineSeparator,
-        ).also {
+        ) = Item(version, header, summary, isUnreleased, items).also {
             it.withHeader = withHeader
             it.withLinkedHeader = withLinkedHeader
             it.withSummary = withSummary

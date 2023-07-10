@@ -6,6 +6,7 @@
 
 ### Changed
 - Use `GITHUB_OUTPUT` environment file instead of deprecated `::set-output` command in GitHub Actions
+- Deprecate `itemPrefix` and `lineSeparator` properties in the `org.jetbrains.changelog.Changelog.Item` constructor [#181](../../issues/181)
 
 ## [2.1.1] - 2023-07-07
 
