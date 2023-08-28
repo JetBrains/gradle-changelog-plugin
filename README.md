@@ -12,7 +12,7 @@ A Gradle plugin providing tasks and helper methods to simplify working with a ch
 >
 > **This project requires Gradle 6.8 or newer**
 >
-> Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 8.1.1`
+> Upgrade Gradle Wrapper with `./gradlew wrapper --gradle-version 8.3`
 
 ## Table of contents
 
