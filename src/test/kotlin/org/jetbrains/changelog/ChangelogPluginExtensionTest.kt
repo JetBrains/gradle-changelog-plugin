@@ -12,21 +12,26 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog =
             """
             # Changelog
+            
             Project description.
             Multiline description:
             - item 1
             - item 2
             
             ## [Unreleased]
+            
             Not yet released version.
             
             ### Added
+            
             - Foo
             
             ## [1.0.0]
+            
             First release.
             
             ### Removed
+            
             - Bar
             
             [Unreleased]: https://blog.jetbrains.com
@@ -59,9 +64,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertMarkdown(
                 """
                 ## [1.0.0]
+                
                 First release.
                 
                 ### Removed
+                
                 - Bar
                 
                 [1.0.0]: https://jetbrains.com
@@ -72,9 +79,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertText(
                 """
                 1.0.0
+                
                 First release.
                 
                 Removed
+                
                 - Bar
                 """.trimIndent(),
                 extension.renderItem(this, Changelog.OutputType.PLAIN_TEXT)
@@ -83,9 +92,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertHTML(
                 """
                 <h2><a href="https://jetbrains.com">1.0.0</a></h2>
+                
                 <p>First release.</p>
                 
                 <h3>Removed</h3>
+                
                 <ul><li>Bar</li></ul>
                 
                 """.trimIndent(),
@@ -111,9 +122,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertMarkdown(
                 """
                 ## [Unreleased]
+                
                 Not yet released version.
                 
                 ### Added
+                
                 - Foo
                 
                 [Unreleased]: https://blog.jetbrains.com
@@ -132,9 +145,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertMarkdown(
                 """
                 ## [Upcoming]
+                
                 Not yet released version.
                 
                 ### Added
+                
                 - Foo
                 
                 [Upcoming]: https://blog.jetbrains.com
@@ -150,14 +165,17 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog =
             """
             # Changelog
+            
             My project description.
             
             ## [1.0.0]
+            
             First release.
             
             But a great one.
             
             ### Added
+            
             - Foo *FOO* foo
             - Bar **BAR** bar
             - Test [link](https://www.example.org) test
@@ -166,10 +184,12 @@ class ChangelogPluginExtensionTest : BaseTest() {
             - Alpha
             
             ### Fixed
+            
             - Hello
             - World
             
             ### Removed
+            
             - Hola
             """.trimIndent()
 
@@ -197,11 +217,13 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertMarkdown(
                 """
                 ## 1.0.0
+                
                 First release.
                 
                 But a great one.
                 
                 ### Added
+                
                 - Foo *FOO* foo
                 - Bar **BAR** bar
                 - Test [link](https://www.example.org) test
@@ -210,10 +232,12 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 - Alpha
                 
                 ### Fixed
+                
                 - Hello
                 - World
                 
                 ### Removed
+                
                 - Hola
                 
                 """.trimIndent(),
@@ -222,17 +246,21 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertHTML(
                 """
                 <h2>1.0.0</h2>
+                
                 <p>First release.</p>
                 
                 <p>But a great one.</p>
                 
                 <h3>Added</h3>
+                
                 <ul><li>Foo <em>FOO</em> foo</li><li>Bar <strong>BAR</strong> bar</li><li>Test <a href="https://www.example.org">link</a> test</li><li>Code <code>block</code> code</li><li>Bravo</li><li>Alpha</li></ul>
                 
                 <h3>Fixed</h3>
+                
                 <ul><li>Hello</li><li>World</li></ul>
                 
                 <h3>Removed</h3>
+                
                 <ul><li>Hola</li></ul>
                 
                 """.trimIndent(),
@@ -241,11 +269,13 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertText(
                 """
                 1.0.0
+                
                 First release.
                 
                 But a great one.
                 
                 Added
+                
                 - Foo FOO foo
                 - Bar BAR bar
                 - Test link test
@@ -254,10 +284,12 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 - Alpha
                 
                 Fixed
+                
                 - Hello
                 - World
                 
                 Removed
+                
                 - Hola
                 
                 """.trimIndent(),
@@ -273,7 +305,9 @@ class ChangelogPluginExtensionTest : BaseTest() {
             # Changelog
             
             ## [1.0.0]
+            
             ### Added
+            
             - Foo
             - Bar x
             - Buz
@@ -281,10 +315,12 @@ class ChangelogPluginExtensionTest : BaseTest() {
             - Alpha
             
             ### Fixed
+            
             - Hello x
             - World
             
             ### Removed
+            
             - Hola x
             """.trimIndent()
 
@@ -309,11 +345,13 @@ class ChangelogPluginExtensionTest : BaseTest() {
                     ## 1.0.0
                     
                     ### Added
+                    
                     - Foo
                     - Buz
                     - Alpha
                     
                     ### Fixed
+                    
                     - World
                     
                     """.trimIndent(),
@@ -325,9 +363,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
                     <h2>1.0.0</h2>
                     
                     <h3>Added</h3>
+                    
                     <ul><li>Foo</li><li>Buz</li><li>Alpha</li></ul>
                     
                     <h3>Fixed</h3>
+                    
                     <ul><li>World</li></ul>
                     
                     """.trimIndent(),
@@ -364,10 +404,13 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog =
             """
             # Changelog
+            
             ## NEW VERSION
+            
             - Compatible with IDEA 2020.2 EAPs
             
             ## Version 1.0.1119-eap (29 May 2020)
+            
             - Compatible with IDEA 2020.2 EAPs
             """.trimIndent()
 
@@ -382,7 +425,9 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog =
             """
             # Changelog
+            
             ## [1.0.0]
+            
             - Foo
             """.trimIndent()
 
@@ -397,14 +442,16 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertMarkdown(
                 """
                 ## 1.0.0
+                
                 - Foo
                 
                 """.trimIndent(),
                 extension.renderItem(this)
             )
-            assertEquals(
+            assertHTML(
                 """
                 <h2>1.0.0</h2>
+                
                 <ul><li>Foo</li></ul>
                 
                 """.trimIndent(),
@@ -418,7 +465,9 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog =
             """
             # Changelog
+            
             ## [1.0.0]
+            
             - Foo - bar
             * Foo2
             - Bar
@@ -447,9 +496,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertMarkdown(
                 """
                 ## [Unreleased]
+                
                 Not yet released version.
                 
                 ### Added
+                
                 - Foo
                 
                 [Unreleased]: https://blog.jetbrains.com
@@ -460,9 +511,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertMarkdown(
                 """
                 ## [1.0.0]
+                
                 First release.
                 
                 ### Removed
+                
                 - Bar
                 
                 [1.0.0]: https://jetbrains.com
@@ -491,6 +544,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
         assertHTML(
             """
             <h2>Unreleased</h2>
+            
             <ul><li>Foo</li></ul>
             
             """.trimIndent(),
@@ -562,6 +616,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             # My Changelog
             
             ## [1.0.0]
+            
             First release.
             
             * Foo
@@ -573,6 +628,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertMarkdown(
                 """
                 ## 1.0.0
+                
                 First release.
                 
                 - Foo
@@ -609,12 +665,15 @@ class ChangelogPluginExtensionTest : BaseTest() {
         changelog =
             """
             # Changelog
+            
             Foo
             
             ## [Unreleased]
+            
             Not yet released version.
             
             ### Added
+            
             - Foo
             
             ## [0.0.1]
@@ -644,27 +703,34 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
     @Test
     fun `returns change notes for the v1_0_0 version of changelog that use CRLF`() {
+        //language=Markdown
         changelog =
             """
             # Changelog
+            
             Project description.
             Multiline description:
             - item 1
             - item 2
             
             ## [Unreleased]
+            
             Not yet released version.
             
             ### Added
+            
             - Foo
             
             ## [1.0.0]
+            
             First release.
             
             ### Added
+            
             - Test [link](https://www.example.org) test
             
             ### Removed
+            
             - Bar
             
             [Unreleased]: https://blog.jetbrains.com
@@ -674,31 +740,39 @@ class ChangelogPluginExtensionTest : BaseTest() {
         extension.get(version).apply {
             assertEquals(project.version, version)
 
+            //language=Markdown
             assertMarkdown(
                 """
                 ## [1.0.0]
+                
                 First release.
-
+                
                 ### Added
+                
                 - Test [link](https://www.example.org) test
-
+                
                 ### Removed
+                
                 - Bar
-
+                
                 [1.0.0]: https://jetbrains.com
                 """.trimIndent().normalizeLineSeparator("\r\n"),
                 extension.renderItem(this)
             )
 
+            //language=HTML
             assertHTML(
                 """
                 <h2><a href="https://jetbrains.com">1.0.0</a></h2>
+                
                 <p>First release.</p>
-
+                
                 <h3>Added</h3>
+                
                 <ul><li>Test <a href="https://www.example.org">link</a> test</li></ul>
-
+                
                 <h3>Removed</h3>
+                
                 <ul><li>Bar</li></ul>
                 """.trimIndent().normalizeLineSeparator("\r\n"),
                 extension.renderItem(this, Changelog.OutputType.HTML)
@@ -707,12 +781,15 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertText(
                 """
                 1.0.0
+                
                 First release.
                 
                 Added
+                
                 - Test link test
                 
                 Removed
+                
                 - Bar
                 """.trimIndent().normalizeLineSeparator("\r\n"),
                 extension.renderItem(this, Changelog.OutputType.PLAIN_TEXT)
@@ -723,17 +800,21 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     @Suppress("LongMethod", "MaxLineLength")
     fun `render changelog that use CRLF`() {
+        //language=Markdown
         changelog =
             """
             # Changelog
+            
             My project description.
             
             ## [1.1.0]
+            
             First release.
             
             But a great one.
             
             ### Added
+            
             - Foo *FOO* foo
             - Bar **BAR** bar
             - Test [link](https://www.example.org) test
@@ -742,19 +823,23 @@ class ChangelogPluginExtensionTest : BaseTest() {
             - Alpha
             
             ### Fixed
+            
             - Hello
             - World
             
             ### Removed
+            
             - Hola
             
             ## [1.0.0]
             
             ### Added
+            
             - Foo 1.0.0
             - Bar 1.0.0
             
             ### Removed
+            
             - Removed 1.0.0
             
             [1.1.0]: https://jetbrains.com/1.1.0
@@ -763,17 +848,21 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
         extension.get(version).apply {
 
+            //language=Markdown
             assertMarkdown(
                 """
                 # Changelog
+                
                 My project description.
                 
                 ## [1.1.0]
+                
                 First release.
                 
                 But a great one.
                 
                 ### Added
+                
                 - Foo *FOO* foo
                 - Bar **BAR** bar
                 - Test [link](https://www.example.org) test
@@ -782,19 +871,23 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 - Alpha
                 
                 ### Fixed
+                
                 - Hello
                 - World
                 
                 ### Removed
+                
                 - Hola
                 
                 ## [1.0.0]
                 
                 ### Added
+                
                 - Foo 1.0.0
                 - Bar 1.0.0
                 
                 ### Removed
+                
                 - Removed 1.0.0
                 
                 [1.1.0]: https://jetbrains.com/1.1.0
@@ -802,31 +895,39 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 """.trimIndent().normalizeLineSeparator("\r\n"),
                 extension.render(Changelog.OutputType.MARKDOWN)
             )
+            //language=HTML
             assertHTML(
                 """
                 <h1>Changelog</h1>
+                
                 <p>My project description.</p>
                 
                 <h2><a href="https://jetbrains.com/1.1.0">1.1.0</a></h2>
+                
                 <p>First release.</p>
                 
                 <p>But a great one.</p>
                 
                 <h3>Added</h3>
+                
                 <ul><li>Foo <em>FOO</em> foo</li><li>Bar <strong>BAR</strong> bar</li><li>Test <a href="https://www.example.org">link</a> test</li><li>Code <code>block</code> code</li><li>Bravo</li><li>Alpha</li></ul>
                 
                 <h3>Fixed</h3>
+                
                 <ul><li>Hello</li><li>World</li></ul>
                 
                 <h3>Removed</h3>
+                
                 <ul><li>Hola</li></ul>
                 
                 <h2><a href="https://jetbrains.com/1.0.0">1.0.0</a></h2>
                 
                 <h3>Added</h3>
+                
                 <ul><li>Foo 1.0.0</li><li>Bar 1.0.0</li></ul>
                 
                 <h3>Removed</h3>
+                
                 <ul><li>Removed 1.0.0</li></ul>
                 """.trimIndent().normalizeLineSeparator("\r\n"),
                 extension.render(Changelog.OutputType.HTML)
@@ -834,14 +935,17 @@ class ChangelogPluginExtensionTest : BaseTest() {
             assertText(
                 """
                 Changelog
+                
                 My project description.
                 
                 1.1.0
+                
                 First release.
                 
                 But a great one.
                 
                 Added
+                
                 - Foo FOO foo
                 - Bar BAR bar
                 - Test link test
@@ -850,19 +954,23 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 - Alpha
                 
                 Fixed
+                
                 - Hello
                 - World
                 
                 Removed
+                
                 - Hola
                 
                 1.0.0
                 
                 Added
+                
                 - Foo 1.0.0
                 - Bar 1.0.0
                 
                 Removed
+                
                 - Removed 1.0.0
                 """.trimIndent().normalizeLineSeparator("\r\n"),
                 extension.render(Changelog.OutputType.PLAIN_TEXT)

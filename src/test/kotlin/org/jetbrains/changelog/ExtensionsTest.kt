@@ -20,100 +20,110 @@ class ExtensionsTest {
     @Test
     fun `reformat changelog`() {
         for (lineSeparator: String in listOf("\n", "\r\n", "\r")) {
+            //language=Markdown
             assertEquals(
                 """
-            Pre title content.
-            
-            # Title
-            Summary
-            
-            ## [Unreleased]
-            
-            ## [1.0.0]
-            - asd
-            
-            ## [0.1.0]
-            
-            ### Added
-            - Buz
-            
-            """.trimIndent().normalizeLineSeparator(lineSeparator),
+                Pre title content.
+                
+                # Title
+                
+                Summary
+                
+                ## [Unreleased]
+                
+                ## [1.0.0]
+                
+                - asd
+                
+                ## [0.1.0]
+                
+                ### Added
+                
+                - Buz
+                
+                """.trimIndent().normalizeLineSeparator(lineSeparator),
                 """
-            Pre title content.
-            # Title
-            Summary
-            ## [Unreleased]
-            ## [1.0.0]
-            - asd
-            ## [0.1.0]
-            ### Added
-            - Buz
-            """.trimIndent().normalizeLineSeparator(lineSeparator).reformat(lineSeparator),
+                Pre title content.
+                # Title
+                Summary
+                ## [Unreleased]
+                ## [1.0.0]
+                - asd
+                ## [0.1.0]
+                ### Added
+                - Buz
+                """.trimIndent().normalizeLineSeparator(lineSeparator).reformat(lineSeparator),
                 "reformat changelog that use $lineSeparator"
             )
 
+            //language=Markdown
             assertEquals(
                 """
-            Foo
-            
-            # My Title
-            Introduction
-            
-            ## Upcoming version
-            
-            ### Added
-            
-            ### Removed
-            
-            """.trimIndent().normalizeLineSeparator(lineSeparator),
+                Foo
+                
+                # My Title
+                
+                Introduction
+                
+                ## Upcoming version
+                
+                ### Added
+                
+                ### Removed
+                
+                """.trimIndent().normalizeLineSeparator(lineSeparator),
                 """
-            Foo
-            # My Title
-            Introduction
-            ## Upcoming version
-            ### Added
-            ### Removed
-            """.trimIndent().normalizeLineSeparator(lineSeparator).reformat(lineSeparator),
+                Foo
+                # My Title
+                Introduction
+                ## Upcoming version
+                ### Added
+                ### Removed
+                """.trimIndent().normalizeLineSeparator(lineSeparator).reformat(lineSeparator),
                 "reformat changelog that use $lineSeparator"
             )
 
+            //language=Markdown
             assertEquals(
                 """
-            Pre title content.
-            
-            # Title
-            Summary
-            
-            ## [Unreleased]
-            
-            ## [1.0.0]
-            - asd
-            
-            ## [0.1.0]
-            
-            ### Added
-            - Buz
-            
-            [Unreleased] https://jetbrains.com/unreleased
-            [1.0.0] https://jetbrains.com/1.0.0
-            [0.1.0] https://jetbrains.com/0.1.0
-            
-            """.trimIndent().normalizeLineSeparator(lineSeparator),
+                Pre title content.
+                
+                # Title
+                
+                Summary
+                
+                ## [Unreleased]
+                
+                ## [1.0.0]
+                
+                - asd
+                
+                ## [0.1.0]
+                
+                ### Added
+                
+                - Buz
+                
+                [Unreleased] https://jetbrains.com/unreleased
+                [1.0.0] https://jetbrains.com/1.0.0
+                [0.1.0] https://jetbrains.com/0.1.0
+                
+                """.trimIndent().normalizeLineSeparator(lineSeparator),
                 """
-            Pre title content.
-            # Title
-            Summary
-            ## [Unreleased]
-            ## [1.0.0]
-            - asd
-            ## [0.1.0]
-            ### Added
-            - Buz
-            
-            [Unreleased] https://jetbrains.com/unreleased
-            [1.0.0] https://jetbrains.com/1.0.0
-            [0.1.0] https://jetbrains.com/0.1.0
-            """.trimIndent().normalizeLineSeparator(lineSeparator).reformat(lineSeparator),
+                Pre title content.
+                # Title
+                Summary
+                ## [Unreleased]
+                ## [1.0.0]
+                - asd
+                ## [0.1.0]
+                ### Added
+                - Buz
+                
+                [Unreleased] https://jetbrains.com/unreleased
+                [1.0.0] https://jetbrains.com/1.0.0
+                [0.1.0] https://jetbrains.com/0.1.0
+                """.trimIndent().normalizeLineSeparator(lineSeparator).reformat(lineSeparator),
                 "reformat changelog that use $lineSeparator"
             )
         }
@@ -121,20 +131,25 @@ class ExtensionsTest {
 
     @Test
     fun `normalize string line separator`() {
-        val text = """
+        //language=Markdown
+        val text =
+            """
             Pre title content.
             
             # Title
+            
             Summary
             
             ## [Unreleased]
             
             ## [1.0.0]
+            
             - asd
             
             ## [0.1.0]
             
             ### Added
+            
             - Buz
             
             """.trimIndent()

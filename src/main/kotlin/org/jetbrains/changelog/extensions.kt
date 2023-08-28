@@ -29,10 +29,11 @@ fun markdownToPlainText(input: String, lineSeparator: String) = PlainTextFlavour
 
 internal fun String.reformat(lineSeparator: String): String {
     val result = listOf(
-        """(?:^|$lineSeparator)+(#+ [^$lineSeparator]*)(?:$lineSeparator)*""".toRegex() to "$lineSeparator$lineSeparator$1$lineSeparator",
+        """(?:^|$lineSeparator)+(#+ [^$lineSeparator]*)(?:$lineSeparator)*""".toRegex() to "$lineSeparator$lineSeparator$1$lineSeparator$lineSeparator",
         """((?:^|$lineSeparator)#+ .*?)$lineSeparator(#+ )""".toRegex() to "$1$lineSeparator$lineSeparator$2",
         """(?:$lineSeparator)+(\[.*?]:)""".toRegex() to "$lineSeparator$lineSeparator$1",
         """(?<=$lineSeparator)(\[.*?]:.*?)(?:$lineSeparator)+""".toRegex() to "$1$lineSeparator",
+        """(#+ .*?)$lineSeparator""".toRegex() to "$1$lineSeparator$lineSeparator",
         """($lineSeparator){3,}""".toRegex() to "$lineSeparator$lineSeparator",
     ).fold(this) { acc, (pattern, replacement) ->
         acc.replace(pattern, replacement)
@@ -44,9 +45,7 @@ internal fun String.reformat(lineSeparator: String): String {
     }
 }
 
-internal fun String.normalizeLineSeparator(lineSeparator: String): String {
-    return this.replace("\\R".toRegex(), lineSeparator)
-}
+internal fun String.normalizeLineSeparator(lineSeparator: String) = replace("\\R".toRegex(), lineSeparator)
 
 fun interface ChangelogSectionUrlBuilder {
     fun build(repositoryUrl: String, currentVersion: String?, previousVersion: String?, isUnreleased: Boolean): String

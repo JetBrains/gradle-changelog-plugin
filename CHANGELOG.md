@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- Insert blank lines around headings and lists to satisfy Markdown syntax guidelines [#190](../../issues/190)
+
 ### Changed
 - Rename the `getChangelog` CLI option from `--version=..` to `--project-version=..` [#188](../../issues/188)
 

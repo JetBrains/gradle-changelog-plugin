@@ -19,12 +19,15 @@ class PatchChangelogTaskTest : BaseTest() {
             <!-- Foo bar -->
             
             # Changelog
+            
             My project changelog.
             
             ## [Unreleased]
+            
             Fancy release.
             
             ### Added
+            
             - foo
             """.trimIndent()
 
@@ -48,9 +51,11 @@ class PatchChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             ## [1.0.0] - $date
+            
             Fancy release.
             
             ### Added
+            
             - foo
             
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
@@ -102,9 +107,11 @@ class PatchChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             ## [1.0.0] - $date
+            
             Fancy release.
             
             ### Added
+            
             - foo
             
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
@@ -139,9 +146,11 @@ class PatchChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             ## [1.0.0] - $date
+            
             Fancy release.
             
             ### Added
+            
             - foo
             
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/w1.0.0
@@ -199,6 +208,7 @@ class PatchChangelogTaskTest : BaseTest() {
             <!-- Foo bar -->
             
             # Changelog
+            
             Foo bar
             
             ## [Unreleased]
@@ -216,9 +226,11 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Security
             
             ## [1.0.0] - $date
+            
             Fancy release.
             
             ### Added
+            
             - foo
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
@@ -234,15 +246,19 @@ class PatchChangelogTaskTest : BaseTest() {
         changelog =
             """
             # Changelog
+            
             All notable changes to this project will be documented in this file.
             
             ## [Unreleased]
+            
             ### Added
+            
             - Some other thing added.
             
             ## [0.1.0] - 2020-07-02
             
             ### Added
+            
             - Something added.
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.1.0...HEAD
@@ -338,8 +354,11 @@ class PatchChangelogTaskTest : BaseTest() {
         changelog =
             """
             # Changelog
+            
             ## [Unreleased]
+            
             ### Added
+            
             - foo
             
             ### Changed
@@ -347,6 +366,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Deprecated
             
             ### Removed
+            
             - bar
             
             ### Fixed
@@ -362,9 +382,11 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [1.0.0] - $date
             
             ### Added
+            
             - foo
             
             ### Removed
+            
             - bar
             
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
@@ -503,15 +525,18 @@ class PatchChangelogTaskTest : BaseTest() {
         changelog =
             """
             # My Changelog
+            
             Foo bar buz.
             
             ## [Unreleased]
+            
             - Foo
             - Bar
             
             ## [0.1.0] - 2022-10-10
             
             ### Added
+            
             - Buz
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.1.0...HEAD
@@ -528,11 +553,13 @@ class PatchChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             # My Changelog
+            
             Foo bar buz.
             
             ## [Unreleased]
             
             ## [1.0.0] - $date
+            
             Foo
             
             - asd
@@ -541,6 +568,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [0.1.0] - 2022-10-10
             
             ### Added
+            
             - Buz
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
@@ -555,6 +583,7 @@ class PatchChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             ## [1.0.0] - $date
+            
             Foo
             
             - asd
@@ -570,11 +599,13 @@ class PatchChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             # My Changelog
+            
             Foo bar buz.
             
             ## [Unreleased]
             
             ## [1.0.0] - $date
+            
             Foo
             
             - asd
@@ -583,6 +614,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [0.1.0] - 2022-10-10
             
             ### Added
+            
             - Buz
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
@@ -614,6 +646,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [Unreleased]
             
             ### Changed
+            
             - This item has three paragraphs.
             
               All paragraphs should be preserved.
@@ -630,6 +663,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [0.0.1] - 2022-10-10
             
             ### Added
+            
             - ```
               A code block could also be followed by a list
               ```
@@ -642,6 +676,7 @@ class PatchChangelogTaskTest : BaseTest() {
               | There could also be a table |
             
             ### Fixed
+            
             - Following sections must stay unaffected.
             """.trimIndent()
 
@@ -668,6 +703,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [1.0.0] - $date
             
             ### Changed
+            
             - This item has three paragraphs.
             
               All paragraphs should be preserved.
@@ -684,6 +720,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [0.0.1] - 2022-10-10
             
             ### Added
+            
             - ```
               A code block could also be followed by a list
               ```
@@ -696,6 +733,7 @@ class PatchChangelogTaskTest : BaseTest() {
               | There could also be a table |
             
             ### Fixed
+            
             - Following sections must stay unaffected.
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
@@ -764,11 +802,13 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [1.0.0] - $date
             
             ### Changed
+            
             - Update some feature
             
             ## [0.0.1] - 2022-10-10
             
             ### Added
+            
             - `RunBlocking` function
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
@@ -787,6 +827,7 @@ class PatchChangelogTaskTest : BaseTest() {
             # My Changelog
             
             ## Unreleased
+            
             - Fixed stuff
             """.trimIndent()
 
@@ -810,6 +851,7 @@ class PatchChangelogTaskTest : BaseTest() {
             # My Changelog
             
             ## [1.0.0] - $date
+            
             - Fixed stuff
             
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
@@ -825,6 +867,7 @@ class PatchChangelogTaskTest : BaseTest() {
             # My Changelog
             
             ## [Unreleased]
+            
             - Fixed stuff
             """.trimIndent()
 
@@ -849,6 +892,7 @@ class PatchChangelogTaskTest : BaseTest() {
             # Project Changelog
             
             ## [1.0.0] - $date
+            
             - Fixed stuff
             
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v1.0.0
@@ -867,39 +911,51 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [Unreleased]
             
             ### Added
+            
             - New feature
             
             ### Changed
+            
             - Changes
             
             ## [1.0.0-beta] - 2022-10-13
+            
             A really awesome release.
             
             ### Added
+            
             - Feature
             
             ### Fixed
+            
             - Another bug
             
             ### Removed
+            
             - Unnecessary file
             
             ## [1.0.0-alpha.2] - 2022-10-12
+            
             An awesome release.
             
             ### Fixed
+            
             - Bug fix
             
             ## [1.0.0-alpha.1] - 2022-10-11
+            
             An awesome release.
             
             ### Fixed
+            
             - Bug fix
             
             ## [0.9.0] - 2022-10-10
+            
             An old release
             
             ### Added
+            
             - Some additional feature
             
             """.trimIndent()
@@ -926,50 +982,65 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Security
             
             ## [1.0.0] - $date
+            
             A really awesome release.
             
             ### Added
+            
             - New feature
             - Feature
             
             ### Changed
+            
             - Changes
             
             ### Fixed
+            
             - Another bug
             - Bug fix
             
             ### Removed
+            
             - Unnecessary file
             
             ## [1.0.0-beta] - 2022-10-13
+            
             A really awesome release.
             
             ### Added
+            
             - Feature
             
             ### Fixed
+            
             - Another bug
             
             ### Removed
+            
             - Unnecessary file
             
             ## [1.0.0-alpha.2] - 2022-10-12
+            
             An awesome release.
             
             ### Fixed
+            
             - Bug fix
             
             ## [1.0.0-alpha.1] - 2022-10-11
+            
             An awesome release.
             
             ### Fixed
+            
             - Bug fix
             
             ## [0.9.0] - 2022-10-10
+            
             An old release
             
             ### Added
+            
             - Some additional feature
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
@@ -1004,39 +1075,51 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [Unreleased]
             
             ### Added
+            
             - New feature
             
             ### Changed
+            
             - Changes
             
             ## [1.0.0-beta] - 2022-10-13
+            
             A really awesome release.
             
             ### Added
+            
             - Feature
             
             ### Fixed
+            
             - Another bug
             
             ### Removed
+            
             - Unnecessary file
             
             ## [1.0.0-alpha.2] - 2022-10-12
+            
             An awesome release.
             
             ### Fixed
+            
             - Bug fix
             
             ## [1.0.0-alpha.1] - 2022-10-11
+            
             An awesome release.
             
             ### Fixed
+            
             - Bug fix
             
             ## [0.9.0] - 2022-10-10
+            
             An old release
             
             ### Added
+            
             - Some additional feature
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
@@ -1072,39 +1155,51 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [1.0.0] - $date
             
             ### Added
+            
             - New feature
             
             ### Changed
+            
             - Changes
             
             ## [1.0.0-beta] - 2022-10-13
+            
             A really awesome release.
             
             ### Added
+            
             - Feature
             
             ### Fixed
+            
             - Another bug
             
             ### Removed
+            
             - Unnecessary file
             
             ## [1.0.0-alpha.2] - 2022-10-12
+            
             An awesome release.
             
             ### Fixed
+            
             - Bug fix
             
             ## [1.0.0-alpha.1] - 2022-10-11
+            
             An awesome release.
             
             ### Fixed
+            
             - Bug fix
             
             ## [0.9.0] - 2022-10-10
+            
             An old release
             
             ### Added
+            
             - Some additional feature
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
@@ -1147,6 +1242,7 @@ class PatchChangelogTaskTest : BaseTest() {
             <!-- Foo bar -->
             
             # Changelog
+            
             My project changelog.
             
             ## [Unreleased]
@@ -1164,9 +1260,11 @@ class PatchChangelogTaskTest : BaseTest() {
             ### Security
             
             ## [1.0.0] - $date
+            
             Fancy release.
             
             ### Added
+            
             - foo
             
             [Unreleased]: repositoryUrl=https://github.com/JetBrains/gradle-changelog-plugin|currentVersion=Unreleased|previousVersion=1.0.0|isUnreleased=true
@@ -1188,20 +1286,25 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `patch with CRLF line separator`() {
+        //language=Markdown
         changelog =
             """
             <!-- Foo bar -->
             
             # Changelog
+            
             My project changelog.
             
             ## [Unreleased]
+            
             Fancy release.
             
             ### Added
+            
             - foo
             
             ### Changed
+            
             - changed
             - changed 2
             """.trimIndent().normalizeLineSeparator("\r\n")
@@ -1209,15 +1312,19 @@ class PatchChangelogTaskTest : BaseTest() {
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
+        //language=Markdown
         assertMarkdown(
             """
             ## [1.0.0] - $date
+            
             Fancy release.
             
             ### Added
+            
             - foo
             
             ### Changed
+            
             - changed
             - changed 2
             
@@ -1230,20 +1337,25 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `patch with CR line separator`() {
+        //language=Markdown
         changelog =
             """
             <!-- Foo bar -->
             
             # Changelog
+            
             My project changelog.
             
             ## [Unreleased]
+            
             Fancy release.
             
             ### Added
+            
             - foo
             
             ### Changed
+            
             - changed
             - changed 2
             """.trimIndent().normalizeLineSeparator("\r")
@@ -1251,15 +1363,19 @@ class PatchChangelogTaskTest : BaseTest() {
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
+        //language=Markdown
         assertMarkdown(
             """
             ## [1.0.0] - $date
+            
             Fancy release.
             
             ### Added
+            
             - foo
             
             ### Changed
+            
             - changed
             - changed 2
             
@@ -1272,6 +1388,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
     @Test
     fun `patch complex file with CRLF`() {
+        //language=Markdown
         changelog =
             """
             # Changelog
@@ -1279,6 +1396,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [Unreleased]
             
             ### Changed
+            
             - This item has three paragraphs.
             
               All paragraphs should be preserved.
@@ -1295,6 +1413,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [0.0.1] - 2022-10-10
             
             ### Added
+            
             - ```
               A code block could also be followed by a list
               ```
@@ -1307,12 +1426,14 @@ class PatchChangelogTaskTest : BaseTest() {
               | There could also be a table |
             
             ### Fixed
+            
             - Following sections must stay unaffected.
             
             """.trimIndent().normalizeLineSeparator("\r\n")
 
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
+        //language=Markdown
         assertMarkdown(
             """
             # Changelog
@@ -1334,6 +1455,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [1.0.0] - $date
             
             ### Changed
+            
             - This item has three paragraphs.
             
               All paragraphs should be preserved.
@@ -1350,6 +1472,7 @@ class PatchChangelogTaskTest : BaseTest() {
             ## [0.0.1] - 2022-10-10
             
             ### Added
+            
             - ```
               A code block could also be followed by a list
               ```
@@ -1362,6 +1485,7 @@ class PatchChangelogTaskTest : BaseTest() {
               | There could also be a table |
             
             ### Fixed
+            
             - Following sections must stay unaffected.
             
             [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD

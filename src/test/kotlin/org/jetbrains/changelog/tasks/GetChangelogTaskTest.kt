@@ -63,9 +63,11 @@ class GetChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             ## [1.0.1] - 2022-10-17
+            
             Release with bugfix.
             
             ### Fixed
+            
             - bar
             
             [1.0.1]: https://jetbrians.com/1.0.1
@@ -81,6 +83,7 @@ class GetChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             ## [Unreleased]
+            
             Some unreleased changes.
             
             - bar
@@ -88,6 +91,7 @@ class GetChangelogTaskTest : BaseTest() {
             ### Added
             
             ### Fixed
+            
             - I fixed myself a beverage.
             
             [Unreleased]: https://jetbrians.com/Unreleased
@@ -103,11 +107,13 @@ class GetChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             ## [Unreleased]
+            
             Some unreleased changes.
             
             - bar
             
             ### Fixed
+            
             - I fixed myself a beverage.
             
             [Unreleased]: https://jetbrians.com/Unreleased
@@ -123,9 +129,11 @@ class GetChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             ## [1.0.1] - 2022-10-17
+            
             Release with bugfix.
             
             ### Fixed
+            
             - bar
             
             [1.0.1]: https://jetbrians.com/1.0.1
@@ -143,6 +151,7 @@ class GetChangelogTaskTest : BaseTest() {
             Release with bugfix.
             
             ### Fixed
+            
             - bar
             
             [1.0.1]: https://jetbrians.com/1.0.1
@@ -160,6 +169,7 @@ class GetChangelogTaskTest : BaseTest() {
             ## [1.0.1] - 2022-10-17
             
             ### Fixed
+            
             - bar
             
             [1.0.1]: https://jetbrians.com/1.0.1
@@ -175,9 +185,11 @@ class GetChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             ## 1.0.1 - 2022-10-17
+            
             Release with bugfix.
             
             ### Fixed
+            
             - bar
             """.trimIndent(),
             result.output
@@ -191,9 +203,11 @@ class GetChangelogTaskTest : BaseTest() {
         assertMarkdown(
             """
             ## [1.0.1] - 2022-10-17
+            
             Release with bugfix.
             
             ### Fixed
+            
             - bar
             
             [1.0.1]: https://jetbrians.com/1.0.1
@@ -266,6 +280,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `get changelog with CRLF line separator`() {
+        //language=Markdown
         changelog =
             """
             # Changelog
@@ -298,12 +313,15 @@ class GetChangelogTaskTest : BaseTest() {
 
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
+        //language=Markdown
         assertMarkdown(
             """
             ## [1.0.1] - 2022-10-17
+            
             Release with bugfix.
             
             ### Fixed
+            
             - bar
             
             [1.0.1]: https://jetbrians.com/1.0.1
@@ -315,7 +333,7 @@ class GetChangelogTaskTest : BaseTest() {
     @Test
     fun `get changelog with CR line separator`() {
         changelog =
-            """
+            """                
             # Changelog
             ## [Unreleased]
             Some unreleased changes.
@@ -346,12 +364,15 @@ class GetChangelogTaskTest : BaseTest() {
 
         val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
 
+        //language=Markdown
         assertMarkdown(
             """
             ## [1.0.1] - 2022-10-17
+            
             Release with bugfix.
             
             ### Fixed
+            
             - bar
             
             [1.0.1]: https://jetbrians.com/1.0.1

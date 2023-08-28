@@ -143,6 +143,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             Foo
             
             # My Title
+            
             Introduction
             
             ## Upcoming version
