@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Rename the `getChangelog` CLI option from `--version=..` to `--project-version=..` [#188](../../issues/188)
+
 ## [2.1.2] - 2023-07-10
 
 ### Fixed

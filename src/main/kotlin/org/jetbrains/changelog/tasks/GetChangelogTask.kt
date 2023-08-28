@@ -73,10 +73,10 @@ abstract class GetChangelogTask : BaseChangelogTask() {
     @get:Input
     @get:Optional
     @Option(
-        option = "version",
-        description = "Returns change notes for the specified version.",
+        option = "project-version",
+        description = "Returns change notes for the specified project version.",
     )
-    var cliVersion = null as String?
+    var projectVersion = null as String?
 
     /**
      * Returns change notes for an unreleased section.
@@ -102,7 +102,7 @@ abstract class GetChangelogTask : BaseChangelogTask() {
     @TaskAction
     fun run() = logger.quiet(
         with(changelog.get()) {
-            val version = cliVersion
+            val version = projectVersion
 
             when {
                 version != null -> get(version)

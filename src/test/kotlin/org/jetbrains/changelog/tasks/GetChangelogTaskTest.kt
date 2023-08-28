@@ -118,7 +118,7 @@ class GetChangelogTaskTest : BaseTest() {
 
     @Test
     fun `returns change notes for the version specified with CLI`() {
-        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--version=1.0.1")
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--project-version=1.0.1")
 
         assertMarkdown(
             """
