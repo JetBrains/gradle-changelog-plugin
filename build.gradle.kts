@@ -71,15 +71,17 @@ changelog {
 
 tasks {
     test {
-        val testGradleHomePath = "$buildDir/testGradleHome"
+        val testGradleHome = layout.buildDirectory.asFile.get().resolve("testGradleHome")
+
         doFirst {
-            File(testGradleHomePath).mkdir()
+            testGradleHome.mkdir()
         }
-        systemProperties["test.gradle.home"] = testGradleHomePath
+
+        systemProperties["test.gradle.home"] = testGradleHome
         systemProperties["test.gradle.default"] = properties("gradleVersion").get()
         systemProperties["test.gradle.version"] = properties("testGradleVersion").get()
         systemProperties["test.gradle.arguments"] = properties("testGradleArguments").get()
-        outputs.dir(testGradleHomePath)
+        outputs.dir(testGradleHome)
     }
 
     wrapper {
