@@ -1,7 +1,7 @@
 [versions]
 
 # libraries
-markdown = "0.5.0"
+markdown = "0.5.2"
 
 # plugins
 dokka = "1.9.0"
