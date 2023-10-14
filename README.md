@@ -75,7 +75,7 @@ changelog {
     version.set("1.0.0")
     path.set(file("CHANGELOG.md").canonicalPath)
     header.set(provider { "[${version.get()}] - ${date()}" })
-    headerParserRegex.set("""(\d+\.\d+)""".toRegex())
+    headerParserRegex.set("""(\d+\.\d+\.\d+)""".toRegex())
     introduction.set(
         """
         My awesome project that provides a lot of useful features, like:
@@ -128,7 +128,7 @@ changelog {
     version = "1.0.0"
     path = file("CHANGELOG.md").canonicalPath
     header = "[${-> version.get()}] - ${ExtensionsKt.date("yyyy-MM-dd")}"
-    headerParserRegex = ~/(\d+\.\d+)/
+    headerParserRegex = ~/(\d+\.\d+\.\d+)/
     introduction = """
         My awesome project that provides a lot of useful features, like:
         
