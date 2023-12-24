@@ -32,6 +32,8 @@ A Gradle plugin providing tasks and helper methods to simplify working with a ch
     - [`getInstance`](#changeloggetinstance-changelog)
 - [Classes](#classes)
     - [`Changelog`](#changelog-class)
+    - [`Changelog.OutputType`](#changelogoutputtype-enum)
+    - [`Changelog.Item`](#changelogitem-class)
 - [Helper Methods](#helper-methods)
 - [Usage Examples](#usage-examples)
 - [Changelog](#changelog)
