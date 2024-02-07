@@ -1,7 +1,7 @@
 # Gradle Changelog Plugin
 
 [![official JetBrains project](https://jb.gg/badges/official.svg)][jb:github]
-[![Twitter Follow](https://img.shields.io/badge/follow-%40JBPlatform-1DA1F2?logo=twitter)][jb:twitter]
+[![X Follow](https://img.shields.io/badge/follow-%40JBPlatform-1DA1F2?logo=x)][jb:x]
 [![Gradle Plugin][gradle-plugin-shield]][gradle-plugin]
 [![Build](https://github.com/JetBrains/gradle-changelog-plugin/workflows/Build/badge.svg)][gh:build]
 [![Slack](https://img.shields.io/badge/Slack-%23gradle--changelog--plugin-blue)][jb:slack]
@@ -475,7 +475,7 @@ Licensed under the Apache License, Version 2.0 (the "License"), see [LICENCE](./
 [gh:gradle-intellij-plugin]: https://github.com/JetBrains/gradle-intellij-plugin
 [jb:github]: https://github.com/JetBrains/.github/blob/main/profile/README.md
 [jb:slack]: https://plugins.jetbrains.com/slack
-[jb:twitter]: https://twitter.com/JBPlatform
+[jb:x]: https://x.com/JBPlatform
 [build-phases]: https://docs.gradle.org/current/userguide/build_lifecycle.html#sec:build_phases
 [configuration-cache]: https://docs.gradle.org/6.8.2/userguide/configuration_cache.html
 [keep-a-changelog]: https://keepachangelog.com/en/1.0.0
