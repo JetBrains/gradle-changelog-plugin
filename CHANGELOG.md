@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Versions containing hyphens are now sorted correctly [#171](../../issues/171)
+
 ## [2.2.0] - 2023-08-28
 
 ### Added
