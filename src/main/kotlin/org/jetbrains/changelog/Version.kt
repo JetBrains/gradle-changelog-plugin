@@ -28,8 +28,8 @@ class Version(
             .or { patch - other.patch }
             .or {
                 when {
-                    version.contains('-') -> -1
-                    other.version.contains('-') -> 1
+                    version.contains('-') && other.version.contains('-').not() -> -1
+                    other.version.contains('-') && version.contains('-').not() -> 1
                     else -> 0
                 }
             }
