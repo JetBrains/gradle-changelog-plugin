@@ -631,6 +631,78 @@ class PatchChangelogTaskTest : BaseTest() {
     }
 
     @Test
+    fun `test sorting version links`() {
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "0.9.5-alpha.3"
+                repositoryUrl = "https://github.com/JetBrains/gradle-changelog-plugin"
+            }
+            """.trimIndent()
+
+        changelog =
+            """
+            # Changelog
+            
+            ## [Unreleased]
+            
+            ### Added
+            
+            ### Fixed
+            
+            ## [0.9.5-alpha.3] - 2024-02-11
+            ## [0.9.5-alpha.2] - 2024-02-10
+            ## [0.9.5-alpha.1] - 2024-02-06
+            ## [0.9.4] - 2024-02-06
+            ## [0.9.3] - 2024-01-16
+            
+            [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.5-alpha.6...HEAD
+            [0.9.5-alpha.2]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.5-alpha.1...v0.9.5-alpha.2
+            [0.9.5-alpha.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.4...v0.9.5-alpha.1
+            [0.9.5-alpha.3]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.5-alpha.2...v0.9.5-alpha.3
+            [0.9.4]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.3...v0.9.4
+            [0.9.3]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.3...v0.9.2
+            """.trimIndent()
+
+        project.evaluate()
+
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        assertMarkdown(
+            """
+            # Changelog
+
+            ## [Unreleased]
+
+            ### Added
+
+            ### Fixed
+
+            ## [0.9.5-alpha.3] - 2024-02-11
+
+            ## [0.9.5-alpha.2] - 2024-02-10
+
+            ## [0.9.5-alpha.1] - 2024-02-06
+
+            ## [0.9.4] - 2024-02-06
+
+            ## [0.9.3] - 2024-01-16
+
+            [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.5-alpha.6...HEAD
+            [0.9.5-alpha.3]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.5-alpha.2...v0.9.5-alpha.3
+            [0.9.5-alpha.2]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.5-alpha.1...v0.9.5-alpha.2
+            [0.9.5-alpha.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.4...v0.9.5-alpha.1
+            [0.9.4]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.3...v0.9.4
+            [0.9.3]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.3...v0.9.2
+            """.trimIndent(),
+            extension.render()
+        )
+    }
+
+    @Test
     fun `patched changelog contains an empty line at the end`() {
         runTask(PATCH_CHANGELOG_TASK_NAME)
 
