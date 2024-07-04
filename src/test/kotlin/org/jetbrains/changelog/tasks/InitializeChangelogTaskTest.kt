@@ -179,6 +179,7 @@ class InitializeChangelogTaskTest : BaseTest() {
     @Test
     fun `task loads from the configuration cache`() {
         runTask(INITIALIZE_CHANGELOG_TASK_NAME)
+        runTask(INITIALIZE_CHANGELOG_TASK_NAME)
         val result = runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
         assertTrue(result.output.contains("Reusing configuration cache."))

@@ -577,7 +577,12 @@ class PatchChangelogTaskTest : BaseTest() {
             [world]: https://jetbrains.com
             
             """.trimIndent(),
-            extension.render()
+            extension.render().also {
+                println("--------")
+                println(it)
+                println("--------")
+            }
+
         )
 
         assertMarkdown(
@@ -1307,7 +1312,7 @@ class PatchChangelogTaskTest : BaseTest() {
 
         project.evaluate()
         runTask(PATCH_CHANGELOG_TASK_NAME)
-        val result = runTask(PATCH_CHANGELOG_TASK_NAME)
+        runTask(PATCH_CHANGELOG_TASK_NAME)
 
         assertMarkdown(
             """
@@ -1344,12 +1349,13 @@ class PatchChangelogTaskTest : BaseTest() {
             """.trimIndent(),
             extension.render()
         )
-
+        val result = runTask(PATCH_CHANGELOG_TASK_NAME)
         assertTrue(result.output.contains("Reusing configuration cache."))
     }
 
     @Test
     fun `task loads from the configuration cache`() {
+        runTask(PATCH_CHANGELOG_TASK_NAME)
         runTask(PATCH_CHANGELOG_TASK_NAME)
         val result = runTask(PATCH_CHANGELOG_TASK_NAME)
 
