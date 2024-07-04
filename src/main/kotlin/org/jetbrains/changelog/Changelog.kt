@@ -140,9 +140,12 @@ data class Changelog(
                     val url = build(repositoryUrl, it, null, false)
                     yield(it to url)
                 }
-            }
 
-            yieldAll(baseLinks)
+                yieldAll(
+                    baseLinks.filterNot { (key, _) -> key in items.keys || key == unreleasedTerm }
+                )
+            } ?: yieldAll(baseLinks)
+
         }
             .sortedWith { (left), (right) ->
                 val leftIsSemVer = SEM_VER_REGEX.matches(left)
