@@ -6,6 +6,10 @@
 
 - Versions containing hyphens are now sorted correctly [#171](../../issues/171)
 
+### Fixed
+
+- Comparison method violates its general contract!
+
 ## [2.2.0] - 2023-08-28
 
 ### Added

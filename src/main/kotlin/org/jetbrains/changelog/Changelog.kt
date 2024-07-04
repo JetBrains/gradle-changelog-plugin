@@ -151,6 +151,7 @@ data class Changelog(
                 val rightVersion = Version.parse(right)
 
                 when {
+                    left == right -> 0
                     left == unreleasedTerm -> -1
                     right == unreleasedTerm -> 1
                     leftIsSemVer && rightIsSemVer -> rightVersion.compareTo(leftVersion)
