@@ -15,3 +15,4 @@ markdown = { group = "org.jetbrains", name = "markdown", version.ref = "markdown
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "gradlePluginPublish" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "gradleChangelogPlugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+bcv = "org.jetbrains.kotlinx.binary-compatibility-validator:0.16.3"
