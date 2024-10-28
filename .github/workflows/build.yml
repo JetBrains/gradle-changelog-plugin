@@ -50,7 +50,7 @@ jobs:
           - 6.8
           - 6.9.4
           - 7.6.4
-          - 8.8
+          - 8.10.2
         os:
           - windows-latest
           - ubuntu-latest
