@@ -5,8 +5,10 @@ markdown = "0.7.3"
 
 # plugins
 dokka = "1.9.20"
+
 gradlePluginPublish = "1.3.0"
-gradleChangelogPlugin = "2.2.0"
+gradleChangelogPlugin = "2.2.1"
+
 
 [libraries]
 markdown = { group = "org.jetbrains", name = "markdown", version.ref = "markdown" }
