@@ -4,7 +4,7 @@
 markdown = "0.7.3"
 
 # plugins
-dokka = "1.9.20"
+dokka = "2.0.0"
 
 gradlePluginPublish = "1.3.0"
 gradleChangelogPlugin = "2.2.1"
