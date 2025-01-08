@@ -79,8 +79,6 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
-        with:
-          gradle-home-cache-cleanup: true
 
       - name: Run Linters and Test
         run: ./gradlew check -PtestGradleVersion="${{ matrix.gradleVersion }}"
