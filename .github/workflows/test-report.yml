@@ -19,7 +19,7 @@ jobs:
     steps:
 
       - name: Test Report
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         with:
           artifact: /test-results-([^-]*)-(.*)/
           name: "Unit Tests Report: Gradle $1 @ $2"
