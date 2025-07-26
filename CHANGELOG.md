@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [2.3.0] - 2025-07-26
+
 ### Added
 
 - Add the ` outputFile ` property to the Changelog extension and `GetChangelogTask` along with the `--output-file` flag JetBrains/gradle-changelog-plugin#264
@@ -305,7 +307,8 @@
 - `changelog` extension configuration
 - `getChangelog`/`patchChangelog` tasks
 
-[Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.2.1...HEAD
+[Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.2...v2.2.0
 [2.1.2]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.1...v2.1.2
