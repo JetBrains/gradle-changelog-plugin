@@ -1,9 +1,8 @@
-// Copyright 2000-2023 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
+// Copyright 2000-2025 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
 
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.dokka.gradle.tasks.DokkaGeneratePublicationTask
 
-fun properties(key: String) = providers.gradleProperty(key)
-fun environment(key: String) = providers.environmentVariable(key)
+fun Jar.patchManifest() = manifest { attributes("Version" to project.version) }
 
 plugins {
     `kotlin-dsl`
@@ -14,9 +13,9 @@ plugins {
     alias(libs.plugins.bcv)
 }
 
-group = properties("projectGroup").get()
-version = properties("version").get()
-description = properties("description").get()
+group = providers.gradleProperty("projectGroup").get()
+version = providers.gradleProperty("version").get()
+description = providers.gradleProperty("description").get()
 
 repositories {
     mavenCentral()
@@ -34,30 +33,31 @@ kotlin {
     jvmToolchain(11)
 }
 
-@Suppress("UnstableApiUsage")
 gradlePlugin {
-    website = properties("website")
-    vcsUrl = properties("vcsUrl")
+    website = providers.gradleProperty("website")
+    vcsUrl = providers.gradleProperty("vcsUrl")
 
     plugins.create("changelog") {
-        id = properties("pluginId").get()
-        displayName = properties("name").get()
-        implementationClass = properties("pluginImplementationClass").get()
+        id = providers.gradleProperty("pluginId").get()
+        displayName = providers.gradleProperty("name").get()
+        implementationClass = providers.gradleProperty("pluginImplementationClass").get()
         description = project.description
-        tags = properties("tags").map { it.split(',') }
+        tags = providers.gradleProperty("tags").map { it.split(',') }
     }
 }
 
-val dokkaHtml by tasks.getting(DokkaTask::class)
+val dokkaGeneratePublicationHtml by tasks.existing(DokkaGeneratePublicationTask::class)
 val javadocJar by tasks.registering(Jar::class) {
-    dependsOn(dokkaHtml)
+    dependsOn(dokkaGeneratePublicationHtml)
     archiveClassifier = "javadoc"
-    from(dokkaHtml.outputDirectory)
+    from(dokkaGeneratePublicationHtml.map { it.outputDirectory })
+    patchManifest()
 }
 
-val sourcesJar = tasks.register<Jar>("sourcesJar") {
+val sourcesJar by tasks.registering(Jar::class) {
     archiveClassifier = "sources"
     from(sourceSets.main.get().allSource)
+    patchManifest()
 }
 
 artifacts {
@@ -79,13 +79,13 @@ tasks {
         }
 
         systemProperties["test.gradle.home"] = testGradleHome
-        systemProperties["test.gradle.default"] = properties("gradleVersion").get()
-        systemProperties["test.gradle.version"] = properties("testGradleVersion").get()
-        systemProperties["test.gradle.arguments"] = properties("testGradleArguments").get()
+        systemProperties["test.gradle.default"] = providers.gradleProperty("gradleVersion").get()
+        systemProperties["test.gradle.version"] = providers.gradleProperty("testGradleVersion").get()
+        systemProperties["test.gradle.arguments"] = providers.gradleProperty("testGradleArguments").get()
         outputs.dir(testGradleHome)
     }
 
     wrapper {
-        gradleVersion = properties("gradleVersion").get()
+        gradleVersion = providers.gradleProperty("gradleVersion").get()
     }
 }
