@@ -66,17 +66,9 @@ jobs:
         uses: gradle/gradle-build-action@v3
 
       - name: Run Linters and Test
+        env:
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
         run: ./gradlew check -PtestGradleVersion="${{ matrix.gradleVersion }}"
-
-      - name: Collect Test Results
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-${{ matrix.gradleVersion }}-${{ runner.os }}
-          path: |
-            ${{ github.workspace }}/build/reports/tests
-            ${{ github.workspace }}/build/reports/configuration-cache
-            ${{ github.workspace }}/build/test-results
 
   build:
     name: Build
