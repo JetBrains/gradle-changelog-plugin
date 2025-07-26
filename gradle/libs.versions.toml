@@ -1,14 +1,12 @@
 [versions]
-
 # libraries
 markdown = "0.7.3"
 
 # plugins
 dokka = "2.0.0"
-
-gradlePluginPublish = "1.3.0"
+bcv = "0.18.1"
+gradlePluginPublish = "1.3.1"
 gradleChangelogPlugin = "2.2.1"
-
 
 [libraries]
 markdown = { group = "org.jetbrains", name = "markdown", version.ref = "markdown" }
@@ -17,4 +15,4 @@ markdown = { group = "org.jetbrains", name = "markdown", version.ref = "markdown
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "gradlePluginPublish" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "gradleChangelogPlugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-bcv = "org.jetbrains.kotlinx.binary-compatibility-validator:0.17.0"
+bcv = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "bcv" }
