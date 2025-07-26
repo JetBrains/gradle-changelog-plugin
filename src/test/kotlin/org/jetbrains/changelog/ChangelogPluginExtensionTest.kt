@@ -2,6 +2,7 @@
 
 package org.jetbrains.changelog
 
+import org.gradle.kotlin.dsl.assign
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import kotlin.test.*
 
@@ -73,7 +74,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 [1.0.0]: https://jetbrains.com
                 """.trimIndent(),
-                extension.renderItem(this)
+                extension.renderItem(this),
             )
 
             assertText(
@@ -86,7 +87,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 - Bar
                 """.trimIndent(),
-                extension.renderItem(this, Changelog.OutputType.PLAIN_TEXT)
+                extension.renderItem(this, Changelog.OutputType.PLAIN_TEXT),
             )
 
             assertHTML(
@@ -100,7 +101,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 <ul><li>Bar</li></ul>
                 
                 """.trimIndent(),
-                extension.renderItem(this, Changelog.OutputType.HTML)
+                extension.renderItem(this, Changelog.OutputType.HTML),
             )
         }
     }
@@ -108,7 +109,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `parses changelog with custom format`() {
         changelog = changelog.replace("""\[([^]]+)]""".toRegex(), "[[$1]]")
-        extension.unreleasedTerm.set("[[Unreleased]]")
+        extension.unreleasedTerm = "[[Unreleased]]"
         extension.get(version).apply {
             assertEquals("1.0.0", version)
         }
@@ -131,7 +132,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 [Unreleased]: https://blog.jetbrains.com
                 """.trimIndent(),
-                extension.renderItem(this)
+                extension.renderItem(this),
             )
         }
     }
@@ -139,7 +140,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
     @Test
     fun `getUnreleased() returns Upcoming section if unreleasedTerm is customised`() {
         changelog = changelog.replace("Unreleased", "Upcoming")
-        extension.unreleasedTerm.set("Upcoming")
+        extension.unreleasedTerm = "Upcoming"
         extension.getUnreleased().apply {
             assertEquals("Upcoming", version)
             assertMarkdown(
@@ -154,7 +155,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 [Upcoming]: https://blog.jetbrains.com
                 """.trimIndent(),
-                extension.renderItem(this)
+                extension.renderItem(this),
             )
         }
     }
@@ -241,7 +242,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 - Hola
                 
                 """.trimIndent(),
-                extension.renderItem(this)
+                extension.renderItem(this),
             )
             assertHTML(
                 """
@@ -264,7 +265,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 <ul><li>Hola</li></ul>
                 
                 """.trimIndent(),
-                extension.renderItem(this, Changelog.OutputType.HTML)
+                extension.renderItem(this, Changelog.OutputType.HTML),
             )
             assertText(
                 """
@@ -293,7 +294,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 - Hola
                 
                 """.trimIndent(),
-                extension.renderItem(this, Changelog.OutputType.PLAIN_TEXT)
+                extension.renderItem(this, Changelog.OutputType.PLAIN_TEXT),
             )
         }
     }
@@ -355,7 +356,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                     - World
                     
                     """.trimIndent(),
-                    extension.renderItem(this)
+                    extension.renderItem(this),
                 )
 
                 assertHTML(
@@ -371,7 +372,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                     <ul><li>World</li></ul>
                     
                     """.trimIndent(),
-                    extension.renderItem(this, Changelog.OutputType.HTML)
+                    extension.renderItem(this, Changelog.OutputType.HTML),
                 )
             }
         }
@@ -414,7 +415,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             - Compatible with IDEA 2020.2 EAPs
             """.trimIndent()
 
-        extension.unreleasedTerm.set("NEW VERSION")
+        extension.unreleasedTerm = "NEW VERSION"
         extension.get("1.0.1119-eap").apply {
             assertEquals("1.0.1119-eap", version)
         }
@@ -446,7 +447,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 - Foo
                 
                 """.trimIndent(),
-                extension.renderItem(this)
+                extension.renderItem(this),
             )
             assertHTML(
                 """
@@ -455,7 +456,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 <ul><li>Foo</li></ul>
                 
                 """.trimIndent(),
-                extension.renderItem(this, Changelog.OutputType.HTML)
+                extension.renderItem(this, Changelog.OutputType.HTML),
             )
         }
     }
@@ -506,7 +507,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 [Unreleased]: https://blog.jetbrains.com
                 
                 """.trimIndent(),
-                extension.renderItem(values.first())
+                extension.renderItem(values.first()),
             )
             assertMarkdown(
                 """
@@ -521,15 +522,15 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 [1.0.0]: https://jetbrains.com
                 
                 """.trimIndent(),
-                extension.renderItem(values.last())
+                extension.renderItem(values.last()),
             )
         }
     }
 
     @Test
     fun `returns Changelog items for change note without category`() {
-        extension.itemPrefix.set("*")
-        extension.unreleasedTerm.set("Unreleased")
+        extension.itemPrefix = "*"
+        extension.unreleasedTerm = "Unreleased"
         changelog =
             """
             # My Changelog
@@ -548,7 +549,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             <ul><li>Foo</li></ul>
             
             """.trimIndent(),
-            extension.renderItem(extension.getUnreleased(), Changelog.OutputType.HTML)
+            extension.renderItem(extension.getUnreleased(), Changelog.OutputType.HTML),
         )
     }
 
@@ -563,17 +564,17 @@ class ChangelogPluginExtensionTest : BaseTest() {
             * Foo
             """.trimIndent()
 
-        extension.headerParserRegex.set("""\d+\.\d+""".toRegex())
+        extension.headerParserRegex = """\d+\.\d+""".toRegex()
         assertNotNull(extension.get("2020.1"))
 
-        extension.headerParserRegex.set("\\d+\\.\\d+")
+        extension.headerParserRegex = "\\d+\\.\\d+"
         assertNotNull(extension.get("2020.1"))
 
-        extension.headerParserRegex.set("""\d+\.\d+""".toPattern())
+        extension.headerParserRegex = """\d+\.\d+""".toPattern()
         assertNotNull(extension.get("2020.1"))
 
         assertFails {
-            extension.headerParserRegex.set(123)
+            extension.headerParserRegex = 123
             assertNotNull(extension.get("2020.1"))
         }
     }
@@ -603,7 +604,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
             * Foo
             """.trimIndent()
 
-        extension.headerParserRegex.set("\\[?v(\\d(?:\\.\\d+)+)]?.*".toRegex())
+        extension.headerParserRegex = "\\[?v(\\d(?:\\.\\d+)+)]?.*".toRegex()
 
         assertNotNull(extension.getOrNull("1.0.0"))
         assertNull(extension.getOrNull("v1.0.0"))
@@ -634,7 +635,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 - Foo
                 
                 """.trimIndent(),
-                extension.renderItem(this)
+                extension.renderItem(this),
             )
         }
     }
@@ -649,13 +650,13 @@ class ChangelogPluginExtensionTest : BaseTest() {
             - item 2
             
             """.trimIndent(),
-            extension.instance.get().introduction
+            extension.instance.get().introduction,
         )
     }
 
     @Test
     fun `applies new changelog introduction`() {
-        extension.introduction.set("New introduction")
+        extension.introduction = "New introduction"
 
         assertEquals("New introduction", extension.instance.get().introduction)
     }
@@ -684,10 +685,11 @@ class ChangelogPluginExtensionTest : BaseTest() {
 
         val customRepositoryUrl = "https://github.com/JetBrains/gradle-changelog-plugin"
 
-        extension.repositoryUrl.set(customRepositoryUrl)
-        extension.sectionUrlBuilder.set(ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
-            "repositoryUrl = $repositoryUrl | currentVersion = $currentVersion | previousVersion = $previousVersion | isUnreleased = $isUnreleased"
-        })
+        extension.repositoryUrl = customRepositoryUrl
+        extension.sectionUrlBuilder =
+            ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
+                "repositoryUrl = $repositoryUrl | currentVersion = $currentVersion | previousVersion = $previousVersion | isUnreleased = $isUnreleased"
+            }
 
         val items = extension.instance.get().links.values
 
@@ -757,7 +759,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 [1.0.0]: https://jetbrains.com
                 """.trimIndent().normalizeLineSeparator("\r\n"),
-                extension.renderItem(this)
+                extension.renderItem(this),
             )
 
             //language=HTML
@@ -775,7 +777,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 <ul><li>Bar</li></ul>
                 """.trimIndent().normalizeLineSeparator("\r\n"),
-                extension.renderItem(this, Changelog.OutputType.HTML)
+                extension.renderItem(this, Changelog.OutputType.HTML),
             )
 
             assertText(
@@ -792,7 +794,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 - Bar
                 """.trimIndent().normalizeLineSeparator("\r\n"),
-                extension.renderItem(this, Changelog.OutputType.PLAIN_TEXT)
+                extension.renderItem(this, Changelog.OutputType.PLAIN_TEXT),
             )
         }
     }
@@ -893,7 +895,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 [1.1.0]: https://jetbrains.com/1.1.0
                 [1.0.0]: https://jetbrains.com/1.0.0
                 """.trimIndent().normalizeLineSeparator("\r\n"),
-                extension.render(Changelog.OutputType.MARKDOWN)
+                extension.render(Changelog.OutputType.MARKDOWN),
             )
             //language=HTML
             assertHTML(
@@ -930,7 +932,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 <ul><li>Removed 1.0.0</li></ul>
                 """.trimIndent().normalizeLineSeparator("\r\n"),
-                extension.render(Changelog.OutputType.HTML)
+                extension.render(Changelog.OutputType.HTML),
             )
             assertText(
                 """
@@ -973,7 +975,7 @@ class ChangelogPluginExtensionTest : BaseTest() {
                 
                 - Removed 1.0.0
                 """.trimIndent().normalizeLineSeparator("\r\n"),
-                extension.render(Changelog.OutputType.PLAIN_TEXT)
+                extension.render(Changelog.OutputType.PLAIN_TEXT),
             )
         }
     }

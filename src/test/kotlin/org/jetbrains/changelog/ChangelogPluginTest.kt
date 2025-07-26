@@ -9,6 +9,7 @@ import org.jetbrains.changelog.tasks.InitializeChangelogTask
 import org.jetbrains.changelog.tasks.PatchChangelogTask
 import java.io.File
 import kotlin.test.*
+import org.gradle.kotlin.dsl.assign
 
 class ChangelogPluginTest : BaseTest() {
 
@@ -27,7 +28,7 @@ class ChangelogPluginTest : BaseTest() {
             extension.version.get()
         }
 
-        extension.version.set("1.0.0")
+        extension.version = "1.0.0"
         assertEquals("1.0.0", extension.version.get())
     }
 

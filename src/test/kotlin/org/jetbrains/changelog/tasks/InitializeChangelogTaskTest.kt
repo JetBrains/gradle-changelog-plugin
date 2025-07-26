@@ -2,6 +2,7 @@
 
 package org.jetbrains.changelog.tasks
 
+import org.gradle.kotlin.dsl.assign
 import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.ChangelogPluginConstants.INITIALIZE_CHANGELOG_TASK_NAME
 import org.jetbrains.changelog.normalizeLineSeparator
@@ -48,7 +49,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             ### Security
 
             """.trimIndent(),
-            extension.render()
+            extension.render(),
         )
 
         assertMarkdown(
@@ -68,7 +69,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             ### Security
             
             """.trimIndent(),
-            extension.renderItem(extension.getUnreleased())
+            extension.renderItem(extension.getUnreleased()),
         )
 
         extension.getAll().apply {
@@ -91,7 +92,7 @@ class InitializeChangelogTaskTest : BaseTest() {
                 ### Security
 
                 """.trimIndent(),
-                extension.renderItem(values.first())
+                extension.renderItem(values.first()),
             )
         }
 
@@ -130,9 +131,9 @@ class InitializeChangelogTaskTest : BaseTest() {
             }
             """.trimIndent()
         extension.apply {
-            path.set(File("${project.projectDir}/CHANGES.md").path)
-            unreleasedTerm.set("Upcoming version")
-            itemPrefix.set("*")
+            path = File("${project.projectDir}/CHANGES.md").path
+            unreleasedTerm = "Upcoming version"
+            itemPrefix = "*"
         }
         project.evaluate()
 
@@ -153,7 +154,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             ### Removed
             
             """.trimIndent(),
-            extension.render()
+            extension.render(),
         )
     }
 
@@ -187,7 +188,7 @@ class InitializeChangelogTaskTest : BaseTest() {
 
     @Test
     fun `creates new changelog file with CRLF line separator`() {
-        extension.lineSeparator.set("\r\n")
+        extension.lineSeparator = "\r\n"
 
         runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
@@ -210,7 +211,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             ### Security
 
             """.trimIndent().normalizeLineSeparator("\r\n"),
-            extension.render()
+            extension.render(),
         )
 
         assertMarkdown(
@@ -230,13 +231,13 @@ class InitializeChangelogTaskTest : BaseTest() {
             ### Security
             
             """.trimIndent().normalizeLineSeparator("\r\n"),
-            extension.renderItem(extension.getUnreleased())
+            extension.renderItem(extension.getUnreleased()),
         )
     }
 
     @Test
     fun `creates new changelog file with CR line separator`() {
-        extension.lineSeparator.set("\r")
+        extension.lineSeparator = "\r"
 
         runTask(INITIALIZE_CHANGELOG_TASK_NAME)
 
@@ -259,7 +260,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             ### Security
 
             """.trimIndent().normalizeLineSeparator("\r"),
-            extension.render()
+            extension.render(),
         )
 
         assertMarkdown(
@@ -279,7 +280,7 @@ class InitializeChangelogTaskTest : BaseTest() {
             ### Security
             
             """.trimIndent().normalizeLineSeparator("\r"),
-            extension.renderItem(extension.getUnreleased())
+            extension.renderItem(extension.getUnreleased()),
         )
     }
 }
