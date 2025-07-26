@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Add the ` outputFile ` property to the Changelog extension and `GetChangelogTask` along with the `--output-file` flag JetBrains/gradle-changelog-plugin#264
+
 ### Fixed
 
 - Header links are included in the extracted notes JetBrains/gradle-changelog-plugin#266

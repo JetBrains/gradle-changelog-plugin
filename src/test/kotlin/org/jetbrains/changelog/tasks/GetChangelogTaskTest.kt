@@ -5,6 +5,7 @@ package org.jetbrains.changelog.tasks
 import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME
 import org.jetbrains.changelog.normalizeLineSeparator
+import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -377,5 +378,186 @@ class GetChangelogTaskTest : BaseTest() {
             """.trimIndent().normalizeLineSeparator("\r"),
             result.output
         )
+    }
+
+    @Test
+    fun `writes changelog to a file for the latest released version`() {
+        val outputFile = File(project.projectDir, "latest-changelog.md")
+        
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--output-file=${outputFile.absolutePath}")
+
+        // Check that the file was created
+        assertTrue(outputFile.exists(), "Output file should exist")
+        
+        // Check the file content
+        assertMarkdown(
+            """
+            ## [1.0.1] - 2022-10-17
+            
+            Release with bugfix.
+            
+            ### Fixed
+            
+            - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
+            """.trimIndent(),
+            outputFile.readText()
+        )
+        
+        // Check that the output is NOT logged to console when writing to a file
+        assertTrue(result.output.trim().isEmpty() || 
+                  !result.output.contains("[1.0.1]") && 
+                  !result.output.contains("Release with bugfix."),
+                  "Output should not contain changelog content when writing to a file")
+    }
+
+    @Test
+    fun `writes changelog to a file for the unreleased version`() {
+        val outputFile = File(project.projectDir, "unreleased-changelog.md")
+        
+        runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--unreleased", "--output-file=${outputFile.absolutePath}")
+
+        // Check that the file was created
+        assertTrue(outputFile.exists(), "Output file should exist")
+        
+        // Check the file content
+        assertMarkdown(
+            """
+            ## [Unreleased]
+            
+            Some unreleased changes.
+            
+            - bar
+            
+            ### Added
+            
+            ### Fixed
+            
+            - I fixed myself a beverage.
+            
+            [Unreleased]: https://jetbrians.com/Unreleased
+            """.trimIndent(),
+            outputFile.readText()
+        )
+    }
+
+    @Test
+    fun `writes changelog to a file with formatting options`() {
+        val outputFile = File(project.projectDir, "formatted-changelog.md")
+        
+        runTask(
+            GET_CHANGELOG_TASK_NAME, 
+            "--quiet", 
+            "--no-header", 
+            "--no-summary", 
+            "--no-links", 
+            "--output-file=${outputFile.absolutePath}"
+        )
+
+        // Check the file content
+        assertMarkdown(
+            """
+            ### Fixed
+            
+            - bar
+            """.trimIndent(),
+            outputFile.readText()
+        )
+    }
+
+    @Test
+    fun `writes changelog to a file in a non-existent directory`() {
+        val outputDir = File(project.projectDir, "output/nested/dir")
+        val outputFile = File(outputDir, "changelog.md")
+        
+        runTask(GET_CHANGELOG_TASK_NAME, "--quiet", "--output-file=${outputFile.absolutePath}")
+
+        // Check that the directory and file were created
+        assertTrue(outputDir.exists(), "Output directory should exist")
+        assertTrue(outputFile.exists(), "Output file should exist")
+        
+        // Check the file content
+        assertMarkdown(
+            """
+            ## [1.0.1] - 2022-10-17
+            
+            Release with bugfix.
+            
+            ### Fixed
+            
+            - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
+            """.trimIndent(),
+            outputFile.readText()
+        )
+    }
+    
+    @Test
+    fun `logs changelog to console when no output file is provided`() {
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
+        
+        // Check that the output is logged to console when no output file is provided
+        assertMarkdown(
+            """
+            ## [1.0.1] - 2022-10-17
+            
+            Release with bugfix.
+            
+            ### Fixed
+            
+            - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
+            """.trimIndent(),
+            result.output
+        )
+    }
+    
+    @Test
+    fun `uses output file from extension configuration`() {
+        // Set up the extension with an output file
+        val outputFile = File(project.projectDir, "extension-changelog.md")
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                outputFile = file("${outputFile.absolutePath}")
+            }
+            """.trimIndent()
+        
+        project.evaluate()
+        
+        // Run the task without specifying an output file on the command line
+        val result = runTask(GET_CHANGELOG_TASK_NAME, "--quiet")
+        
+        // Check that the file was created
+        assertTrue(outputFile.exists(), "Output file should exist")
+        
+        // Check the file content
+        assertMarkdown(
+            """
+            ## [1.0.1] - 2022-10-17
+            
+            Release with bugfix.
+            
+            ### Fixed
+            
+            - bar
+            
+            [1.0.1]: https://jetbrians.com/1.0.1
+            """.trimIndent(),
+            outputFile.readText()
+        )
+        
+        // Check that the output is NOT logged to console when writing to a file
+        assertTrue(result.output.trim().isEmpty() || 
+                  !result.output.contains("[1.0.1]") && 
+                  !result.output.contains("Release with bugfix."),
+                  "Output should not contain changelog content when writing to a file")
     }
 }

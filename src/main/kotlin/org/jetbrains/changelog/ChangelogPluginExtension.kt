@@ -2,6 +2,7 @@
 
 package org.jetbrains.changelog
 
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
@@ -135,6 +136,14 @@ abstract class ChangelogPluginExtension {
      */
     @get:Optional
     abstract val repositoryUrl: Property<String>
+
+    /**
+     * Output file to write the changelog content to.
+     *
+     * Default value: `null`
+     */
+    @get:Optional
+    abstract val outputFile: RegularFileProperty
 
     /**
      * Function to build a single URL to link a section with the GitHub page to present changes within the given release.

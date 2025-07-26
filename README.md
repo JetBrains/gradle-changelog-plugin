@@ -63,7 +63,7 @@ tasks {
     // ...
 
     patchPluginXml {
-        changeNotes.set(provider {
+        changeNotes = provider {
             changelog.renderItem(
                 changelog
                     .getUnreleased()
@@ -71,16 +71,16 @@ tasks {
                     .withEmptySections(false),
                 Changelog.OutputType.HTML
             )
-        })
+        }
     }
 }
 
 changelog {
-    version.set("1.0.0")
-    path.set(file("CHANGELOG.md").canonicalPath)
-    header.set(provider { "[${version.get()}] - ${date()}" })
-    headerParserRegex.set("""(\d+\.\d+)""".toRegex())
-    introduction.set(
+    version = "1.0.0"
+    path = file("CHANGELOG.md").canonicalPath
+    header = provider { "[${version.get()}] - ${date()}" }
+    headerParserRegex = """(\d+\.\d+)""".toRegex()
+    introduction =
         """
         My awesome project that provides a lot of useful features, like:
         
@@ -88,14 +88,14 @@ changelog {
         - Feature 2
         - and Feature 3
         """.trimIndent()
-    )
-    itemPrefix.set("-")
-    keepUnreleasedSection.set(true)
-    unreleasedTerm.set("[Unreleased]")
-    groups.set(listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"))
-    lineSeparator.set("\n")
-    combinePreReleases.set(true)
-    sectionUrlBuilder.set(ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased -> "foo" })
+    itemPrefix = "-"
+    keepUnreleasedSection = true
+    unreleasedTerm = "[Unreleased]"
+    groups = listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security")
+    lineSeparator = "\n"
+    combinePreReleases = true
+    sectionUrlBuilder = ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased -> "foo" }
+    outputFile = file("release-note.txt")
 }
 ```
 
@@ -147,16 +147,9 @@ changelog {
     lineSeparator = "\n"
     combinePreReleases = true
     sectionUrlBuilder = { repositoryUrl, currentVersion, previousVersion, isUnreleased -> "foo" } as ChangelogSectionUrlBuilder
+    outputFile = file("release-note.txt")
 }
 ```
-
-> **Note**
->
-> All the extension and task properties are now lazy (see [Lazy Configuration][gradle-lazy-configuration]).
->
-> To set values in Kotlin DSL, use `.set(...)` method explicitly, like `changelog.version.set("1.0.0")`, in Groovy it is still possible to use `=` assignment.
->
-> To access property value, call `.get()`, like: `changelog.version.get()` in both variants.
 
 ## Configuration
 
@@ -180,6 +173,7 @@ Plugin can be configured with the following properties set in the `changelog {}`
 | `combinePreReleases`    | Combines pre-releases (like `1.0.0-alpha`, `1.0.0-beta.2`) into the final release note when patching.            | _Type:_ `Boolean`                      <br/> _Default value:_ `true`                                                               |
 | `lineSeparator`         | Line separator used for generating changelog content.                                                            | _Type:_ `String`                       <br/> _Default value:_ `"\n"` or determined from the existing file                          |
 | `repositoryUrl`         | The GitHub repository URL used to build release links. If provided, leads to the GitHub comparison page.         | _Type:_ `String?`                      <br/> _Default value:_ `null`                                                               |
+| `outputFile`            | Output file to write the changelog content to when using the `getChangelog` task.                                | _Type:_ `RegularFileProperty`                      <br/> _Default value:_ `null`                                                   |
 | `sectionUrlBuilder`     | Function to build a single URL to link section with the GitHub page to present changes within the given release. | _Type:_ `ChangelogSectionUrlBuilder`   <br/> _Default value:_ Common `ChangelogSectionUrlBuilder` implementation                   |
 
 > **Note**
@@ -210,6 +204,7 @@ Retrieves changelog for the specified version.
 | `--no-empty-sections` | `Boolean` | `false`       | Omits empty sections in the changelog output.           |
 | `--project-version`   | `String?` | `null`        | Returns change notes for the specified project version. |
 | `--unreleased`        | `Boolean` | `false`       | Returns change notes for an unreleased section.         |
+| `--output-file`       | `String?` | `null`        | File to write the changelog content to.                 |
 
 #### Examples
 
@@ -220,6 +215,22 @@ $ ./gradlew getChangelog --console=plain -q --no-header --no-summary
 - Initial project scaffold
 - GitHub Actions to automate testing and deployment
 - Kotlin support
+```
+
+```shell
+$ ./gradlew getChangelog --output-file=build/changelog.md
+$ cat build/changelog.md
+
+## [1.0.0]
+
+Initial release.
+
+### Added
+- Initial project scaffold
+- GitHub Actions to automate testing and deployment
+- Kotlin support
+
+[1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/releases/tag/v1.0.0
 ```
 
 ### `initializeChangelog`

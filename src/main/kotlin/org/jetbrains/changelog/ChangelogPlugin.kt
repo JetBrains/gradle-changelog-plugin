@@ -120,6 +120,7 @@ class ChangelogPlugin : Plugin<Project> {
         }
 
         val pathProvider = project.layout.file(extension.path.map { File(it) })
+        val outputProvider = project.layout.file(extension.outputFile.asFile)
 
         project.tasks.register<GetChangelogTask>(GET_CHANGELOG_TASK_NAME) {
             group = GROUP_NAME
@@ -127,6 +128,7 @@ class ChangelogPlugin : Plugin<Project> {
             unreleasedTerm.convention(extension.unreleasedTerm)
             changelog.convention(extension.instance)
             inputFile.convention(pathProvider)
+            outputFile.convention(outputProvider)
 
             outputs.upToDateWhen { false }
         }

@@ -3,10 +3,7 @@
 package org.jetbrains.changelog.tasks
 
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogPluginExtension
@@ -99,9 +96,22 @@ abstract class GetChangelogTask : BaseChangelogTask() {
     @get:Optional
     abstract val inputFile: RegularFileProperty
 
+    /**
+     * Output file to write the changelog content to.
+     *
+     * Default value: `null`
+     */
+    @get:OutputFile
+    @get:Optional
+    @get:Option(
+        option = "output-file",
+        description = "File to write the changelog content to.",
+    )
+    abstract val outputFile: RegularFileProperty
+
     @TaskAction
-    fun run() = logger.quiet(
-        with(changelog.get()) {
+    fun run() {
+        val content = with(changelog.get()) {
             val version = projectVersion
 
             when {
@@ -116,5 +126,14 @@ abstract class GetChangelogTask : BaseChangelogTask() {
                 .withEmptySections(!noEmptySections)
                 .let { renderItem(it, Changelog.OutputType.MARKDOWN) }
         }
-    )
+
+        // Write to file if specified or output to logger
+        outputFile.orNull?.let {
+            it.asFile.apply {
+                parentFile?.mkdirs()
+                writeText(content)
+            }
+            logger.lifecycle("Changelog written to: $path")
+        } ?: logger.quiet(content)
+    }
 }
