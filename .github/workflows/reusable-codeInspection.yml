@@ -1,0 +1,18 @@
+name: Reusable Code Inspection
+
+on: [ workflow_call ]
+
+jobs:
+  codeInspection:
+    name: Code Inspection
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Fetch Sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # only report issues that appeared in a PR
+
+      - name: Qodana - Code Inspection
+        uses: JetBrains/qodana-action@v2025.1.1
+        if: ${{ false }}  # disable for now
