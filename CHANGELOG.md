@@ -4,13 +4,13 @@
 
 ### Fixed
 
-- Header links are included in the extracted notes [#266](../../issues/266)
+- Header links are included in the extracted notes JetBrains/gradle-changelog-plugin#266
 
 ## [2.2.1] - 2024-07-04
 
 ### Changed
 
-- Versions containing hyphens are now sorted correctly [#171](../../issues/171)
+- Versions containing hyphens are now sorted correctly JetBrains/gradle-changelog-plugin#171
 
 ### Fixed
 
@@ -20,40 +20,40 @@
 
 ### Added
 
-- Insert blank lines around headings and lists to satisfy Markdown syntax guidelines [#190](../../issues/190)
+- Insert blank lines around headings and lists to satisfy Markdown syntax guidelines JetBrains/gradle-changelog-plugin#190
 
 ### Changed
 
-- Rename the `getChangelog` CLI option from `--version=..` to `--project-version=..` [#188](../../issues/188)
+- Rename the `getChangelog` CLI option from `--version=..` to `--project-version=..` JetBrains/gradle-changelog-plugin#188
 
 ## [2.1.2] - 2023-07-10
 
 ### Fixed
 
-- Changelog render is inconsistent between different line separators [#182](../../issues/182)
+- Changelog render is inconsistent between different line separators JetBrains/gradle-changelog-plugin#182
 
 ### Changed
 
 - Use `GITHUB_OUTPUT` environment file instead of deprecated `::set-output` command in GitHub Actions
-- Deprecate `itemPrefix` and `lineSeparator` properties in the `org.jetbrains.changelog.Changelog.Item` constructor [#181](../../issues/181)
+- Deprecate `itemPrefix` and `lineSeparator` properties in the `org.jetbrains.changelog.Changelog.Item` constructor JetBrains/gradle-changelog-plugin#181
 
 ## [2.1.1] - 2023-07-07
 
 ### Fixed
 
-- Wrong markdown render of changelog that use CRLF or CR line separator [#176](../../issues/176)
-- `Changelog.Item.plus` copies original item without restoring all original data [#179](../../issues/179)
+- Wrong markdown render of changelog that use CRLF or CR line separator JetBrains/gradle-changelog-plugin#176
+- `Changelog.Item.plus` copies original item without restoring all original data JetBrains/gradle-changelog-plugin#179
 
 ## [2.1.0] - 2023-06-02
 
 ### Added
 
-- `versionPrefix` to allow setting the version prefix to compare tags [#139](../../issues/139)
-- `--no-empty-sections` flag to `getChangelog` task [#167](../../issues/167)
+- `versionPrefix` to allow setting the version prefix to compare tags JetBrains/gradle-changelog-plugin#139
+- `--no-empty-sections` flag to `getChangelog` task JetBrains/gradle-changelog-plugin#167
 
 ### Fixed
 
-- No-longer discard all but the last paragraph in list items [#133](../../issues/133) [#147](../../issues/147)
+- No-longer discard all but the last paragraph in list items JetBrains/gradle-changelog-plugin#133 JetBrains/gradle-changelog-plugin#147
 
 ## [2.0.0] - 2022-10-28
 
@@ -61,21 +61,21 @@
 
 - Allow for customizing the changelog introduction
 - Make `changelog.instance` property public
-- Introduce changelog `summary` and changelog property [#127](../../issues/127)
+- Introduce changelog `summary` and changelog property JetBrains/gradle-changelog-plugin#127
 - Introduce changelog `preTitle` and `title` changelog properties
-- Ensure patched changelog ends with a newline [#126](../../issues/126)
-- Added the `changelog.lineSeparator` property to allow for customizing the line separator used in the changelog [#104](../../issues/104)
-- Added the `--version=...` CLI parameter for the `getChangelog` task [#83](../../issues/83)
-- Throw an exception when `initializeChangelog` task works on non-empty file [#82](../../issues/82)
-- Remove empty sections from the changelog while patching [#28](../../issues/28)
-- Added the `changelog.combinePreReleases` property to allow for combining pre-releases into a single section [#50](../../issues/50)
+- Ensure patched changelog ends with a newline JetBrains/gradle-changelog-plugin#126
+- Added the `changelog.lineSeparator` property to allow for customizing the line separator used in the changelog JetBrains/gradle-changelog-plugin#104
+- Added the `--version=...` CLI parameter for the `getChangelog` task JetBrains/gradle-changelog-plugin#83
+- Throw an exception when `initializeChangelog` task works on non-empty file JetBrains/gradle-changelog-plugin#82
+- Remove empty sections from the changelog while patching JetBrains/gradle-changelog-plugin#28
+- Added the `changelog.combinePreReleases` property to allow for combining pre-releases into a single section JetBrains/gradle-changelog-plugin#50
 
 ### Changed
 
 - Upgrade minimal required Gradle version to `6.8`
 - Make `withHeader` property of the `Changelog.Item` object `true` by default
-- Updated the `HeaderParseException` message [#84](../../issues/84)
-- Use `"[${project.version}] - ${date()}"` as the default value for the `changelog.header` property [#18](../../issues/18)
+- Updated the `HeaderParseException` message JetBrains/gradle-changelog-plugin#84
+- Use `"[${project.version}] - ${date()}"` as the default value for the `changelog.header` property JetBrains/gradle-changelog-plugin#18
 
 ### Deprecated
 
