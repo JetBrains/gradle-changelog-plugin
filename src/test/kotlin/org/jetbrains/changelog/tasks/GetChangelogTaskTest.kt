@@ -153,8 +153,6 @@ class GetChangelogTaskTest : BaseTest() {
             ### Fixed
             
             - bar
-            
-            [1.0.1]: https://jetbrians.com/1.0.1
             """.trimIndent(),
             result.output
         )

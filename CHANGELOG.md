@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Header links are included in the extracted notes [#266](../../issues/266)
+
 ## [2.2.1] - 2024-07-04
 
 ### Changed

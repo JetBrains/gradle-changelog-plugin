@@ -213,7 +213,7 @@ data class Changelog(
             if (withLinks) {
                 links
                     .filterKeys { id ->
-                        id == version
+                        (withHeader && id == version)
                                 || (withSummary && summary.contains("[$id]")
                                 || sections.flatMap { it.value }.any { it.contains("[$id]") })
                     }
