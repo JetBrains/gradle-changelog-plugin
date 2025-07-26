@@ -117,7 +117,7 @@ abstract class GetChangelogTask : BaseChangelogTask() {
             when {
                 version != null -> get(version)
                 unreleased -> unreleasedItem ?: throw MissingVersionException(unreleasedTerm.get())
-                else -> releasedItems.first()
+                else -> releasedItems.firstOrNull() ?: throw MissingVersionException("any")
             }
                 .withHeader(!noHeader)
                 .withSummary(!noSummary)
