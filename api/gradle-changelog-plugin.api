@@ -22,8 +22,6 @@ public final class org/jetbrains/changelog/Changelog {
 public final class org/jetbrains/changelog/Changelog$Item {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/util/Map;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/util/Map;Ljava/lang/String;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/util/Map;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
@@ -41,10 +39,7 @@ public final class org/jetbrains/changelog/Changelog$Item {
 	public final fun plus (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
 	public final fun plus (Lorg/jetbrains/changelog/Changelog$Item;)Lorg/jetbrains/changelog/Changelog$Item;
 	public final fun setVersion (Ljava/lang/String;)V
-	public final fun toHTML ()Ljava/lang/String;
-	public final fun toPlainText ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
-	public final fun toText ()Ljava/lang/String;
 	public final fun withEmptySections (Z)Lorg/jetbrains/changelog/Changelog$Item;
 	public final fun withFilter (Lkotlin/jvm/functions/Function1;)Lorg/jetbrains/changelog/Changelog$Item;
 	public final fun withHeader (Z)Lorg/jetbrains/changelog/Changelog$Item;
@@ -104,6 +99,7 @@ public abstract class org/jetbrains/changelog/ChangelogPluginExtension {
 	public final fun getLatest ()Lorg/jetbrains/changelog/Changelog$Item;
 	public abstract fun getLineSeparator ()Lorg/gradle/api/provider/Property;
 	public final fun getOrNull (Ljava/lang/String;)Lorg/jetbrains/changelog/Changelog$Item;
+	public abstract fun getOutputFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun getPatchEmpty ()Lorg/gradle/api/provider/Property;
 	public abstract fun getPath ()Lorg/gradle/api/provider/Property;
 	public abstract fun getPreTitle ()Lorg/gradle/api/provider/Property;
@@ -201,6 +197,7 @@ public abstract class org/jetbrains/changelog/tasks/GetChangelogTask : org/jetbr
 	public final fun getNoHeader ()Z
 	public final fun getNoLinks ()Z
 	public final fun getNoSummary ()Z
+	public abstract fun getOutputFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public final fun getProjectVersion ()Ljava/lang/String;
 	public final fun getUnreleased ()Z
 	public final fun run ()V
