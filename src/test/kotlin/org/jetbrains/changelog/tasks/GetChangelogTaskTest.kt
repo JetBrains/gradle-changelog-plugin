@@ -6,6 +6,7 @@ import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME
 import org.jetbrains.changelog.normalizeLineSeparator
 import java.io.File
+import kotlin.io.path.Path
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -518,7 +519,7 @@ class GetChangelogTaskTest : BaseTest() {
     @Test
     fun `uses output file from extension configuration`() {
         // Set up the extension with an output file
-        val outputFile = File(project.projectDir, "extension-changelog.md")
+        val outputFile = project.file("extension-changelog.md")
         buildFile =
             """
             plugins {
@@ -526,7 +527,7 @@ class GetChangelogTaskTest : BaseTest() {
             }
             changelog {
                 version = "1.0.0"
-                outputFile = file("${outputFile.absolutePath}")
+                outputFile = file("${outputFile.invariantSeparatorsPath}")
             }
             """.trimIndent()
         
