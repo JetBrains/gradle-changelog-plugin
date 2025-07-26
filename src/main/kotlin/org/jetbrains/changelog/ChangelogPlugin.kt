@@ -33,50 +33,56 @@ class ChangelogPlugin : Plugin<Project> {
         checkGradleVersion()
 
         val extension = project.extensions.create<ChangelogPluginExtension>(EXTENSION_NAME).apply {
-            path.convention(project.provider {
-                project.file(CHANGELOG_FILE_NAME).canonicalPath
-            }.map {
-                with(Path.of(it)) {
-                    if (!Files.exists(this)) {
-                        Files.createFile(this)
+            path.convention(
+                project.provider {
+                    project.file(CHANGELOG_FILE_NAME).canonicalPath
+                }.map {
+                    with(Path.of(it)) {
+                        if (!Files.exists(this)) {
+                            Files.createFile(this)
+                        }
+                        toAbsolutePath().toString()
                     }
-                    toAbsolutePath().toString()
-                }
-            })
+                },
+            )
             versionPrefix.convention(project.provider { "v" })
 
             version.convention(
                 project.provider {
                     project.version.toString().takeIf { it != Project.DEFAULT_VERSION }
                         ?: throw VersionNotSpecifiedException()
-                }
+                },
             )
-            header.convention(project.provider {
-                "${version.get()} - ${date()}"
-            })
+            header.convention(
+                project.provider {
+                    "${version.get()} - ${date()}"
+                },
+            )
             unreleasedTerm.convention(UNRELEASED_TERM)
             keepUnreleasedSection.convention(true)
             patchEmpty.convention(true)
             groups.convention(GROUPS)
             itemPrefix.convention(ITEM_PREFIX)
             combinePreReleases.convention(true)
-            lineSeparator.convention(path.map { path ->
-                val content = Path.of(path)
-                    .takeIf { Files.exists(it) }
-                    ?.let { Files.readString(it) }
-                    ?: return@map "\n"
-                val rnless = content.replace("\r\n", "")
+            lineSeparator.convention(
+                path.map { path ->
+                    val content = Path.of(path)
+                        .takeIf { Files.exists(it) }
+                        ?.let { Files.readString(it) }
+                        ?: return@map "\n"
+                    val rnless = content.replace("\r\n", "")
 
-                val rn = (content.length - rnless.length) / 2
-                val r = rnless.count { it == '\r' }
-                val n = rnless.count { it == '\n' }
+                    val rn = (content.length - rnless.length) / 2
+                    val r = rnless.count { it == '\r' }
+                    val n = rnless.count { it == '\n' }
 
-                when {
-                    rn > r && rn > n -> "\r\n"
-                    r > n -> "\r"
-                    else -> "\n"
-                }
-            })
+                    when {
+                        rn > r && rn > n -> "\r\n"
+                        r > n -> "\r"
+                        else -> "\n"
+                    }
+                },
+            )
             repositoryUrl.map { it.removeSuffix("/") }
             sectionUrlBuilder.convention(
                 ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
@@ -91,32 +97,34 @@ class ChangelogPlugin : Plugin<Project> {
 
                         else -> "/compare/$prefix$previousVersion...$prefix$currentVersion"
                     }
-                }
+                },
             )
 
-            instance.convention(project.provider {
-                Changelog(
-                    content = path.map {
-                        with(File(it)) {
-                            if (!exists()) {
-                                createNewFile()
+            instance.convention(
+                project.provider {
+                    Changelog(
+                        content = path.map {
+                            with(File(it)) {
+                                if (!exists()) {
+                                    createNewFile()
+                                }
+                                // Normalize text to LF, because a Markdown library currently fully supports only this line separator
+                                readText().normalizeLineSeparator("\n")
                             }
-                            // Normalize text to LF, because a Markdown library currently fully supports only this line separator
-                            readText().normalizeLineSeparator("\n")
-                        }
-                    }.get(),
-                    defaultPreTitle = preTitle.orNull,
-                    defaultTitle = title.orNull,
-                    defaultIntroduction = introduction.orNull,
-                    unreleasedTerm = unreleasedTerm.get(),
-                    groups = groups.get(),
-                    headerParserRegex = getHeaderParserRegex.get(),
-                    itemPrefix = itemPrefix.get(),
-                    repositoryUrl = repositoryUrl.orNull,
-                    sectionUrlBuilder = sectionUrlBuilder.get(),
-                    lineSeparator = lineSeparator.get(),
-                )
-            })
+                        }.get(),
+                        defaultPreTitle = preTitle.orNull,
+                        defaultTitle = title.orNull,
+                        defaultIntroduction = introduction.orNull,
+                        unreleasedTerm = unreleasedTerm.get(),
+                        groups = groups.get(),
+                        headerParserRegex = getHeaderParserRegex.get(),
+                        itemPrefix = itemPrefix.get(),
+                        repositoryUrl = repositoryUrl.orNull,
+                        sectionUrlBuilder = sectionUrlBuilder.get(),
+                        lineSeparator = lineSeparator.get(),
+                    )
+                },
+            )
         }
 
         val pathProvider = project.layout.file(extension.path.map { File(it) })
@@ -128,7 +136,13 @@ class ChangelogPlugin : Plugin<Project> {
             unreleasedTerm.convention(extension.unreleasedTerm)
             changelog.convention(extension.instance)
             inputFile.convention(pathProvider)
-            outputFile.convention(outputProvider)
+            outputFile.convention(
+                project.layout.file(
+                    project.provider {
+                        outputFilePath?.let { File(it) }
+                    },
+                ).orElse(outputProvider),
+            )
 
             outputs.upToDateWhen { false }
         }

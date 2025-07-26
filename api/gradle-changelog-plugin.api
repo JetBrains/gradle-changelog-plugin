@@ -198,6 +198,7 @@ public abstract class org/jetbrains/changelog/tasks/GetChangelogTask : org/jetbr
 	public final fun getNoLinks ()Z
 	public final fun getNoSummary ()Z
 	public abstract fun getOutputFile ()Lorg/gradle/api/file/RegularFileProperty;
+	public final fun getOutputFilePath ()Ljava/lang/String;
 	public final fun getProjectVersion ()Ljava/lang/String;
 	public final fun getUnreleased ()Z
 	public final fun run ()V
@@ -205,6 +206,7 @@ public abstract class org/jetbrains/changelog/tasks/GetChangelogTask : org/jetbr
 	public final fun setNoHeader (Z)V
 	public final fun setNoLinks (Z)V
 	public final fun setNoSummary (Z)V
+	public final fun setOutputFilePath (Ljava/lang/String;)V
 	public final fun setProjectVersion (Ljava/lang/String;)V
 	public final fun setUnreleased (Z)V
 }

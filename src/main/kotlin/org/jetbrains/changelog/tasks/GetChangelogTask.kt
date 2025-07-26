@@ -8,6 +8,7 @@ import org.gradle.api.tasks.options.Option
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogPluginExtension
 import org.jetbrains.changelog.exceptions.MissingVersionException
+import java.security.Provider
 
 /**
  * Retrieves changelog for the specified version.
@@ -103,11 +104,20 @@ abstract class GetChangelogTask : BaseChangelogTask() {
      */
     @get:OutputFile
     @get:Optional
-    @get:Option(
+    abstract val outputFile: RegularFileProperty
+
+    /**
+     * Output file to write the changelog content to.
+     *
+     * Default value: `null`
+     */
+    @get:Optional
+    @get:Input
+    @Option(
         option = "output-file",
         description = "File to write the changelog content to.",
     )
-    abstract val outputFile: RegularFileProperty
+    var outputFilePath = null as String?
 
     @TaskAction
     fun run() {
