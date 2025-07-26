@@ -262,21 +262,6 @@ data class Changelog(
         private val items: Map<String, Set<String>> = emptyMap(),
     ) {
 
-        @Suppress("UNUSED_PARAMETER")
-        @Deprecated(
-            message = "itemPrefix and lineSeparator properties are unused and scheduled for removal",
-            replaceWith = ReplaceWith("Item(version, header, summary, isUnreleased, items)")
-        )
-        constructor(
-            version: String,
-            header: String,
-            summary: String = "",
-            isUnreleased: Boolean = false,
-            items: Map<String, Set<String>> = emptyMap(),
-            itemPrefix: String,
-            lineSeparator: String,
-        ) : this(version, header, summary, isUnreleased, items)
-
         internal var withHeader = true
         internal var withLinkedHeader = true
         internal var withSummary = true

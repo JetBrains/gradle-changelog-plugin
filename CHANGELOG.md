@@ -9,6 +9,7 @@
 ### Removed
 
 - Remove deprecated methods `toText`, `toHTML`, `toPlainText`, and `toString` from `Changelog`.
+- Remove unused deprecated secondary constructor from `Changelog`.
 
 ## [2.2.1] - 2024-07-04
 
