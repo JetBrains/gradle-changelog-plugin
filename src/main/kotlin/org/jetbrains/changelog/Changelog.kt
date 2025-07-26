@@ -160,7 +160,7 @@ data class Changelog(
                     leftIsSemVer && rightIsSemVer -> rightVersion.compareTo(leftVersion)
                     leftIsSemVer -> -1
                     rightIsSemVer -> 1
-                    else -> left.compareTo(right)
+                    else -> right.compareTo(left)
                 }
             }
             .toMap()

@@ -10,6 +10,7 @@
 
 - Header links are included in the extracted notes. JetBrains/gradle-changelog-plugin#266
 - Handle missing released items in `GetChangelogTask` gracefully. JetBrains/gradle-changelog-plugin#252
+- Patching reverses the order of links when not using a semantic versioning. JetBrains/gradle-changelog-plugin#219
 
 ### Removed
 
