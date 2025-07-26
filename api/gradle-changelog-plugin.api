@@ -67,11 +67,6 @@ public final class org/jetbrains/changelog/ChangelogPlugin : org/gradle/api/Plug
 	public fun apply (Lorg/gradle/api/Project;)V
 }
 
-public final class org/jetbrains/changelog/ChangelogPlugin$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun execute (Ljava/lang/Object;)V
-}
-
 public final class org/jetbrains/changelog/ChangelogPluginConstants {
 	public static final field CHANGELOG_FILE_NAME Ljava/lang/String;
 	public static final field DATE_PATTERN Ljava/lang/String;
