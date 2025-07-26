@@ -341,30 +341,6 @@ data class Changelog(
             .mapValues { (key, value) -> value + other[key].orEmpty() }
             .toMutableMap()
             .also { map -> map.putAll(other.filterKeys { !containsKey(it) }) }
-
-        @Deprecated(
-            message = "Method no longer available",
-            replaceWith = ReplaceWith("changelog.renderItem(this)"),
-        )
-        fun toText() = ""
-
-        @Deprecated(
-            message = "Method no longer available",
-            replaceWith = ReplaceWith("changelog.renderItem(this, Changelog.OutputType.HTML)"),
-        )
-        fun toHTML() = ""
-
-        @Deprecated(
-            message = "Method no longer available",
-            replaceWith = ReplaceWith("changelog.renderItem(this, Changelog.OutputType.PLAIN_TEXT)"),
-        )
-        fun toPlainText() = ""
-
-        @Deprecated(
-            message = "Method no longer available",
-            replaceWith = ReplaceWith("changelog.renderItem(this)"),
-        )
-        override fun toString() = ""
     }
 
     enum class OutputType {

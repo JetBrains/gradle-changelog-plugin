@@ -6,6 +6,10 @@
 
 - Header links are included in the extracted notes JetBrains/gradle-changelog-plugin#266
 
+### Removed
+
+- Remove deprecated methods `toText`, `toHTML`, `toPlainText`, and `toString` from `Changelog`.
+
 ## [2.2.1] - 2024-07-04
 
 ### Changed
