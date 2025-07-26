@@ -66,7 +66,7 @@ abstract class ChangelogPluginExtension {
     abstract val header: Property<String>
 
     /**
-     * `Regex`/`Pattern`/`String` used to extract version from the header string.
+     * `Regex`/`Pattern`/`String` used to extract a version from the header string.
      *
      * Default value: `null`, fallbacks to [ChangelogPluginConstants.SEM_VER_REGEX]
      */
@@ -106,7 +106,7 @@ abstract class ChangelogPluginExtension {
     abstract val groups: ListProperty<String>
 
     /**
-     * Single item's prefix, allows to customise the bullet sign.
+     * Single item's prefix allows customizing the bullet sign.
      *
      * Default value: [ChangelogPluginConstants.ITEM_PREFIX]
      */
@@ -131,13 +131,13 @@ abstract class ChangelogPluginExtension {
 
     /**
      * The GitHub repository URL used to build release links.
-     * If provided, leads to the GitHub comparison page.
+     * If provided, it leads to the GitHub comparison page.
      */
     @get:Optional
     abstract val repositoryUrl: Property<String>
 
     /**
-     * Function to build a single URL to link section with the GitHub page to present changes within the given release.
+     * Function to build a single URL to link a section with the GitHub page to present changes within the given release.
      *
      * Default value: Common [ChangelogSectionUrlBuilder] implementation
      */

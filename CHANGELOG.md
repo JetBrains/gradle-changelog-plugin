@@ -46,7 +46,7 @@
 
 ### Fixed
 
-- Wrong markdown render of changelog that use CRLF or CR line separator JetBrains/gradle-changelog-plugin#176
+- Wrong markdown render of a changelog that uses CRLF or CR line separator JetBrains/gradle-changelog-plugin#176
 - `Changelog.Item.plus` copies original item without restoring all original data JetBrains/gradle-changelog-plugin#179
 
 ## [2.1.0] - 2023-06-02
@@ -68,7 +68,7 @@
 - Make `changelog.instance` property public
 - Introduce changelog `summary` and changelog property JetBrains/gradle-changelog-plugin#127
 - Introduce changelog `preTitle` and `title` changelog properties
-- Ensure patched changelog ends with a newline JetBrains/gradle-changelog-plugin#126
+- Ensure the patched changelog ends with a newline JetBrains/gradle-changelog-plugin#126
 - Added the `changelog.lineSeparator` property to allow for customizing the line separator used in the changelog JetBrains/gradle-changelog-plugin#104
 - Added the `--version=...` CLI parameter for the `getChangelog` task JetBrains/gradle-changelog-plugin#83
 - Throw an exception when `initializeChangelog` task works on non-empty file JetBrains/gradle-changelog-plugin#82
@@ -126,7 +126,7 @@
 
 ### Fixed
 
-- Don't create groups for the new Unreleased section if empty array is provided
+- Don't create groups for the new Unreleased section if an empty array is provided
 
 ## [1.1.1] - 2021-02-09
 
@@ -175,7 +175,7 @@
 
 ### Added
 
-- `headerParserRegex` extension property for setting custom regex used to extract version from the header string
+- `headerParserRegex` extension property for setting custom regex used to extract a version from the header string
 
 ### Changed
 
@@ -198,7 +198,7 @@
 
 ### Added
 
-- `initializeChangelog` task for creating new changelog file
+- `initializeChangelog` task for creating a new changelog file
 - `getAll` extension method for fetching all changelog items
 - `groups` extension property for defining the groups created with the Unreleased section
 - `ktlint` integration
@@ -240,9 +240,9 @@
 
 ### Added
 
-- Allow maintaining changelog without change note types (Added, Fixed)
-- Customising the header by the `patchChangelog` task with `headerArguments` extension's property
-- Customising the change notes splitting with the `itemPrefix` extension's property
+- Allow maintaining a changelog without changing note types (Added, Fixed)
+- Customizing the header by the `patchChangelog` task with `headerArguments` extension's property
+- Customizing the change notes splitting with the `itemPrefix` extension's property
 - More tests
 
 ### Changed

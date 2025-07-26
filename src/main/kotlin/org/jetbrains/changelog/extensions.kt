@@ -13,7 +13,7 @@ import java.util.*
 fun date(pattern: String = DATE_PATTERN) = SimpleDateFormat(pattern).format(Date())!!
 
 fun markdownToHTML(input: String, lineSeparator: String = "\n") = ChangelogFlavourDescriptor().run {
-    // Normalize text to LF, because markdown library currently full support only this line separator
+    // Normalize text to LF, because a Markdown library currently fully supports only this line separator
     val lfString = input.normalizeLineSeparator("\n")
     HtmlGenerator(lfString, MarkdownParser(this).buildMarkdownTreeFromString(lfString), this, false)
         .generateHtml()
@@ -21,7 +21,7 @@ fun markdownToHTML(input: String, lineSeparator: String = "\n") = ChangelogFlavo
 }
 
 fun markdownToPlainText(input: String, lineSeparator: String) = PlainTextFlavourDescriptor(lineSeparator).run {
-    // Normalize text to LF, because markdown library currently full support only this line separator
+    // Normalize text to LF, because a Markdown library currently fully supports only this line separator
     val lfString = input.normalizeLineSeparator("\n")
     HtmlGenerator(lfString, MarkdownParser(this).buildMarkdownTreeFromString(lfString), this, false)
         .generateHtml(PlainTextTagRenderer())
