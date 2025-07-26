@@ -25,8 +25,9 @@ dependencies {
     implementation(libs.markdown) {
         exclude(group = "org.jetbrains.kotlin")
     }
+    testImplementation(libs.junit)
     testImplementation(embeddedKotlin("test"))
-    testImplementation(embeddedKotlin("test-junit"))
+    testRuntimeOnly(embeddedKotlin("test-junit"))
 }
 
 kotlin {
