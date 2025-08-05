@@ -2,9 +2,11 @@
 
 ## [Unreleased]
 
+## [2.4.0] - 2025-08-05
+
 ### Added
 
-- Added the `--release-note-file` flag to `PatchChangelogTask` 
+- Added the `--release-note-file` flag to `PatchChangelogTask`
 
 ## [2.3.0] - 2025-07-26
 
@@ -311,7 +313,8 @@
 - `changelog` extension configuration
 - `getChangelog`/`patchChangelog` tasks
 
-[Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v2.1.2...v2.2.0
