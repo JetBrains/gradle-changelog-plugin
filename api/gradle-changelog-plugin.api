@@ -226,8 +226,10 @@ public abstract class org/jetbrains/changelog/tasks/PatchChangelogTask : org/jet
 	public abstract fun getOutputFile ()Lorg/gradle/api/file/RegularFileProperty;
 	public abstract fun getPatchEmpty ()Lorg/gradle/api/provider/Property;
 	public final fun getReleaseNote ()Ljava/lang/String;
+	public final fun getReleaseNoteFilePath ()Ljava/lang/String;
 	public abstract fun getVersion ()Lorg/gradle/api/provider/Property;
 	public final fun run ()V
 	public final fun setReleaseNote (Ljava/lang/String;)V
+	public final fun setReleaseNoteFilePath (Ljava/lang/String;)V
 }
 
