@@ -11,6 +11,7 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.ChangelogPluginExtension
 import org.jetbrains.changelog.Version
 import org.jetbrains.changelog.exceptions.MissingReleaseNoteException
+import java.io.File
 
 /**
  * Updates the unreleased section to the given version.
@@ -24,6 +25,14 @@ abstract class PatchChangelogTask : BaseChangelogTask() {
     @get:Optional
     @Option(option = "release-note", description = "Custom release note content")
     var releaseNote: String? = null
+
+    /**
+     * Path to the file with a custom release note.
+     */
+    @get:Input
+    @get:Optional
+    @Option(option = "release-note-file", description = "Custom release note file path")
+    var releaseNoteFilePath: String? = null
 
     /**
      * @see [ChangelogPluginExtension.version]
@@ -76,6 +85,8 @@ abstract class PatchChangelogTask : BaseChangelogTask() {
     @TaskAction
     fun run() {
         with(changelog.get()) {
+            val releaseNoteContent = releaseNoteFilePath?.let { File(it) }?.readText() ?: releaseNote
+
             val preReleaseItems = releasedItems
                 .filter {
                     val current = Version.parse(version.get())
@@ -91,9 +102,9 @@ abstract class PatchChangelogTask : BaseChangelogTask() {
                 header = header.get(),
                 isUnreleased = false,
             ).let {
-                parseTree(releaseNote)?.let { releaseNoteTree ->
-                    val (summary, items) = releaseNoteTree.children.extractItemData(releaseNote)
-                    val links = releaseNoteTree.children.extractLinks(releaseNote)
+                parseTree(releaseNoteContent)?.let { releaseNoteTree ->
+                    val (summary, items) = releaseNoteTree.children.extractItemData(releaseNoteContent)
+                    val links = releaseNoteTree.children.extractLinks(releaseNoteContent)
 
                     baseLinks.addAll(links)
 

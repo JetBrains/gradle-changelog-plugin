@@ -2,11 +2,15 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added the `--release-note-file` flag to `PatchChangelogTask` 
+
 ## [2.3.0] - 2025-07-26
 
 ### Added
 
-- Add the ` outputFile ` property to the Changelog extension and `GetChangelogTask` along with the `--output-file` flag JetBrains/gradle-changelog-plugin#264
+- Add the `outputFile` property to the Changelog extension and `GetChangelogTask` along with the `--output-file` flag JetBrains/gradle-changelog-plugin#264
 
 ### Fixed
 
