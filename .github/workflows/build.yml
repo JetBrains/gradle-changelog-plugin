@@ -119,7 +119,7 @@ jobs:
 
       # Store an already-built plugin as an artifact for downloading
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.properties.outputs.artifact }}
           path: ./build/libs/${{ steps.properties.outputs.artifact }}
