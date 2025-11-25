@@ -52,7 +52,7 @@ data class Changelog(
         get() = Item(
             version = unreleasedTerm,
             header = unreleasedTerm,
-            items = groups.associateWith { emptySet() },
+            items = groups.associateWith { mutableSetOf() },
         ).withEmptySections(true)
 
     init {
@@ -104,7 +104,7 @@ data class Changelog(
 
         baseLinks = nodes.extractLinks().toMutableList()
 
-        items = baseItems.mapValues { (key, value) ->
+        items = baseItems.mapValuesTo(LinkedHashMap()) { (key, value) ->
             val header = value
                 .firstOrNull { it.type == ATX_2 }
                 .text()
@@ -259,7 +259,7 @@ data class Changelog(
         val header: String,
         val summary: String = "",
         val isUnreleased: Boolean = false,
-        private val items: Map<String, Set<String>> = emptyMap(),
+        private val items: Map<String, Set<String>> = mutableMapOf(),
     ) {
 
         internal var withHeader = true
@@ -284,7 +284,7 @@ data class Changelog(
         var sections = emptyMap<String, Set<String>>()
             internal set
             get() = items
-                .mapValues { it.value.filter { item -> filterCallback?.invoke(item) ?: true }.toSet() }
+                .mapValues { it.value.filter { item -> filterCallback?.invoke(item) ?: true }.toMutableSet() }
                 .filter { it.value.isNotEmpty() || withEmptySections }
 
         private fun copy(
@@ -323,9 +323,9 @@ data class Changelog(
         operator fun plus(items: List<Item>) = items.fold(this) { acc, item -> acc + item }
 
         operator fun Map<String, Set<String>>.plus(other: Map<String, Set<String>>) = this
-            .mapValues { (key, value) -> value + other[key].orEmpty() }
+            .mapValues { (key, value) -> (value + other[key].orEmpty()).toMutableSet() }
             .toMutableMap()
-            .also { map -> map.putAll(other.filterKeys { !containsKey(it) }) }
+            .also { map -> map.putAll(other.mapValues { it.value.toMutableSet() }.filterKeys { !containsKey(it) }) }
     }
 
     enum class OutputType {
@@ -415,13 +415,13 @@ data class Changelog(
                                     .drop(1) // MarkdownTokenTypes.LIST_BULLET or LIST_NUMBER
                                     .joinToString("") { it.textAsIs(content) }
                             }
-                            .toSet()
+                            .toMutableSet()
                     }
-                    .toSet()
+                    .toMutableSet()
             )
             val sectionPlaceholders = this
                 .filter { it.type == ATX_3 }
-                .associate { it.text(content) to emptySet<String>() }
+                .associate { it.text(content) to mutableSetOf<String>() }
             val sectionsWithItems = this
                 .windowed(2)
                 .filter { (left, right) -> left.type == ATX_3 && right.type != ATX_3 }
@@ -433,7 +433,7 @@ data class Changelog(
                                 .drop(1) // MarkdownTokenTypes.LIST_BULLET or LIST_NUMBER
                                 .joinToString("") { it.textAsIs(content) }
                         }
-                        .toSet()
+                        .toMutableSet()
                 }
 
             unassignedItems + sectionPlaceholders + sectionsWithItems

@@ -6,6 +6,10 @@
 
 - Bump Java version to 17 in build scripts and workflows.
 
+### Fixed
+
+- Fix Gradle configuration cache compatibility by using mutable collections instead of immutable singleton sets
+
 ## [2.4.0] - 2025-08-05
 
 ### Added
