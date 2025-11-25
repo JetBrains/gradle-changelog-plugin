@@ -136,7 +136,7 @@ abstract class PatchChangelogTask : BaseChangelogTask() {
                 releasedItems.forEach {
                     yield(it.version to it)
                 }
-            }.toMap()
+            }.toMap(LinkedHashMap())
 
             render(Changelog.OutputType.MARKDOWN).let {
                 outputFile.get()

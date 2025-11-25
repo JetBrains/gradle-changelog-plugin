@@ -154,6 +154,16 @@ abstract class ChangelogPluginExtension {
     abstract val sectionUrlBuilder: Property<ChangelogSectionUrlBuilder>
 
     /**
+     * Preserve inline links in version headers instead of converting them to reference-style links.
+     * When set to `true`, headers like `## [1.0.0](https://example.com/release)` will be kept as-is.
+     * When set to `false` (default), all version headers will use reference-style links placed at the bottom.
+     *
+     * Default value: `false`
+     */
+    @get:Optional
+    abstract val headerInlineLink: Property<Boolean>
+
+    /**
      * [Changelog] instance shared between [ChangelogPluginExtension] and tasks.
      */
     @get:Internal

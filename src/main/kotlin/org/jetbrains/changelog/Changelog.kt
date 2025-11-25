@@ -38,6 +38,7 @@ data class Changelog(
     private val repositoryUrl: String?,
     private val sectionUrlBuilder: ChangelogSectionUrlBuilder,
     private val lineSeparator: String,
+    private val headerInlineLink: Boolean,
 ) {
 
     val preTitle: String
@@ -48,11 +49,12 @@ data class Changelog(
 
     private val baseItems: Map<String, List<ASTNode>>
     internal val baseLinks: MutableList<Pair<String, String>>
+    private val versionsWithInlineLinks: MutableSet<String> = mutableSetOf()
     internal val newUnreleasedItem
         get() = Item(
             version = unreleasedTerm,
             header = unreleasedTerm,
-            items = groups.associateWith { emptySet() },
+            items = groups.associateWith { mutableSetOf() },
         ).withEmptySections(true)
 
     init {
@@ -104,11 +106,33 @@ data class Changelog(
 
         baseLinks = nodes.extractLinks().toMutableList()
 
-        items = baseItems.mapValues { (key, value) ->
-            val header = value
-                .firstOrNull { it.type == ATX_2 }
-                .text()
-                .replace("[$key]", key)
+        items = baseItems.mapValuesTo(LinkedHashMap()) { (key, value) ->
+            val headerNode = value.firstOrNull { it.type == ATX_2 }
+            val headerText = headerNode.text()
+
+            // Get the raw header text from the original content (preserves markdown syntax)
+            val headerRawText = headerNode?.let {
+                content.substring(it.startOffset, it.endOffset).trim()
+            }.orEmpty()
+
+            // Check if the header contains an inline link like [version](url)
+            val hasInlineLink = headerRawText.contains("[$key]") && headerRawText.contains("(http")
+            if (hasInlineLink && headerInlineLink) {
+                versionsWithInlineLinks.add(key)
+            }
+
+            // Preserve the raw header text (with brackets) if it's an inline link we want to keep
+            val header = if (hasInlineLink && headerInlineLink) {
+                // Keep the inline link as-is
+                headerRawText.removePrefix(LEVEL_2).trim()
+            } else if (hasInlineLink) {
+                // Remove the inline link and keep just the version and rest of header
+                // Replace [version](url) with just version
+                headerRawText.removePrefix(LEVEL_2).trim().replace(Regex("""\[$key]\([^)]+\)"""), key)
+            } else {
+                // No inline link, just remove brackets if present
+                headerText.replace("[$key]", key)
+            }
             val isUnreleased = key == unreleasedTerm
 
             val (summary, items) = value.extractItemData()
@@ -132,13 +156,19 @@ data class Changelog(
                 }
 
                 ids.windowed(2).forEach { (current, previous) ->
-                    val url = build(repositoryUrl, current, previous, false)
-                    yield(current to url)
+                    // Skip generating links for versions with inline links
+                    if (!versionsWithInlineLinks.contains(current)) {
+                        val url = build(repositoryUrl, current, previous, false)
+                        yield(current to url)
+                    }
                 }
 
                 ids.lastOrNull()?.let {
-                    val url = build(repositoryUrl, it, null, false)
-                    yield(it to url)
+                    // Skip generating links for versions with inline links
+                    if (!versionsWithInlineLinks.contains(it)) {
+                        val url = build(repositoryUrl, it, null, false)
+                        yield(it to url)
+                    }
                 }
 
                 yieldAll(
@@ -183,6 +213,8 @@ data class Changelog(
         sequence {
             if (withHeader) {
                 when {
+                    // If the version has an inline link, keep the header as-is (it already contains the link)
+                    versionsWithInlineLinks.contains(version) -> yield("$LEVEL_2 $header")
                     withLinkedHeader && links.containsKey(version) -> yield("$LEVEL_2 ${header.replace(version, "[$version]")}")
                     else -> yield("$LEVEL_2 $header")
                 }
@@ -259,7 +291,7 @@ data class Changelog(
         val header: String,
         val summary: String = "",
         val isUnreleased: Boolean = false,
-        private val items: Map<String, Set<String>> = emptyMap(),
+        private val items: Map<String, Set<String>> = mutableMapOf(),
     ) {
 
         internal var withHeader = true
@@ -284,7 +316,7 @@ data class Changelog(
         var sections = emptyMap<String, Set<String>>()
             internal set
             get() = items
-                .mapValues { it.value.filter { item -> filterCallback?.invoke(item) ?: true }.toSet() }
+                .mapValues { it.value.filter { item -> filterCallback?.invoke(item) ?: true }.toMutableSet() }
                 .filter { it.value.isNotEmpty() || withEmptySections }
 
         private fun copy(
@@ -323,9 +355,9 @@ data class Changelog(
         operator fun plus(items: List<Item>) = items.fold(this) { acc, item -> acc + item }
 
         operator fun Map<String, Set<String>>.plus(other: Map<String, Set<String>>) = this
-            .mapValues { (key, value) -> value + other[key].orEmpty() }
+            .mapValues { (key, value) -> (value + other[key].orEmpty()).toMutableSet() }
             .toMutableMap()
-            .also { map -> map.putAll(other.filterKeys { !containsKey(it) }) }
+            .also { map -> map.putAll(other.mapValues { it.value.toMutableSet() }.filterKeys { !containsKey(it) }) }
     }
 
     enum class OutputType {
@@ -415,13 +447,13 @@ data class Changelog(
                                     .drop(1) // MarkdownTokenTypes.LIST_BULLET or LIST_NUMBER
                                     .joinToString("") { it.textAsIs(content) }
                             }
-                            .toSet()
+                            .toMutableSet()
                     }
-                    .toSet()
+                    .toMutableSet()
             )
             val sectionPlaceholders = this
                 .filter { it.type == ATX_3 }
-                .associate { it.text(content) to emptySet<String>() }
+                .associate { it.text(content) to mutableSetOf<String>() }
             val sectionsWithItems = this
                 .windowed(2)
                 .filter { (left, right) -> left.type == ATX_3 && right.type != ATX_3 }
@@ -433,7 +465,7 @@ data class Changelog(
                                 .drop(1) // MarkdownTokenTypes.LIST_BULLET or LIST_NUMBER
                                 .joinToString("") { it.textAsIs(content) }
                         }
-                        .toSet()
+                        .toMutableSet()
                 }
 
             unassignedItems + sectionPlaceholders + sectionsWithItems
