@@ -143,7 +143,7 @@ data class Changelog(
     }
 
     val links
-        get() = sequence {
+        get() = buildList {
             repositoryUrl?.let {
                 val build = sectionUrlBuilder::build
                 val ids = items.keys - unreleasedTerm
@@ -151,7 +151,7 @@ data class Changelog(
                 with(unreleasedTerm) {
                     if (items.containsKey(this)) {
                         val url = build(repositoryUrl, this, ids.firstOrNull(), true)
-                        yield(this to url)
+                        add(this to url)
                     }
                 }
 
@@ -159,7 +159,7 @@ data class Changelog(
                     // Skip generating links for versions with inline links
                     if (!versionsWithInlineLinks.contains(current)) {
                         val url = build(repositoryUrl, current, previous, false)
-                        yield(current to url)
+                        add(current to url)
                     }
                 }
 
@@ -167,16 +167,16 @@ data class Changelog(
                     // Skip generating links for versions with inline links
                     if (!versionsWithInlineLinks.contains(it)) {
                         val url = build(repositoryUrl, it, null, false)
-                        yield(it to url)
+                        add(it to url)
                     }
                 }
 
-                yieldAll(
-                    baseLinks.filterNot { (key, _) -> key in items.keys || key == unreleasedTerm }
+                addAll(
+                    baseLinks.filterNot { (key, _) -> key in items.keys || key == unreleasedTerm },
                 )
-            } ?: yieldAll(baseLinks)
+            } ?: addAll(baseLinks)
 
-        }
+        }.asSequence()
             .sortedWith { (left), (right) ->
                 val leftIsSemVer = SEM_VER_REGEX.matches(left)
                 val rightIsSemVer = SEM_VER_REGEX.matches(right)
@@ -210,19 +210,27 @@ data class Changelog(
     fun has(version: String) = items.containsKey(version)
 
     fun renderItem(item: Item, outputType: OutputType) = with(item) {
-        sequence {
+        buildList {
             if (withHeader) {
                 when {
                     // If the version has an inline link, keep the header as-is (it already contains the link)
-                    versionsWithInlineLinks.contains(version) -> yield("$LEVEL_2 $header")
-                    withLinkedHeader && links.containsKey(version) -> yield("$LEVEL_2 ${header.replace(version, "[$version]")}")
-                    else -> yield("$LEVEL_2 $header")
+                    versionsWithInlineLinks.contains(version) -> add("$LEVEL_2 $header")
+                    withLinkedHeader && links.containsKey(version) -> add(
+                        "$LEVEL_2 ${
+                            header.replace(
+                                version,
+                                "[$version]",
+                            )
+                        }",
+                    )
+
+                    else -> add("$LEVEL_2 $header")
                 }
             }
 
             if (withSummary && summary.isNotEmpty()) {
-                yield(summary)
-                yield(lineSeparator)
+                add(summary)
+                add(lineSeparator)
             }
 
             sections
@@ -234,11 +242,11 @@ data class Changelog(
                         val (section, entries) = next()
 
                         if (section.isNotEmpty()) {
-                            yield("$LEVEL_3 $section")
+                            add("$LEVEL_3 $section")
                         }
                         entries
                             .map { "$itemPrefix $it" }
-                            .let { yieldAll(it) }
+                            .let { addAll(it) }
                     }
                 }
 
@@ -250,7 +258,7 @@ data class Changelog(
                                 || sections.flatMap { it.value }.any { it.contains("[$id]") })
                     }
                     .forEach { (id, url) ->
-                        yield("[$id]: $url")
+                        add("[$id]: $url")
                     }
             }
         }
@@ -259,27 +267,27 @@ data class Changelog(
         .reformat(lineSeparator)
         .processOutput(outputType)
 
-    fun render(outputType: OutputType) = sequence {
+    fun render(outputType: OutputType) = buildList {
         if (preTitle.isNotBlank()) {
-            yield(preTitle)
+            add(preTitle)
         }
         if (title.isNotBlank()) {
-            yield("$LEVEL_1 $title")
+            add("$LEVEL_1 $title")
         }
         if (introduction.isNotBlank()) {
-            yield(introduction)
+            add(introduction)
         }
 
         unreleasedItem?.let {
-            yield(renderItem(it.withLinks(false), OutputType.MARKDOWN))
+            add(renderItem(it.withLinks(false), OutputType.MARKDOWN))
         }
 
         releasedItems.forEach {
-            yield(renderItem(it.withLinks(false), OutputType.MARKDOWN))
+            add(renderItem(it.withLinks(false), OutputType.MARKDOWN))
         }
 
         links.forEach { (id, url) ->
-            yield("[$id]: $url")
+            add("[$id]: $url")
         }
     }
         .joinToString(lineSeparator)
@@ -449,7 +457,7 @@ data class Changelog(
                             }
                             .toMutableSet()
                     }
-                    .toMutableSet()
+                    .toMutableSet(),
             )
             val sectionPlaceholders = this
                 .filter { it.type == ATX_3 }

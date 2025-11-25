@@ -6,7 +6,6 @@ import org.jetbrains.changelog.BaseTest
 import org.jetbrains.changelog.ChangelogPluginConstants.GET_CHANGELOG_TASK_NAME
 import org.jetbrains.changelog.normalizeLineSeparator
 import java.io.File
-import kotlin.io.path.Path
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue

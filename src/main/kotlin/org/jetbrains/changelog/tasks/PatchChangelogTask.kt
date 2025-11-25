@@ -128,13 +128,13 @@ abstract class PatchChangelogTask : BaseChangelogTask() {
                 )
             }
 
-            items = sequence {
+            items = buildList {
                 if (keepUnreleasedSection.get()) {
-                    yield(unreleasedTerm.get() to newUnreleasedItem)
+                    add(unreleasedTerm.get() to newUnreleasedItem)
                 }
-                yield(newItem.version to newItem)
+                add(newItem.version to newItem)
                 releasedItems.forEach {
-                    yield(it.version to it)
+                    add(it.version to it)
                 }
             }.toMap(LinkedHashMap())
 
