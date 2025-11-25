@@ -38,6 +38,7 @@ data class Changelog(
     private val repositoryUrl: String?,
     private val sectionUrlBuilder: ChangelogSectionUrlBuilder,
     private val lineSeparator: String,
+    private val headerInlineLink: Boolean,
 ) {
 
     val preTitle: String
@@ -48,6 +49,7 @@ data class Changelog(
 
     private val baseItems: Map<String, List<ASTNode>>
     internal val baseLinks: MutableList<Pair<String, String>>
+    private val versionsWithInlineLinks: MutableSet<String> = mutableSetOf()
     internal val newUnreleasedItem
         get() = Item(
             version = unreleasedTerm,
@@ -105,10 +107,32 @@ data class Changelog(
         baseLinks = nodes.extractLinks().toMutableList()
 
         items = baseItems.mapValuesTo(LinkedHashMap()) { (key, value) ->
-            val header = value
-                .firstOrNull { it.type == ATX_2 }
-                .text()
-                .replace("[$key]", key)
+            val headerNode = value.firstOrNull { it.type == ATX_2 }
+            val headerText = headerNode.text()
+
+            // Get the raw header text from the original content (preserves markdown syntax)
+            val headerRawText = headerNode?.let {
+                content.substring(it.startOffset, it.endOffset).trim()
+            }.orEmpty()
+
+            // Check if the header contains an inline link like [version](url)
+            val hasInlineLink = headerRawText.contains("[$key]") && headerRawText.contains("(http")
+            if (hasInlineLink && headerInlineLink) {
+                versionsWithInlineLinks.add(key)
+            }
+
+            // Preserve the raw header text (with brackets) if it's an inline link we want to keep
+            val header = if (hasInlineLink && headerInlineLink) {
+                // Keep the inline link as-is
+                headerRawText.removePrefix(LEVEL_2).trim()
+            } else if (hasInlineLink) {
+                // Remove the inline link and keep just the version and rest of header
+                // Replace [version](url) with just version
+                headerRawText.removePrefix(LEVEL_2).trim().replace(Regex("""\[$key]\([^)]+\)"""), key)
+            } else {
+                // No inline link, just remove brackets if present
+                headerText.replace("[$key]", key)
+            }
             val isUnreleased = key == unreleasedTerm
 
             val (summary, items) = value.extractItemData()
@@ -132,13 +156,19 @@ data class Changelog(
                 }
 
                 ids.windowed(2).forEach { (current, previous) ->
-                    val url = build(repositoryUrl, current, previous, false)
-                    yield(current to url)
+                    // Skip generating links for versions with inline links
+                    if (!versionsWithInlineLinks.contains(current)) {
+                        val url = build(repositoryUrl, current, previous, false)
+                        yield(current to url)
+                    }
                 }
 
                 ids.lastOrNull()?.let {
-                    val url = build(repositoryUrl, it, null, false)
-                    yield(it to url)
+                    // Skip generating links for versions with inline links
+                    if (!versionsWithInlineLinks.contains(it)) {
+                        val url = build(repositoryUrl, it, null, false)
+                        yield(it to url)
+                    }
                 }
 
                 yieldAll(
@@ -183,6 +213,8 @@ data class Changelog(
         sequence {
             if (withHeader) {
                 when {
+                    // If the version has an inline link, keep the header as-is (it already contains the link)
+                    versionsWithInlineLinks.contains(version) -> yield("$LEVEL_2 $header")
                     withLinkedHeader && links.containsKey(version) -> yield("$LEVEL_2 ${header.replace(version, "[$version]")}")
                     else -> yield("$LEVEL_2 $header")
                 }

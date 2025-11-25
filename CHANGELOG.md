@@ -2,12 +2,17 @@
 
 ## [Unreleased]
 
+### Added
+
+- Add `headerInlineLink` property to preserve inline links in version headers instead of converting them to reference-style links JetBrains/gradle-changelog-plugin#274
+
 ### Changed
 
 - Bump Java version to 17 in build scripts and workflows.
 
 ### Fixed
 
+- Fix inline links in version headers being converted to malformed double-bracket syntax JetBrains/gradle-changelog-plugin#274
 - Fix Gradle configuration cache compatibility by using mutable collections instead of immutable singleton sets
 
 ## [2.4.0] - 2025-08-05

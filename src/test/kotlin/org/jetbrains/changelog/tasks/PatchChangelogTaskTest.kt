@@ -1574,4 +1574,145 @@ class PatchChangelogTaskTest : BaseTest() {
             changelog
         )
     }
+
+    @Test
+    fun `preserves existing links in version headers when headerInlineLink is true`() {
+        changelog =
+            """
+            <!-- Foo bar -->
+            
+            # Changelog
+            
+            My project changelog.
+            
+            ## [Unreleased]
+            
+            Fancy release.
+            
+            ### Added
+            
+            - foo
+            
+            ## [0.9.0](https://github.com/JetBrains/gradle-changelog-plugin/releases/tag/0.9.0) - 2025-10-11
+            
+            ### Fixed
+            
+            - Fix PSI parsing
+            """.trimIndent()
+
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "1.0.0"
+                repositoryUrl = "https://github.com/JetBrains/gradle-changelog-plugin"
+                headerInlineLink = true
+            }
+            """.trimIndent()
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        val expectedContent = """
+            <!-- Foo bar -->
+            
+            # Changelog
+            
+            My project changelog.
+            
+            ## [Unreleased]
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            ## [1.0.0] - $date
+            
+            Fancy release.
+            
+            ### Added
+            
+            - foo
+            
+            ## [0.9.0](https://github.com/JetBrains/gradle-changelog-plugin/releases/tag/0.9.0) - 2025-10-11
+            
+            ### Fixed
+            
+            - Fix PSI parsing
+            
+            [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.0...v1.0.0
+            """.trimIndent()
+
+        assertMarkdown(expectedContent, changelog)
+    }
+
+    @Test
+    fun `converts inline links to reference style when headerInlineLink is false`() {
+        changelog =
+            """
+            # Plugin Changelog
+            
+            ## [Unreleased]
+            
+            ### Fixed
+            
+            - Unreleased fix
+            
+            ## [0.9.0](https://github.com/JetBrains/gradle-changelog-plugin/releases/tag/0.9.0) - 2025-10-11
+            
+            ### Fixed
+            
+            - Fix PSI parsing
+            """.trimIndent()
+
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        val expectedContent = """
+            # Plugin Changelog
+            
+            ## [Unreleased]
+            
+            ### Added
+            
+            ### Changed
+            
+            ### Deprecated
+            
+            ### Removed
+            
+            ### Fixed
+            
+            ### Security
+            
+            ## [1.0.0] - $date
+            
+            ### Fixed
+            
+            - Unreleased fix
+            
+            ## [0.9.0] - 2025-10-11
+            
+            ### Fixed
+            
+            - Fix PSI parsing
+            
+            [Unreleased]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v1.0.0...HEAD
+            [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.0...v1.0.0
+            [0.9.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.9.0
+            """.trimIndent()
+
+        assertMarkdown(expectedContent, changelog)
+    }
 }
