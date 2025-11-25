@@ -84,6 +84,7 @@ class ChangelogPlugin : Plugin<Project> {
                 },
             )
             repositoryUrl.map { it.removeSuffix("/") }
+            headerInlineLink.convention(false)
             sectionUrlBuilder.convention(
                 ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
                     val prefix = versionPrefix.get()
@@ -122,6 +123,7 @@ class ChangelogPlugin : Plugin<Project> {
                         repositoryUrl = repositoryUrl.orNull,
                         sectionUrlBuilder = sectionUrlBuilder.get(),
                         lineSeparator = lineSeparator.get(),
+                        headerInlineLink = headerInlineLink.get(),
                     )
                 },
             )
