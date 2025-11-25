@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Bump Java version to 17 in build scripts and workflows.
+
 ## [2.4.0] - 2025-08-05
 
 ### Added
