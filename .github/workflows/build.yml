@@ -36,6 +36,7 @@ jobs:
           - 6.9.4
           - 7.6.4
           - 8.12
+          - 9.2.1
         os:
           - windows-latest
           - ubuntu-latest
