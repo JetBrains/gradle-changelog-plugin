@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [2.4.0] - 2025-08-05
+
 ### Added
 
 - Added the `--release-note-file` flag to `PatchChangelogTask` 
