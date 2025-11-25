@@ -9,6 +9,7 @@
 
 ### Changed
 
+- Set the minimal Gradle version to 8.3
 - Bump Java version to 17 in build scripts and workflows.
 
 ### Fixed
