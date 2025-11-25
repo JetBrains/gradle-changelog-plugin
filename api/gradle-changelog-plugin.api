@@ -1,7 +1,7 @@
 public final class org/jetbrains/changelog/Changelog {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lkotlin/text/Regex;Ljava/lang/String;Ljava/lang/String;Lorg/jetbrains/changelog/ChangelogSectionUrlBuilder;Ljava/lang/String;)V
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lkotlin/text/Regex;Ljava/lang/String;Ljava/lang/String;Lorg/jetbrains/changelog/ChangelogSectionUrlBuilder;Ljava/lang/String;)Lorg/jetbrains/changelog/Changelog;
-	public static synthetic fun copy$default (Lorg/jetbrains/changelog/Changelog;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lkotlin/text/Regex;Ljava/lang/String;Ljava/lang/String;Lorg/jetbrains/changelog/ChangelogSectionUrlBuilder;Ljava/lang/String;ILjava/lang/Object;)Lorg/jetbrains/changelog/Changelog;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lkotlin/text/Regex;Ljava/lang/String;Ljava/lang/String;Lorg/jetbrains/changelog/ChangelogSectionUrlBuilder;Ljava/lang/String;Z)V
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lkotlin/text/Regex;Ljava/lang/String;Ljava/lang/String;Lorg/jetbrains/changelog/ChangelogSectionUrlBuilder;Ljava/lang/String;Z)Lorg/jetbrains/changelog/Changelog;
+	public static synthetic fun copy$default (Lorg/jetbrains/changelog/Changelog;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lkotlin/text/Regex;Ljava/lang/String;Ljava/lang/String;Lorg/jetbrains/changelog/ChangelogSectionUrlBuilder;Ljava/lang/String;ZILjava/lang/Object;)Lorg/jetbrains/changelog/Changelog;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun get (Ljava/lang/String;)Lorg/jetbrains/changelog/Changelog$Item;
 	public final fun getIntroduction ()Ljava/lang/String;
@@ -52,6 +52,7 @@ public final class org/jetbrains/changelog/Changelog$OutputType : java/lang/Enum
 	public static final field HTML Lorg/jetbrains/changelog/Changelog$OutputType;
 	public static final field MARKDOWN Lorg/jetbrains/changelog/Changelog$OutputType;
 	public static final field PLAIN_TEXT Lorg/jetbrains/changelog/Changelog$OutputType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/jetbrains/changelog/Changelog$OutputType;
 	public static fun values ()[Lorg/jetbrains/changelog/Changelog$OutputType;
 }
@@ -91,6 +92,7 @@ public abstract class org/jetbrains/changelog/ChangelogPluginExtension {
 	public final fun getGetHeaderParserRegex ()Lorg/gradle/api/provider/Provider;
 	public abstract fun getGroups ()Lorg/gradle/api/provider/ListProperty;
 	public abstract fun getHeader ()Lorg/gradle/api/provider/Property;
+	public abstract fun getHeaderInlineLink ()Lorg/gradle/api/provider/Property;
 	public abstract fun getHeaderParserRegex ()Lorg/gradle/api/provider/Property;
 	public abstract fun getInstance ()Lorg/gradle/api/provider/Property;
 	public abstract fun getIntroduction ()Lorg/gradle/api/provider/Property;
@@ -119,6 +121,7 @@ public abstract class org/jetbrains/changelog/ChangelogPluginExtension {
 
 public abstract interface class org/jetbrains/changelog/ChangelogSectionUrlBuilder {
 	public abstract fun build (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Ljava/lang/String;
+	public fun getExtraParams ()Ljava/util/Map;
 }
 
 public final class org/jetbrains/changelog/ExtensionsKt {
