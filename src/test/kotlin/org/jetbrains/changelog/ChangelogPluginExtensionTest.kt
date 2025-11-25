@@ -704,6 +704,52 @@ class ChangelogPluginExtensionTest : BaseTest() {
     }
 
     @Test
+    fun `provide a custom sectionUrlBuilder with extra parameters for Bitbucket`() {
+        changelog =
+            """
+            # Changelog
+            
+            Foo
+            
+            ## [Unreleased]
+            
+            Not yet released version.
+            
+            ### Added
+            
+            - Foo
+            
+            ## [0.0.1]
+            
+            ### Added
+            - Bar
+            """.trimIndent()
+
+        val customRepositoryUrl = "https://bitbucket.org/myorg/myrepo"
+
+        extension.repositoryUrl = customRepositoryUrl
+        extension.sectionUrlBuilder =
+            object : ChangelogSectionUrlBuilder {
+                override val extraParams = mapOf("branch" to "main")
+
+                override fun build(
+                    repositoryUrl: String,
+                    currentVersion: String?,
+                    previousVersion: String?,
+                    isUnreleased: Boolean,
+                ): String {
+                    val branch = extraParams["branch"] ?: "master"
+                    return "$repositoryUrl/branches/compare/$currentVersion..$previousVersion#diff | branch=$branch"
+                }
+            }
+
+        val items = extension.instance.get().links.values
+
+        assertTrue(items.first().contains("branch=main"))
+        assertTrue(items.first().contains(customRepositoryUrl))
+    }
+
+    @Test
     fun `returns change notes for the v1_0_0 version of changelog that use CRLF`() {
         //language=Markdown
         changelog =

@@ -5,6 +5,7 @@
 ### Added
 
 - Add `headerInlineLink` property to preserve inline links in version headers instead of converting them to reference-style links JetBrains/gradle-changelog-plugin#274
+- Add `extraParams` property to `ChangelogSectionUrlBuilder` interface to support passing additional parameters JetBrains/gradle-changelog-plugin#262
 
 ### Changed
 

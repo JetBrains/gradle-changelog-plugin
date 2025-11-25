@@ -48,5 +48,7 @@ internal fun String.reformat(lineSeparator: String): String {
 internal fun String.normalizeLineSeparator(lineSeparator: String) = replace("\\R".toRegex(), lineSeparator)
 
 fun interface ChangelogSectionUrlBuilder {
+    val extraParams  get() = emptyMap<String, String>()
+
     fun build(repositoryUrl: String, currentVersion: String?, previousVersion: String?, isUnreleased: Boolean): String
 }

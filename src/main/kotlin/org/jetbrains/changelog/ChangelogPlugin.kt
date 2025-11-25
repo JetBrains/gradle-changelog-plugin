@@ -87,16 +87,16 @@ class ChangelogPlugin : Plugin<Project> {
             headerInlineLink.convention(false)
             sectionUrlBuilder.convention(
                 ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased ->
-                    val prefix = versionPrefix.get()
+                            val prefix = versionPrefix.get()
                     repositoryUrl + when {
-                        isUnreleased -> when (previousVersion) {
-                            null -> "/commits"
-                            else -> "/compare/$prefix$previousVersion...HEAD"
-                        }
+                                isUnreleased -> when (previousVersion) {
+                                    null -> "/commits"
+                                    else -> "/compare/$prefix$previousVersion...HEAD"
+                                }
 
-                        previousVersion == null -> "/commits/$prefix$currentVersion"
+                                previousVersion == null -> "/commits/$prefix$currentVersion"
 
-                        else -> "/compare/$prefix$previousVersion...$prefix$currentVersion"
+                                else -> "/compare/$prefix$previousVersion...$prefix$currentVersion"
                     }
                 },
             )

@@ -94,7 +94,10 @@ changelog {
     groups = listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security")
     lineSeparator = "\n"
     combinePreReleases = true
-    sectionUrlBuilder = ChangelogSectionUrlBuilder { repositoryUrl, currentVersion, previousVersion, isUnreleased -> "foo" }
+    sectionUrlBuilder = object : ChangelogSectionUrlBuilder {
+        override val extraParams = mapOf("branch" to "main")
+        override fun build(repositoryUrl: String, currentVersion: String?, previousVersion: String?, isUnreleased: Boolean) = "foo"
+    }
     outputFile = file("release-note.txt")
 }
 ```
@@ -146,7 +149,17 @@ changelog {
     groups = ["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]
     lineSeparator = "\n"
     combinePreReleases = true
-    sectionUrlBuilder = { repositoryUrl, currentVersion, previousVersion, isUnreleased -> "foo" } as ChangelogSectionUrlBuilder
+    sectionUrlBuilder = new ChangelogSectionUrlBuilder() {
+        @Override
+        Map<String, String> getExtraParams() {
+            return ["branch": "main"]
+        }
+
+        @Override
+        String build(String repositoryUrl, String currentVersion, String previousVersion, boolean isUnreleased) {
+            return "foo"
+        }
+    }
     outputFile = file("release-note.txt")
 }
 ```
@@ -179,6 +192,62 @@ Plugin can be configured with the following properties set in the `changelog {}`
 > **Note**
 >
 > The `header` closure has the delegate explicitly set to the extension's context for the sake of the [Configuration cache][configuration-cache] support.
+
+### Custom URL Builder for Non-GitHub Repositories
+
+The `sectionUrlBuilder` property allows you to customize URL generation for different Git hosting platforms like Bitbucket, GitLab, or self-hosted repositories. You can pass extra parameters (like branch names) by overriding the `extraParams` property.
+
+**Bitbucket Example (Kotlin DSL):**
+
+```kotlin
+changelog {
+    repositoryUrl = "https://bitbucket.org/myorg/myrepo"
+    sectionUrlBuilder = object : ChangelogSectionUrlBuilder {
+        override val extraParams = mapOf("branch" to "main")
+
+        override fun build(
+            repositoryUrl: String,
+            currentVersion: String?,
+            previousVersion: String?,
+            isUnreleased: Boolean,
+        ): String {
+            val branch = extraParams["branch"] ?: "master"
+            return when {
+                isUnreleased -> when (previousVersion) {
+                    null -> "$repositoryUrl/commits/branch/$branch"
+                    else -> "$repositoryUrl/branches/compare/$branch%0D$previousVersion"
+                }
+                previousVersion == null -> "$repositoryUrl/commits/tag/$currentVersion"
+                else -> "$repositoryUrl/branches/compare/$currentVersion%0D$previousVersion"
+            }
+        }
+    }
+}
+```
+
+**GitLab Example (Groovy):**
+
+```groovy
+changelog {
+    repositoryUrl = "https://gitlab.com/myorg/myrepo"
+    sectionUrlBuilder = new ChangelogSectionUrlBuilder() {
+        @Override
+        Map<String, String> getExtraParams() {
+            return ["branch": "main"]
+        }
+
+        @Override
+        String build(String repositoryUrl, String currentVersion, String previousVersion, boolean isUnreleased) {
+            def branch = extraParams.get("branch") ?: "master"
+            if (isUnreleased) {
+                return previousVersion ? "$repositoryUrl/-/compare/$previousVersion...$branch" : "$repositoryUrl/-/commits/$branch"
+            } else {
+                return previousVersion ? "$repositoryUrl/-/compare/$previousVersion...$currentVersion" : "$repositoryUrl/-/commits/$currentVersion"
+            }
+        }
+    }
+}
+```
 
 ## Tasks
 
