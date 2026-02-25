@@ -135,9 +135,9 @@ data class Changelog(
             }
             val isUnreleased = key == unreleasedTerm
 
-            val (summary, items) = value.extractItemData()
+            val (summary, items, suffix) = value.extractItemData()
 
-            Item(key, header, summary, isUnreleased, items)
+            Item(key, header, summary, isUnreleased, items, suffix)
                 .withEmptySections(isUnreleased)
         }
     }
@@ -250,6 +250,11 @@ data class Changelog(
                     }
                 }
 
+            if (suffix.isNotEmpty()) {
+                add(lineSeparator)
+                add(suffix)
+            }
+
             if (withLinks) {
                 links
                     .filterKeys { id ->
@@ -300,6 +305,7 @@ data class Changelog(
         val summary: String = "",
         val isUnreleased: Boolean = false,
         private val items: Map<String, Set<String>> = mutableMapOf(),
+        internal val suffix: String = "",
     ) {
 
         internal var withHeader = true
@@ -333,13 +339,14 @@ data class Changelog(
             summary: String = this.summary,
             isUnreleased: Boolean = this.isUnreleased,
             items: Map<String, Set<String>> = this.items,
+            suffix: String = this.suffix,
             withHeader: Boolean = this.withHeader,
             withLinkedHeader: Boolean = this.withLinkedHeader,
             withSummary: Boolean = this.withSummary,
             withLinks: Boolean = this.withLinks,
             withEmptySections: Boolean = this.withEmptySections,
             filterCallback: ((String) -> Boolean)? = this.filterCallback,
-        ) = Item(version, header, summary, isUnreleased, items).also {
+        ) = Item(version, header, summary, isUnreleased, items, suffix).also {
             it.withHeader = withHeader
             it.withLinkedHeader = withLinkedHeader
             it.withSummary = withSummary
@@ -356,6 +363,7 @@ data class Changelog(
             return copy(
                 summary = summary.ifEmpty { item.summary },
                 items = items + item.items,
+                suffix = listOf(suffix, item.suffix).filter { it.isNotEmpty() }.joinToString("\n\n"),
                 filterCallback = filterCallback,
             )
         }
@@ -432,15 +440,20 @@ data class Changelog(
 
     private fun List<ASTNode>.join() = joinToString(lineSeparator) { it.text() }
 
-    internal fun List<ASTNode>.extractItemData(content: String? = null): Pair<String, Map<String, Set<String>>> {
-        val summaryNodes = this
-            .filter { it.type != ATX_2 }
+    internal data class ItemData(
+        val summary: String,
+        val items: Map<String, Set<String>>,
+        val suffix: String,
+    )
+
+    internal fun List<ASTNode>.extractItemData(content: String? = null): ItemData {
+        val nodesWithoutHeader = this.filter { it.type != ATX_2 }
+
+        val summaryNodes = nodesWithoutHeader
             .takeWhile { it.type == PARAGRAPH }
         val summary = summaryNodes
             .joinToString("$lineSeparator$lineSeparator") { it.text(content) }
-
-        val sectionNodes = this
-            .filter { it.type != ATX_2 }
+        val sectionNodes = nodesWithoutHeader
             .filter { it.type == ATX_3 || it.type == UNORDERED_LIST || it.type == ORDERED_LIST }
 
         val items = with(sectionNodes) {
@@ -479,7 +492,28 @@ data class Changelog(
             unassignedItems + sectionPlaceholders + sectionsWithItems
         }
 
-        return summary to items
+        // Capture any extra text (paragraphs, tables, ordered lists, etc.) that falls
+        // outside structured release notes by reading raw source after the last node
+        // that was actually processed above.
+        val rawContent = content ?: this@Changelog.content
+        val lastSectionNode = sectionNodes.lastOrNull { it.type == ATX_3 }
+        val lastProcessedNode = if (lastSectionNode != null) {
+            sectionNodes.firstOrNull { it.startOffset > lastSectionNode.endOffset } ?: lastSectionNode
+        } else {
+            sectionNodes.lastOrNull()
+        }
+        // Fall back to summary paragraphs
+        val endOfProcessed = lastProcessedNode?.endOffset
+            ?: summaryNodes.lastOrNull()?.endOffset
+
+        val blockEnd = this.lastOrNull { it.type != LINK_DEFINITION }?.endOffset
+        val suffix = if (endOfProcessed != null && blockEnd != null && endOfProcessed < blockEnd) {
+            rawContent.substring(endOfProcessed, blockEnd).trim()
+        } else {
+            ""
+        }
+
+        return ItemData(summary, items, suffix)
     }
 
     internal fun List<ASTNode>.extractLinks(content: String? = null) = this

@@ -8,7 +8,12 @@ import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.changelog.normalizeLineSeparator
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.test.*
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class PatchChangelogTaskTest : BaseTest() {
 
@@ -1712,6 +1717,89 @@ class PatchChangelogTaskTest : BaseTest() {
             [1.0.0]: https://github.com/JetBrains/gradle-changelog-plugin/compare/v0.9.0...v1.0.0
             [0.9.0]: https://github.com/JetBrains/gradle-changelog-plugin/commits/v0.9.0
             """.trimIndent()
+
+        assertMarkdown(expectedContent, changelog)
+    }
+
+    @Test
+    fun `additional text inside release notes`() {
+        changelog =
+            """
+            # Gradle plugin changelog
+
+            ## Unreleased
+
+            ## 0.4.0 - 2026-02-25
+
+            ### Added
+
+            - Some release notes
+            
+            Additional note for customers.
+            
+            Structured info:
+            
+            1. **L1** - text
+            2. **L2** - text
+            3. **L3** - text
+
+            ## 0.3.0 - 2026-02-24
+            
+            ### Changed
+
+            - Introduce breaking changes
+            
+            | Before | After       |
+            |--------|-------------|
+            | `test` | `test test` |
+           
+            """.trimIndent()
+
+        buildFile =
+            """
+            plugins {
+                id 'org.jetbrains.changelog'
+            }
+            changelog {
+                version = "0.4.0"
+                groups.empty()
+            }
+            """.trimIndent()
+        project.evaluate()
+        runTask(PATCH_CHANGELOG_TASK_NAME)
+
+        val expectedContent =
+            """
+            # Gradle plugin changelog
+
+            ## Unreleased
+
+            ## 0.4.0 - 2026-02-25
+
+            ### Added
+
+            - Some release notes
+            
+            Additional note for customers.
+            
+            Structured info:
+            
+            1. **L1** - text
+            2. **L2** - text
+            3. **L3** - text
+
+            ## 0.3.0 - 2026-02-24
+            
+            ### Changed
+
+            - Introduce breaking changes
+            
+            | Before | After       |
+            |--------|-------------|
+            | `test` | `test test` |
+           
+            """.trimIndent()
+
 
         assertMarkdown(expectedContent, changelog)
     }

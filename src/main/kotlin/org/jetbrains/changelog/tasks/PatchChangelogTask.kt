@@ -103,14 +103,15 @@ abstract class PatchChangelogTask : BaseChangelogTask() {
                 isUnreleased = false,
             ).let {
                 parseTree(releaseNoteContent)?.let { releaseNoteTree ->
-                    val (summary, items) = releaseNoteTree.children.extractItemData(releaseNoteContent)
+                    val itemData = releaseNoteTree.children.extractItemData(releaseNoteContent)
                     val links = releaseNoteTree.children.extractLinks(releaseNoteContent)
 
                     baseLinks.addAll(links)
 
                     it.copy(
-                        summary = summary,
-                        items = items,
+                        summary = itemData.summary,
+                        items = itemData.items,
+                        suffix = itemData.suffix,
                     )
                 } ?: it
             } + preReleaseItems

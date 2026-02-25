@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed an issue where free‑form text outside of list items was removed during `patchChangelog` task
+  JetBrains/gradle-changelog-plugin/#285
+
 ## [2.5.0] - 2025-11-25
 
 ### Added
